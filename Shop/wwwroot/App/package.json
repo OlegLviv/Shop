@@ -1,6 +1,9 @@
 {
   "name": "shop",
   "version": "1.0.0",
+  "babel": {
+    "plugins": [ "react-hot-loader/babel" ]
+  },
   "description": "OK",
   "main": "index.js",
   "scripts": {
@@ -11,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "bootstrap": "^4.0.0",
+    "generate-babelrc": "^0.1.2",
     "jquery": "^1.9.1",
     "node-sass": "^4.7.2",
     "popper": "^1.0.1",

@@ -1,0 +1,33 @@
+.info_container{
+  background: #252525;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 0 5rem 0 5rem;
+  font-size: 14px;
+  &__left{
+	display: flex;
+	justify-content: space-between;
+	&__menu-item{
+	  padding: 0.5rem;
+	}
+  }
+  &__right{
+	display: flex;
+	justify-content: space-between;
+	&__menu-item{
+	  padding: 0.5rem;
+	}
+  }
+  &__left a{
+	color: white !important;
+	font-weight: normal;
+	border-right: 1px white solid;
+	padding-right: 0.5rem;
+	text-decoration: none;
+  }
+  &__left a:hover{
+	color: #925e5d !important;
+  }
+}

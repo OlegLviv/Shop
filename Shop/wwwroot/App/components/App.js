@@ -1,7 +1,4 @@
 ﻿import React from 'react';
-import { Layout } from './Layout';
-import { hot } from 'react-hot-loader'
+import {Layout} from './Layout';
 
-const App = () => <Layout />;
-
-export default hot(module)(App)
+export const App = () => <Layout/>;
