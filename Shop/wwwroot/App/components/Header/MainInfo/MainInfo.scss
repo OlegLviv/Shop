@@ -19,6 +19,14 @@
 	&__menu-item{
 	  padding: 0.5rem;
 	}
+	&__menu-item a{
+	  color: #bbb4b5 !important;
+	  font-weight: normal;
+	  padding: 0 0.5rem 0 0.5rem;
+	}
+	&__menu-item a:hover{
+	  color: #925e5d !important;
+	}
   }
   &__left a{
 	color: white !important;

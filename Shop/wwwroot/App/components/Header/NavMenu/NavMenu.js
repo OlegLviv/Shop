@@ -1,22 +1,37 @@
 import React from 'react';
 import './NavManu.scss';
+import {Icon} from 'react-fa';
+import {Link} from 'react-router-dom';
 
 export const NavMenu = () => {
 	return (
 		<div className="menu-container">
-			<nav className="navbar navbar-expand-lg navbar-light bg-light">
-				<a className="navbar-brand" href="#">Navbar</a>
+			<nav className="navbar navbar-expand-lg navbar-light menu-container__navbar">
+				{/*<a className="navbar-brand" href="#">Navbar</a>*/}
+				<Link to="/" className="navbar-brand">Navbar</Link>
 				<button className="navbar-toggler" type="button" data-toggle="collapse"
 						data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 						aria-expanded="false" aria-label="Toggle navigation">
 					<span className="navbar-toggler-icon"></span>
 				</button>
-
-				<div className="collapse navbar-collapse" id="navbarSupportedContent">
-					<div className="form-inline my-2 my-lg-0">
-						<input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-						<button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				<div className="collapse navbar-collapse menu-container__navbar-right" id="navbarSupportedContent">
+					<div></div>
+					<div className="form-inline my-2">
+						<input className="form-control mr-sm-2 menu-container__navbar-right__search" type="search"
+							   placeholder="Search"
+							   aria-label="Search"/>
+						<button className="btn btn-primary my-sm-0">
+							<Icon name="search"/>
+						</button>
 					</div>
+					<ul class="navbar-nav mr-auto menu-container__navbar__card">
+						<li class="nav-item active">
+							<Icon size="2x" name="shopping-cart ml-xl-5 ml-lg-3"/>
+						</li>
+						<li class="nav-item active">
+							<Icon size="2x" name="heart ml-xl-5 ml-lg-3"/>
+						</li>
+					</ul>
 				</div>
 			</nav>
 		</div>

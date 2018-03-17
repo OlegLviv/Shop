@@ -1,4 +1,18 @@
-.menu-container{
+.menu-container {
   padding: 0 5rem 0 5rem;
-  background: #f3f3f3;
+  background: #f3f3f3;;
+  &__navbar {
+	padding: 0;
+	padding: 2rem 0 2rem 0;
+	display: flex;
+	&__card {
+	  margin: 0 !important;
+	}
+  }
+  &__navbar-right {
+	justify-content: space-between;
+	&__search{
+	  min-width: 20rem;
+	}
+  }
 }

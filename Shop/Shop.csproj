@@ -31,10 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Api\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\App\node_modules\bootstrap\dist\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\App\node_modules\bootstrap\dist\css\bootstrap-grid.min.css.map" />
     <None Include="wwwroot\App\node_modules\bootstrap\dist\css\bootstrap-reboot.css.map" />
@@ -170,6 +166,11 @@
     <None Include="wwwroot\App\node_modules\bootstrap\scss\_type.scss" />
     <None Include="wwwroot\App\node_modules\bootstrap\scss\_utilities.scss" />
     <None Include="wwwroot\App\node_modules\bootstrap\scss\_variables.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
 
 </Project>
