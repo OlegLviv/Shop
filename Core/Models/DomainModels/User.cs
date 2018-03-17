@@ -7,5 +7,6 @@ namespace Core.Models.DomainModels
 {
     public class User : IdentityUser, IBaseEntity
     {
+
     }
 }
