@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BLL.Services;
 using Core.Interfaces;
 using Core.Models.DomainModels;
 using DAL;
@@ -35,7 +36,15 @@ namespace Shop
         {
             services.AddDbContext<AppDbContext>(option =>
              option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireNonAlphanumeric = false;
+
+                options.User.RequireUniqueEmail = true;
+            })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddUserManager<UserManager<User>>()
                 .AddSignInManager<SignInManager<User>>()
@@ -61,6 +70,18 @@ namespace Shop
                 });
 
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
+
+            services.AddTransient<IEmailSender, EmailSender>(service =>
+            {
+                return new EmailSender(new System.Net.NetworkCredential
+                {
+                    UserName = Configuration["EmailCredential:UserName"],
+                    Password = Configuration["EmailCredential:Password"]
+                },
+                    host: Configuration["SmtpData:Host"],
+                    port: int.Parse(Configuration["SmtpData:Port"])
+                    );
+            });
 
             services.AddMvc();
 

@@ -41,7 +41,7 @@ class LogInModal extends React.Component {
 							   className="form-control"
 							   id="exampleInputEmail1"
 							   aria-describedby="emailHelp"
-							   placeholder="Введіть email"
+							   placeholder="Введіть email або логін"
 							   onChange={this.onChangeUserName}/>
 						<small id="emailHelp" className="form-text text-muted">We'll never share your email with
 							anyone else.
@@ -57,7 +57,7 @@ class LogInModal extends React.Component {
 					</div>
 					<div className="form-check">
 						<input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-						<label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
+						<label className="form-check-label" htmlFor="exampleCheck1">Запам'ятати</label>
 					</div>
 					<div className="form-container__footer">
 						<button

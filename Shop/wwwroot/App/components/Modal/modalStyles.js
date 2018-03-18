@@ -1,5 +1,6 @@
 export const customStyles = {
 	content: {
+		width: '25%',
 		top: '50%',
 		left: '50%',
 		right: 'auto',

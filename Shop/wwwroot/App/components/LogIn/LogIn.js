@@ -5,10 +5,6 @@ class LogIn extends React.Component {
 		super(props);
 	}
 
-	componentDidMount() {
-		this.props.onDidMount();
-	}
-
 	render() {
 		return (
 			<div>login</div>

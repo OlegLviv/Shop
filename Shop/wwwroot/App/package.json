@@ -27,6 +27,7 @@
     "react-fa": "^5.0.0",
     "react-modal": "^3.3.2",
     "react-router-dom": "^4.2.2",
+    "react-validate-form": "^1.0.6",
     "url-loader": "^1.0.1",
     "webpack-cli": "^2.0.12"
   },
