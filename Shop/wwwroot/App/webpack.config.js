@@ -1,4 +1,7 @@
-﻿module.exports = {
+﻿require("babel-core").transform("code", {
+	presets: ["es2017"]
+});
+module.exports = {
 	context: __dirname,
 	entry: './index.js',
 	output: {
@@ -10,7 +13,7 @@
 		rules: [
 			{
 				test: /\.css$/,
-				use: [ 'style-loader', 'css-loader' ]
+				use: ['style-loader', 'css-loader']
 			},
 			{
 				test: /\.scss$/,
@@ -28,9 +31,9 @@
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['babel-preset-env', 'babel-preset-react'],
+						presets: ['babel-preset-env', 'babel-preset-react', 'es2015', 'es2017', 'stage-0'],
 						cacheDirectory: true,
-						plugins: ['react-hot-loader/babel']
+						plugins: ['react-hot-loader/babel','transform-decorators-legacy']
 					}
 				}
 			},
