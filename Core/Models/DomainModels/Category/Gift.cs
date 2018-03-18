@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Core.Models.DomainModels.Category.SubCategoty;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Models.DomainModels
+namespace Core.Models.DomainModels.Category
 {
     public class Gift : BaseEntity
     {
@@ -10,11 +11,11 @@ namespace Core.Models.DomainModels
         public string CatalogId { get; set; }
 
         public ICollection<Casket> Caskets { get; set; }
-        public ICollection<DecorativeProducts> DecorativeProducts { get; set; }
+        public ICollection<DecorativeBox> DecorativeProducts { get; set; }
         public Gift()
         {
             Caskets = new List<Casket>();
-            DecorativeProducts = new List<DecorativeProducts>();
+            DecorativeProducts = new List<DecorativeBox>();
         }
     }
 }

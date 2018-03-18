@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Core.Models.DomainModels.Category;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Models.DomainModels
+namespace Core.Models.DomainModels.Category.SubCategoty
 {
     public class Casket : BaseEntity
     {

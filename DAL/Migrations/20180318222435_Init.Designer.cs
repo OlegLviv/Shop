@@ -12,27 +12,17 @@ using System;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180318222435_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Core.Models.DomainModels.Catalog", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Catalog");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.Book", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Book", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,52 +37,7 @@ namespace DAL.Migrations
                     b.ToTable("Book");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.Gift", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36);
-
-                    b.Property<string>("CatalogId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CatalogId");
-
-                    b.ToTable("Gift");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.Stationery", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36);
-
-                    b.Property<string>("CatalogId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CatalogId");
-
-                    b.ToTable("Stationery");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategory.Encyclopedia", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36);
-
-                    b.Property<string>("BookId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("Encyclopedia");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Casket", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Casket", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -107,7 +52,18 @@ namespace DAL.Migrations
                     b.ToTable("Casket");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.CopyBook", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Catalog", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catalog");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.CopyBook", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,7 +78,7 @@ namespace DAL.Migrations
                     b.ToTable("CopyBook");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.DecorativeBox", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.DecorativeProducts", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,10 +90,10 @@ namespace DAL.Migrations
 
                     b.HasIndex("GiftId");
 
-                    b.ToTable("DecorativeBox");
+                    b.ToTable("DecorativeProducts");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Dictionary", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Dictionary", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -152,7 +108,22 @@ namespace DAL.Migrations
                     b.ToTable("Dictionary");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.NoteBook", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Gift", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36);
+
+                    b.Property<string>("CatalogId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CatalogId");
+
+                    b.ToTable("Gift");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.NoteBook", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -167,7 +138,7 @@ namespace DAL.Migrations
                     b.ToTable("NoteBook");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.OfficeFolder", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.OfficeFolder", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -182,7 +153,7 @@ namespace DAL.Migrations
                     b.ToTable("OfficeFolder");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.OfficeSupplies", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.OfficeSupplies", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -197,7 +168,7 @@ namespace DAL.Migrations
                     b.ToTable("OfficeSupplies");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.SchoolFolder", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.SchoolFolder", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,7 +183,7 @@ namespace DAL.Migrations
                     b.ToTable("SchoolFolder");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.SchoolSupplies", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.SchoolSupplies", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -227,7 +198,22 @@ namespace DAL.Migrations
                     b.ToTable("SchoolSupplies");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Sticker", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Stationery", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36);
+
+                    b.Property<string>("CatalogId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CatalogId");
+
+                    b.ToTable("Stationery");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.Sticker", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -242,7 +228,7 @@ namespace DAL.Migrations
                     b.ToTable("Sticker");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.WritingSupplies", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.WritingSupplies", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -464,114 +450,107 @@ namespace DAL.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.Book", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Book", b =>
                 {
                     b.HasOne("Core.Models.DomainModels.Catalog", "Catalog")
                         .WithMany("Books")
                         .HasForeignKey("CatalogId");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.Gift", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Casket", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Gift", "Gift")
+                        .WithMany("Caskets")
+                        .HasForeignKey("GiftId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.CopyBook", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
+                        .WithMany("CopyBooks")
+                        .HasForeignKey("StationeryId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.DecorativeProducts", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Gift", "Gift")
+                        .WithMany("DecorativeProducts")
+                        .HasForeignKey("GiftId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.Dictionary", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
+                        .WithMany("Dictionaries")
+                        .HasForeignKey("StationeryId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.Gift", b =>
                 {
                     b.HasOne("Core.Models.DomainModels.Catalog", "Catalog")
                         .WithMany("Gifts")
                         .HasForeignKey("CatalogId");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.Stationery", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.NoteBook", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
+                        .WithMany("NoteBooks")
+                        .HasForeignKey("StationeryId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.OfficeFolder", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
+                        .WithMany("OfficeFolders")
+                        .HasForeignKey("StationeryId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.OfficeSupplies", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
+                        .WithMany("OfficeSupplies")
+                        .HasForeignKey("StationeryId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.SchoolFolder", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
+                        .WithMany("Categories")
+                        .HasForeignKey("StationeryId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.SchoolSupplies", b =>
+                {
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
+                        .WithMany("SchoolSupplies")
+                        .HasForeignKey("StationeryId");
+                });
+
+            modelBuilder.Entity("Core.Models.DomainModels.Stationery", b =>
                 {
                     b.HasOne("Core.Models.DomainModels.Catalog", "Catalog")
                         .WithMany("Stationeries")
                         .HasForeignKey("CatalogId");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategory.Encyclopedia", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Sticker", b =>
                 {
-                    b.HasOne("Core.Models.DomainModels.Category.Book", "Book")
-                        .WithMany("Encyclopedias")
-                        .HasForeignKey("BookId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Casket", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Gift", "Gift")
-                        .WithMany("Caskets")
-                        .HasForeignKey("GiftId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.CopyBook", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
-                        .WithMany("CopyBooks")
-                        .HasForeignKey("StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.DecorativeBox", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Gift", "Gift")
-                        .WithMany("DecorativeProducts")
-                        .HasForeignKey("GiftId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Dictionary", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
-                        .WithMany("Dictionaries")
-                        .HasForeignKey("StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.NoteBook", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
-                        .WithMany("NoteBooks")
-                        .HasForeignKey("StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.OfficeFolder", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
-                        .WithMany("OfficeFolders")
-                        .HasForeignKey("StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.OfficeSupplies", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
-                        .WithMany("OfficeSupplies")
-                        .HasForeignKey("StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.SchoolFolder", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
-                        .WithMany("Categories")
-                        .HasForeignKey("StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.SchoolSupplies", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
-                        .WithMany("SchoolSupplies")
-                        .HasForeignKey("StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Sticker", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
                         .WithMany("Stickers")
                         .HasForeignKey("StationeryId");
                 });
 
-            modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.WritingSupplies", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.WritingSupplies", b =>
                 {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
                         .WithMany("WritingSupplies")
                         .HasForeignKey("StationeryId");
                 });
 
             modelBuilder.Entity("Core.Models.DomainModels.ZNO", b =>
                 {
-                    b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
+                    b.HasOne("Core.Models.DomainModels.Stationery", "Stationery")
                         .WithMany("ZNOs")
                         .HasForeignKey("StationeryId");
                 });
