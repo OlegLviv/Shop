@@ -18,6 +18,9 @@
 	justify-content: space-between;
 	&__menu-item{
 	  padding: 0.5rem;
+	  &__sub{
+		display: flex;
+	  }
 	}
 	&__menu-item a{
 	  color: #bbb4b5 !important;

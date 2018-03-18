@@ -7,8 +7,8 @@ class Header extends React.Component {
 	render() {
 		return (
 			<div className="header_container">
-				<MainInfo/>
-				<NavMenu />
+				<MainInfo />
+				<NavMenu/>
 			</div>
 		);
 	}

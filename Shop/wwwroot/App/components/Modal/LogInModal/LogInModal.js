@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import {customStyles} from "../modalStyles";
 import './LogInModal.scss';
-import {logInToken} from "../../../services/tokenService";
+import {logInToken} from "../../../services/authService";
 
 class LogInModal extends React.Component {
 	constructor(props) {
@@ -14,7 +14,7 @@ class LogInModal extends React.Component {
 	}
 
 	closeModal = () => {
-		// this.props.closeModal();
+		this.props.closeModal();
 	};
 
 	onChangeUserName = (event) => {

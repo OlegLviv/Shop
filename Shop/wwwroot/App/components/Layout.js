@@ -4,8 +4,9 @@ import Home from './Home/Home';
 import Contacts from './Contacts/Contacts';
 import DeliveryAndPay from './DeliveryAndPay/DeliveryAndPay';
 import AboutCompany from './AboutCompany/AboutCompany';
+import {AdminPanel} from "./AdminPanel/AdminPanel";
+import LogIn from './LogIn/LogIn';
 import './Layout.scss';
-
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 export const Layout = () => {
@@ -17,6 +18,8 @@ export const Layout = () => {
 				<Route path='/contacts' component={Contacts}/>
 				<Route path='/deliveryAndPay' component={DeliveryAndPay}/>
 				<Route path='/aboutCompany' component={AboutCompany}/>
+				<Route path='/adminPanel' component={AdminPanel}/>
+				<Route path='/logIn' component={LogIn}/>
 			</div>
 		</Router>
 	);
