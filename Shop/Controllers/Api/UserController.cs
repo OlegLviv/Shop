@@ -72,6 +72,7 @@ namespace Shop.Controllers.Api
             return Ok(new { Role = roleName });
         }
 
+        [AllowAnonymous]
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -107,7 +108,9 @@ namespace Shop.Controllers.Api
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(nameof(UserController.ConfirmEmail), "User", user.Id, token, Request.Scheme);
             var sendRes = await _sender.SendEmailAsync(_configuration["EmailCredential:Email"], model.Email, "Your register confirm link", callbackUrl);
-            return Ok(new { IsSuccess = true, IsMailSent = sendRes });
+            if (!sendRes)
+                return BadRequest("Ups, we can't to send message to your email");
+            return Ok(new { IsSuccess = true });
         }
         #endregion
     }

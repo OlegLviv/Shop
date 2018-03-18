@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace DAL
 {
@@ -15,9 +16,7 @@ namespace DAL
         }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
-        //public DbSet<AddUserInfo> AddUserInfo { get; set; }
-        //public DbSet<Order> Order { get; set; }
-        //public DbSet<Bet> Bet { get; set; }
+        public DbSet<Catalog> Catalog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -14,7 +14,7 @@ class Home extends Component {
 									<button type="button"
 											class="home-container__list-group-item__dropright__dropdown-toggle"
 											data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										Папір та вироби з паперу
+										Рюкзаки. Сумочки
 									</button>
 									<div class="dropdown-menu">
 										<a class="dropdown-item" href="#">Action</a>
