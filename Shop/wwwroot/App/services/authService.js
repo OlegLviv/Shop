@@ -28,7 +28,7 @@ export const logInToken = (userName, password) => {
 									window.location.replace('/adminPanel');
 								}
 									break;
-								case 'User': {
+								case 'Client': {
 									window.location.replace('/userPanel');
 								}
 									break;

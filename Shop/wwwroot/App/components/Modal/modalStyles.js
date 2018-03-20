@@ -7,6 +7,7 @@ export const customStyles = {
 		bottom: 'auto',
 		marginRight: '-50%',
 		transform: 'translate(-50%, -50%)',
-		'box-shadow': '1px 1px 10px 10px rgba(0,0,0,0.05)'
+		'box-shadow': '1px 1px 10px 10px rgba(0,0,0,0.05)',
+		'min-width': '300px'
 	}
 };

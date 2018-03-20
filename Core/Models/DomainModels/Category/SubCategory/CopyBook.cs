@@ -7,6 +7,8 @@ namespace Core.Models.DomainModels.Category.SubCategoty
 {
     public class CopyBook: BaseEntity
     {
+        public string SubCategoryName { get; } = "CopyBook";
+
         public Stationery Stationery { get; set; }
         public string StationeryId { get; set; }
     }

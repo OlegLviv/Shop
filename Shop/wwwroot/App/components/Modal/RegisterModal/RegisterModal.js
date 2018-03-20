@@ -86,7 +86,8 @@ class RegisterModal extends React.Component {
 			<div>
 				{!isShowSuccessModal ? <Modal isOpen={this.props.isModalOpen}
 											  onRequestClose={this.closeModal}
-											  style={customStyles}>
+											  style={customStyles}
+											  shouldCloseOnEsc={true}>
 					<div className="text-center">
 						<h3>Реєстрація</h3>
 					</div>

@@ -4,10 +4,11 @@ import Home from './Home/Home';
 import Contacts from './Contacts/Contacts';
 import DeliveryAndPay from './DeliveryAndPay/DeliveryAndPay';
 import AboutCompany from './AboutCompany/AboutCompany';
-import {AdminPanel} from "./AdminPanel/AdminPanel";
+import {AdminPanel} from "./Panels/AdminPanel/AdminPanel";
 import LogIn from './LogIn/LogIn';
 import './Layout.scss';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {UserPanel} from "./Panels/UserPanel/UserPanel";
 
 export const Layout = () => {
 	return (
@@ -19,6 +20,7 @@ export const Layout = () => {
 				<Route path='/deliveryAndPay' component={DeliveryAndPay}/>
 				<Route path='/aboutCompany' component={AboutCompany}/>
 				<Route path='/adminPanel' component={AdminPanel}/>
+				<Route path='/userPanel' component={UserPanel}/>
 				<Route path='/logIn' component={LogIn}/>
 			</div>
 		</Router>

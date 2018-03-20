@@ -7,6 +7,8 @@ namespace Core.Models.DomainModels.Category.SubCategoty
 {
     public class Dictionary : BaseEntity
     {
+        public string SubCategoryName { get; } = "Dictionary";
+
         public Stationery Stationery { get; set; }
         public string StationeryId { get; set; }
     }

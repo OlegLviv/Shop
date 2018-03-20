@@ -7,15 +7,12 @@ namespace Core.Models.DomainModels.Category
 {
     public class Gift : BaseEntity
     {
+        public string CategoryName { get; } = "Gift";
+
         public Catalog Catalog { get; set; }
         public string CatalogId { get; set; }
 
-        public ICollection<Casket> Caskets { get; set; }
-        public ICollection<DecorativeBox> DecorativeProducts { get; set; }
-        public Gift()
-        {
-            Caskets = new List<Casket>();
-            DecorativeProducts = new List<DecorativeBox>();
-        }
+        public Casket Caskets { get; set; }
+        public DecorativeBox DecorativeProducts { get; set; }
     }
 }

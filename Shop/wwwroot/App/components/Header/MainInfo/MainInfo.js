@@ -26,7 +26,7 @@ class MainInfo extends React.Component {
 				}
 			})
 			.catch(err => {
-				//	add in future
+				// TODO	add in future
 			});
 	}
 
@@ -54,28 +54,20 @@ class MainInfo extends React.Component {
 
 	render() {
 		const {userName} = this.state;
-		console.log('name', userName);
 		return (
-			<div className="info_container">
-				<div className="info_container__left">
-					<div className="info_container__left__menu-item">
-						<Link to="/aboutCompany">Про компанію</Link>
-					</div>
-					<div className="info_container__left__menu-item">
-						<Link to="/deliveryAndPay">Доставка та оплата</Link>
-					</div>
-					<div className="info_container__left__menu-item">
-						<Link to="/contacts">Контакти</Link>
-					</div>
+			<div className="info_container row">
+				<div className="info_container__left col-xl-4 col-lg-12">
+					<Link to="/aboutCompany">Про компанію</Link>
+					<Link to="/deliveryAndPay">Доставка та оплата</Link>
+					<Link to="/contacts">Контакти</Link>
 				</div>
-				<div className="info_container__right">
+				<div className="col-xl-3 col-lg-1"></div>
+				<div className="info_container__right col-xl-5 col-lg-12">
 					<div className="info_container__right__menu-item">
-						<div>
+						<div className="info_container__right__menu-item__sub-menu">
 							+380680538860
 						</div>
-					</div>
-					<div className="info_container__right__menu-item">
-						<div>
+						<div className="info_container__right__menu-item__sub-menu">
 							Зателефонуй мені
 						</div>
 					</div>

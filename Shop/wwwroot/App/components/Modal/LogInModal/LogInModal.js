@@ -25,6 +25,13 @@ class LogInModal extends React.Component {
 		this.setState({password: event.target.value});
 	};
 
+	onKeyDownPassword = (event) => {
+		const {key} = event;
+		if (key === 'Enter') {
+			this.onLogin();
+		}
+	};
+
 	onLogin = () => {
 		logInToken(this.state.userName, this.state.password);
 	};
@@ -33,6 +40,7 @@ class LogInModal extends React.Component {
 		return (
 			<Modal isOpen={this.props.isModalOpen}
 				   onRequestClose={this.closeModal}
+				   shouldCloseOnEsc={true}
 				   style={customStyles}>
 				<div className="form-container">
 					<div className="form-group">
@@ -53,7 +61,8 @@ class LogInModal extends React.Component {
 							   className="form-control"
 							   id="exampleInputPassword1"
 							   placeholder="Введіть пароль..."
-							   onChange={this.onChangePassword}/>
+							   onChange={this.onChangePassword}
+							   onKeyDown={this.onKeyDownPassword}/>
 					</div>
 					<div className="form-check">
 						<input type="checkbox" className="form-check-input" id="exampleCheck1"/>

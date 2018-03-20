@@ -12,9 +12,10 @@ using System;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180320000740_NewFixDomain")]
+    partial class NewFixDomain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,8 +27,6 @@ namespace DAL.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36);
-
-                    b.Property<string>("CatalogName");
 
                     b.HasKey("Id");
 
@@ -129,9 +128,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GiftId")
-                        .IsUnique()
-                        .HasFilter("[GiftId] IS NOT NULL");
+                    b.HasIndex("GiftId");
 
                     b.ToTable("Casket");
                 });
@@ -163,9 +160,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GiftId")
-                        .IsUnique()
-                        .HasFilter("[GiftId] IS NOT NULL");
+                    b.HasIndex("GiftId");
 
                     b.ToTable("DecorativeBox");
                 });
@@ -304,27 +299,6 @@ namespace DAL.Migrations
                         .HasFilter("[StationeryId] IS NOT NULL");
 
                     b.ToTable("WritingSupplies");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Products.GiftProduct", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36);
-
-                    b.Property<string>("CasketId");
-
-                    b.Property<string>("Maker");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Price");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CasketId");
-
-                    b.ToTable("GiftProduct");
                 });
 
             modelBuilder.Entity("Core.Models.DomainModels.ZNO", b =>
@@ -574,8 +548,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Casket", b =>
                 {
                     b.HasOne("Core.Models.DomainModels.Category.Gift", "Gift")
-                        .WithOne("Caskets")
-                        .HasForeignKey("Core.Models.DomainModels.Category.SubCategoty.Casket", "GiftId");
+                        .WithMany("Caskets")
+                        .HasForeignKey("GiftId");
                 });
 
             modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.CopyBook", b =>
@@ -588,8 +562,8 @@ namespace DAL.Migrations
             modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.DecorativeBox", b =>
                 {
                     b.HasOne("Core.Models.DomainModels.Category.Gift", "Gift")
-                        .WithOne("DecorativeProducts")
-                        .HasForeignKey("Core.Models.DomainModels.Category.SubCategoty.DecorativeBox", "GiftId");
+                        .WithMany("DecorativeProducts")
+                        .HasForeignKey("GiftId");
                 });
 
             modelBuilder.Entity("Core.Models.DomainModels.Category.SubCategoty.Dictionary", b =>
@@ -646,13 +620,6 @@ namespace DAL.Migrations
                     b.HasOne("Core.Models.DomainModels.Category.Stationery", "Stationery")
                         .WithOne("WritingSupplie")
                         .HasForeignKey("Core.Models.DomainModels.Category.SubCategoty.WritingSupplies", "StationeryId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.Products.GiftProduct", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Category.SubCategoty.Casket", "Casket")
-                        .WithMany("GiftProducts")
-                        .HasForeignKey("CasketId");
                 });
 
             modelBuilder.Entity("Core.Models.DomainModels.ZNO", b =>

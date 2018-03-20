@@ -7,6 +7,8 @@ namespace Core.Models.DomainModels
 {
     public class ZNO : BaseEntity
     {
+        public string SubCategoryName { get; } = "ZNO";
+
         public Stationery Stationery { get; set; }
         public string StationeryId { get; set; }
     }
