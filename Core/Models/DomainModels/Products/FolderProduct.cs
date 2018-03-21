@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Core.Models.DomainModels.Products
 {
-    public class BookProduct : BaseEntity, IProduct
+    public class FolderProduct :BaseEntity, IProduct
     {
         public string OwnerId { get; set; }
 

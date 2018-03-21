@@ -17,7 +17,7 @@ namespace Core.Models.DomainModels.Category
         public CopyBook CopyBook { get; set; }
         public NoteBook NoteBook { get; set; }
         public Sticker Sticker { get; set; }
-        public Dictionary Dictionarie { get; set; }
+        public Dictionary Dictionary { get; set; }
         public WritingSupplies WritingSupplie { get; set; }
         public SchoolSupplies SchoolSupplie { get; set; }
         public OfficeSupplies OfficeSupplie { get; set; }
