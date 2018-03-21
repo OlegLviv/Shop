@@ -30,8 +30,9 @@ namespace Shop
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var configuration = services.GetRequiredService<IConfiguration>();
 
-                    var dbInitializerLogger = services.GetRequiredService<ILogger<DbInitializer>>();
-                    DbInitializer.Initialize(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
+                    var dbInitializerLogger = services.GetRequiredService<ILogger<UsersDbInitializer>>();
+                    UsersDbInitializer.Initialize(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
+                    ProductsDbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {

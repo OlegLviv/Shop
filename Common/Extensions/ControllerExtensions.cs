@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Common.Extensions
 {
@@ -20,6 +21,13 @@ namespace Common.Extensions
             if (user == null)
                 return null;
             return user;
+        }
+        public static JsonResult JsonResult(this Controller controller, object data)
+        {
+            return controller.Json(data, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
         }
     }
 }

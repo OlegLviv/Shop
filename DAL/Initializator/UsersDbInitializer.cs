@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace DAL.Initializator
 {
-    public class DbInitializer
+    public class UsersDbInitializer
     {
         public static async Task Initialize(AppDbContext context, UserManager<User> userManager,
-    RoleManager<IdentityRole> roleManager, ILogger<DbInitializer> logger, IConfiguration configuration)
+    RoleManager<IdentityRole> roleManager, ILogger<UsersDbInitializer> logger, IConfiguration configuration)
         {
             context.Database.EnsureCreated();
 
@@ -25,7 +25,7 @@ namespace DAL.Initializator
 
             await CreateDefaultRolesAndAdmin(userManager, roleManager, logger, configuration);
         }
-        private static async Task CreateDefaultRolesAndAdmin(UserManager<User> um, RoleManager<IdentityRole> rm, ILogger<DbInitializer> logger, IConfiguration configuration)
+        private static async Task CreateDefaultRolesAndAdmin(UserManager<User> um, RoleManager<IdentityRole> rm, ILogger<UsersDbInitializer> logger, IConfiguration configuration)
         {
             var administratorRole = configuration["Roles:Admin"];
             var anonimRole = configuration["Roles:Anonim"];

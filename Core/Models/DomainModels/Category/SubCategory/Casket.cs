@@ -7,6 +7,8 @@ namespace Core.Models.DomainModels.Category.SubCategoty
 {
     public class Casket : BaseEntity
     {
+        public string SubCategoryName { get; } = "Casket";
+
         public Gift Gift { get; set; }
         public string GiftId { get; set; }
 

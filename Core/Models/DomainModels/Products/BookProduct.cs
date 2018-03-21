@@ -8,6 +8,6 @@ namespace Core.Models.DomainModels.Products
     {
         public string Name { get; set; }
         public string Maker { get; set; }
-        public string Price { get; set; }
+        public double Price { get; set; }
     }
 }

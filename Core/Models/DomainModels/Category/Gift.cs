@@ -13,6 +13,6 @@ namespace Core.Models.DomainModels.Category
         public string CatalogId { get; set; }
 
         public Casket Caskets { get; set; }
-        public DecorativeBox DecorativeProducts { get; set; }
+        public DecorativeBox DecorativeBoxs { get; set; }
     }
 }

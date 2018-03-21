@@ -8,6 +8,8 @@ namespace Core.Models.DomainModels.Category.SubCategoty
 {
     public class DecorativeBox : BaseEntity
     {
+        public string SubCategoryName { get; } = "DecorativeBox";
+
         public Gift Gift { get; set; }
         public string GiftId { get; set; }
 
