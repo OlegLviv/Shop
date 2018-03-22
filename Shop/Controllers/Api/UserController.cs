@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Common.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Core.Models.DomainModels;
-using RUser = Core.Models.ViewModels.ReturnViewModels;
 using Core.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using BLL.Services;
@@ -43,12 +42,12 @@ namespace Shop.Controllers.Api
             var user = await this.GetUserByIdentityAsync(_userManager);
             if (user == null)
                 return Unauthorized();
-            var rUser = new RUser.User
-            {
-                Id = user.Id,
-                UserName = user.UserName
-            };
-            return Ok(new { User = rUser });
+            //var rUser = new RUser.User
+            //{
+            //    Id = user.Id,
+            //    UserName = user.UserName
+            //};
+            return Ok(user);
         }
 
         [HttpGet("role")]

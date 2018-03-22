@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Dynamic;
+using Core.Models.DomainModels.ProductModels;
 
 namespace DAL
 {
@@ -17,7 +18,7 @@ namespace DAL
         }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
-        public DbSet<Catalog> Catalog { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

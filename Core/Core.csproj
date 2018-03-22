@@ -8,8 +8,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\DomainModels\Interfaces\" />
-  </ItemGroup>
-
 </Project>
