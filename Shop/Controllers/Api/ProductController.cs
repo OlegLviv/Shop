@@ -14,6 +14,7 @@ using Core.Interfaces;
 using Core.Models.DomainModels.ProductModels;
 using Core.Models.ViewModels.RequestViewModels;
 using BLL.Filters.ActionFilters;
+using BLL.Managers;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,14 +27,15 @@ namespace Shop.Controllers.Api
     {
         AppDbContext _context;
         private readonly IRepositoryAsync<Product> _catalogRepository;
+        private readonly ProductManager _productManager;
 
-        public ProductController(AppDbContext context, IRepositoryAsync<Product> catalogRepository)
+        public ProductController(AppDbContext context, IRepositoryAsync<Product> catalogRepository, ProductManager productManager)
         {
             _context = context;
             _catalogRepository = catalogRepository;
+            _productManager = productManager;
         }
         [HttpGet("GetProduct/{category}/{subCategory}/q=name={name};maker={maker};price={price}")]
-        //[HttpGet("GetProduct")]
         public IActionResult GetProduct(string category, string subCategory, string name = null, string maker = null, double? price = 0)
         {
             var model = new ProductViewModel
@@ -48,23 +50,10 @@ namespace Shop.Controllers.Api
                 Price = price
             };
             model.Description = description;
-            var result = _catalogRepository
+            var products = _catalogRepository
                 .Table
                 .Include(x => x.Description);
-            var returnValue = Select(result, model);
-            return this.JsonResult(returnValue.ToArray());
-        }
-        private IEnumerable<Product> Select(IQueryable<Product> products, ProductViewModel product)
-        {
-            foreach (var productF in products)
-            {
-                var catecoryEq = productF.Category == product.Category && productF.SubCategory == product.SubCategory;
-                var descEq = (productF.Description.Name == product.Category || productF.Description.Name == null && product.Description.Name == "null" || product.Description.Name == "null")
-                            && (productF.Description.Maker == product.Description.Maker || productF.Description.Maker == null && product.Description.Maker == "null" || product.Description.Maker == "null")
-                            && (productF.Description.Price == product.Description.Price || product.Description.Price == 0 || product.Description.Price == null);
-                if (catecoryEq && descEq)
-                    yield return productF;
-            }
+            return this.JsonResult(_productManager.Select(products, model));
         }
     }
 }
