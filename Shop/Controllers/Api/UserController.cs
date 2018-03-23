@@ -42,12 +42,7 @@ namespace Shop.Controllers.Api
             var user = await this.GetUserByIdentityAsync(_userManager);
             if (user == null)
                 return Unauthorized();
-            //var rUser = new RUser.User
-            //{
-            //    Id = user.Id,
-            //    UserName = user.UserName
-            //};
-            return Ok(user);
+            return Ok(new { user.Id, user.UserName });
         }
 
         [HttpGet("role")]

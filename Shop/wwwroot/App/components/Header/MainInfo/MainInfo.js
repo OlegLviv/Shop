@@ -21,8 +21,8 @@ class MainInfo extends React.Component {
 		apiWithotRedirect()
 			.get(GET_USER_INFO)
 			.then(resp => {
-				if (resp.data.user) {
-					this.setState({userName: resp.data.user.userName});
+				if (resp.data.userName) {
+					this.setState({userName: resp.data.userName});
 				}
 			})
 			.catch(err => {
