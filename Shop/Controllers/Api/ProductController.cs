@@ -26,34 +26,51 @@ namespace Shop.Controllers.Api
     public class ProductController : Controller
     {
         AppDbContext _context;
-        private readonly IRepositoryAsync<Product> _catalogRepository;
+        private readonly IRepositoryAsync<Product> _productsRepository;
         private readonly ProductManager _productManager;
+        const string GetProductRoute = @"GetProduct/{category}/{subCategory}/q=
+        makers={makers};
+        colors={colors};
+        priceF={priceF};
+        priceT={priceT};
+        folderTypes={folderTypes};
+        copyBookTypes={copyBookTypes};
+        penTypes={penTypes};
+        pageSizes={pageSizes}";
 
-        public ProductController(AppDbContext context, IRepositoryAsync<Product> catalogRepository, ProductManager productManager)
+        public ProductController(AppDbContext context, IRepositoryAsync<Product> productsRepository, ProductManager productManager)
         {
             _context = context;
-            _catalogRepository = catalogRepository;
+            _productsRepository = productsRepository;
             _productManager = productManager;
         }
-        [HttpGet("GetProduct/{category}/{subCategory}/q=name={name};makers={makers};colors={colors}")]
-        public IActionResult GetProduct(string category, string subCategory, string name = null, string[] makers = null, string[] colors = null)
+        [HttpGet(GetProductRoute)]
+        public IActionResult GetProduct(string category,
+            string subCategory,
+            string[] makers,
+            string[] colors,
+            string[] folderTypes,
+            string[] copyBookTypes,
+            string[] penTypes,
+            int? pageSize = null,
+            double? priceF = 0,
+            double? priceT = 0)
         {
-            var model = new ProductViewModel
-            {
-                Category = category,
-                SubCategory = subCategory,
-            };
-            var noraml = this.ArrayParamsToNormalArray(makers);
-            var description = new Description
-            {
-                //Maker = maker,
-                Name = name,
-            };
-            model.Description = description;
-            var products = _catalogRepository
+            var possibleProducts = _productManager.CreatePossibleProductsByParams(category,
+                subCategory,
+                this.ArrayParamsToNormalArray(makers),
+                this.ArrayParamsToNormalArray(colors),
+                priceF,
+                priceT,
+                folderTypes,
+                copyBookTypes,
+                penTypes,
+                pageSize);
+            var products = _productsRepository
                 .Table
                 .Include(x => x.Description);
-            return this.JsonResult(_productManager.Select(products, model));
+            var result = _productManager.Select(products, possibleProducts);
+            return this.JsonResult(result);
         }
     }
 }

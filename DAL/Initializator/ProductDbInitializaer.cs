@@ -48,28 +48,32 @@ namespace DAL.Initializator
                 Maker = "Maker1",
                 Price = 300,
                 Product = product1,
-                ProductId = product1.Id
+                ProductId = product1.Id,
+                Color = "black"
             };
             var description2 = new Description
             {
                 Maker = "Maker2",
                 Price = 340,
                 Product = product2,
-                ProductId = product2.Id
+                ProductId = product2.Id,
+                Color = "red"
             };
             var description3 = new Description
             {
                 Maker = "Maker3",
                 Price = 234,
                 Product = product3,
-                ProductId = product3.Id
+                ProductId = product3.Id,
+                Color = "black"
             };
             var description4 = new Description
             {
                 Maker = "Maker4",
                 Price = 4134,
                 Product = product4,
-                ProductId = product4.Id
+                ProductId = product4.Id,
+                Color = "green"
             };
             product1.Description = description1;
             product2.Description = description2;
