@@ -7,7 +7,6 @@ export const NavMenu = () => {
 	return (
 		<div className="menu-container">
 			<nav className="navbar navbar-expand-lg navbar-light menu-container__navbar">
-				{/*<a className="navbar-brand" href="#">Navbar</a>*/}
 				<Link to="/" className="navbar-brand">Navbar</Link>
 				<button className="navbar-toggler" type="button" data-toggle="collapse"
 						data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -24,11 +23,11 @@ export const NavMenu = () => {
 							<Icon name="search"/>
 						</button>
 					</div>
-					<ul class="navbar-nav mr-auto menu-container__navbar__card">
-						<li class="nav-item active">
+					<ul className="navbar-nav mr-auto menu-container__navbar__card">
+						<li className="nav-item active">
 							<Icon size="2x" name="shopping-cart ml-xl-5 ml-lg-3"/>
 						</li>
-						<li class="nav-item active">
+						<li className="nav-item active">
 							<Icon size="2x" name="heart ml-xl-5 ml-lg-3"/>
 						</li>
 					</ul>
