@@ -11,8 +11,15 @@
   }
   &__navbar-right {
 	justify-content: space-between;
-	&__search{
+	&__search {
 	  min-width: 20rem;
 	}
   }
+}
+.form-inline{
+  width: auto;
+  justify-content: center;
+}
+@media screen and (max-width: 575px) {
+
 }

@@ -19,7 +19,7 @@ export const NavMenu = () => {
 						<input className="form-control mr-sm-2 menu-container__navbar-right__search" type="search"
 							   placeholder="Search"
 							   aria-label="Search"/>
-						<button className="btn btn-primary my-sm-0">
+						<button className="btn btn-primary my-sm-0 form-control mr-sm-2 menu-container__navbar-right__search-but">
 							<Icon name="search"/>
 						</button>
 					</div>
