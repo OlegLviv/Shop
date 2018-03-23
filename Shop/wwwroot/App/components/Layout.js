@@ -22,6 +22,7 @@ export const Layout = () => {
 				<Route path='/adminPanel' component={AdminPanel}/>
 				<Route path='/userPanel' component={UserPanel}/>
 				<Route path='/logIn' component={LogIn}/>
+				<Route path='/products' component={Home}/>
 			</div>
 		</Router>
 	);

@@ -35,19 +35,19 @@ namespace Shop.Controllers.Api
             _catalogRepository = catalogRepository;
             _productManager = productManager;
         }
-        [HttpGet("GetProduct/{category}/{subCategory}/q=name={name};maker={maker};price={price}")]
-        public IActionResult GetProduct(string category, string subCategory, string name = null, string maker = null, double? price = 0)
+        [HttpGet("GetProduct/{category}/{subCategory}/q=name={name};makers={makers};colors={colors}")]
+        public IActionResult GetProduct(string category, string subCategory, string name = null, string[] makers = null, string[] colors = null)
         {
             var model = new ProductViewModel
             {
                 Category = category,
                 SubCategory = subCategory,
             };
+            var noraml = this.ArrayParamsToNormalArray(makers);
             var description = new Description
             {
-                Maker = maker,
+                //Maker = maker,
                 Name = name,
-                Price = price
             };
             model.Description = description;
             var products = _catalogRepository

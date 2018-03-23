@@ -12,6 +12,7 @@ namespace Core.Models.DomainModels.ProductModels
         public string Name { get; set; }
         public string Maker { get; set; }
         public double? Price { get; set; }
+        public string Color { get; set; }
 
         public override bool Equals(object obj)
         {

@@ -41,7 +41,7 @@ namespace Shop.Controllers.Api
         {
             var user = await this.GetUserByIdentityAsync(_userManager);
             if (user == null)
-                return Unauthorized();
+                return BadRequest("User don't exist");
             return Ok(new { user.Id, user.UserName });
         }
 
@@ -50,7 +50,7 @@ namespace Shop.Controllers.Api
         {
             var user = await this.GetUserByIdentityAsync(_userManager);
             if (user == null)
-                return Unauthorized();
+                return BadRequest("User don't exist");
             var roles = _roleManager.Roles.ToList();
             string roleName = null;
             foreach (var role in roles)
@@ -62,7 +62,7 @@ namespace Shop.Controllers.Api
                 }
             }
             if (roleName == null)
-                return Unauthorized();
+                return BadRequest("User don't exist");
             return Ok(new { Role = roleName });
         }
 

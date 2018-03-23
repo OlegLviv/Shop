@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Common.Extensions
 {
@@ -28,6 +29,16 @@ namespace Common.Extensions
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
+        }
+        public static string[] ArrayParamsToNormalArray(this ControllerBase controller, string[] @params)
+        {
+            if (@params == null)
+                throw new ArgumentNullException("params");
+            if (@params.Any())
+            {
+                return @params[0].Split(',');
+            }
+            return null;
         }
     }
 }

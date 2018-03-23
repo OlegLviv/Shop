@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import NavigationProducts from '../NavigationProducts/NavigationProducts';
 import ProductPlace from '../ProductPlace/ProductPlace';
+import {Route, Switch} from 'react-router-dom';
 import './Home.scss';
 
 class Home extends Component {
@@ -12,7 +13,10 @@ class Home extends Component {
 						<NavigationProducts/>
 					</div>
 					<div className="col-8">
-						<ProductPlace/>
+						<Switch>
+							<Route path="/products/:category/:subCategory" component={ProductPlace}/>
+						</Switch>
+						{/*<ProductPlace/>*/}
 					</div>
 				</div>
 			</div>

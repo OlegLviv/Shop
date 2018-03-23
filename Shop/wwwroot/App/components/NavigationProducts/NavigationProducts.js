@@ -1,5 +1,6 @@
 import React from 'react';
 import './NavigationProducts.scss';
+import {Link} from 'react-router-dom';
 import {guid} from "../../utils/utils";
 
 const stationaries = [
@@ -51,7 +52,10 @@ class NavigationProducts extends React.Component {
 						</button>
 						<div className="dropdown-menu">
 							{
-								stationaries.map(item => <a key={guid()} className="dropdown-item" href="#">{item}</a>)
+								stationaries.map(item => <Link
+									key={guid()}
+									className="dropdown-item"
+									to={`/products/stationary/${item}`}>{item}</Link>)
 							}
 						</div>
 					</div>
