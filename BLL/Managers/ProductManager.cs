@@ -36,11 +36,11 @@ namespace BLL.Managers
                     var descEq = 
                                 (productF.Description.Maker == product.Description.Maker || productF.Description.Maker == null && product.Description.Maker == "null" || product.Description.Maker == "null")
                                 && (productF.Description.Color == product.Description.Color || productF.Description.Color == null && product.Description.Color == "null" || product.Description.Color == "null")
-                                && (productF.Description.CopyBookType == product.Description.CopyBookType || productF.Description.CopyBookType == null && product.Description.CopyBookType == null || product.Description.CopyBookType == null)
-                                && (productF.Description.FolderType == product.Description.FolderType || productF.Description.FolderType == null && product.Description.FolderType == null || product.Description.FolderType == null)
-                                && (productF.Description.PenType == product.Description.PenType || productF.Description.PenType == null && product.Description.PenType == null || product.Description.PenType == null)
-                                && (productF.Description.PageSize == product.Description.PageSize || productF.Description.PageSize == null && product.Description.PageSize == null || product.Description.PageSize == null);
-                    //&& ((productF.Description.Price >= product.PriceFrom && productF.Description.Price <= product.PriceTo) || product.Description.Price == 0 || product.Description.Price == 0);
+                                && (productF.Description.CopyBookType == product.Description.CopyBookType || productF.Description.CopyBookType == null && product.Description.CopyBookType == "null" || product.Description.CopyBookType == null)
+                                && (productF.Description.FolderType == product.Description.FolderType || productF.Description.FolderType == null && product.Description.FolderType == "null" || product.Description.FolderType == null)
+                                && (productF.Description.PenType == product.Description.PenType || productF.Description.PenType == null && product.Description.PenType == "null" || product.Description.PenType == null)
+                                && (productF.Description.PageSize == product.Description.PageSize || productF.Description.PageSize == null && product.Description.PageSize == "null" || product.Description.PageSize == null)
+                                && ((productF.Description.Price >= product.PriceFrom && productF.Description.Price <= product.PriceTo) || product.Description.Price == 0 || product.Description.Price == 0);
                     if (catecoryEq && descEq)
                         yield return productF;
                 }
@@ -55,7 +55,7 @@ namespace BLL.Managers
             string[] folderTypes,
             string[] copyBookTypes,
             string[] penTypes,
-            int? pageSize = null)
+            string[] pageSizes = null)
         {
             var productModels = new List<ProductViewModel>(makers.Length * colors.Length);
             for (int i = 0; i < makers.Length; i++)
@@ -68,22 +68,25 @@ namespace BLL.Managers
                         {
                             for (int z = 0; z < penTypes.Length; z++)
                             {
-                                productModels.Add(new ProductViewModel
+                                for (int x = 0; x < pageSizes.Length; x++)
                                 {
-                                    Category = category,
-                                    SubCategory = subCategory,
-                                    PriceFrom = priceF,
-                                    PriceTo = priceT,
-                                    Description = new Description
+                                    productModels.Add(new ProductViewModel
                                     {
-                                        Maker = makers[i],
-                                        Color = colors[j],
-                                        FolderType = folderTypes[k],
-                                        CopyBookType = copyBookTypes[l],
-                                        PenType = penTypes[z],
-                                        PageSize = pageSize
-                                    }
-                                });
+                                        Category = category,
+                                        SubCategory = subCategory,
+                                        PriceFrom = priceF,
+                                        PriceTo = priceT,
+                                        Description = new Description
+                                        {
+                                            Maker = makers[i],
+                                            Color = colors[j],
+                                            FolderType = folderTypes[k],
+                                            CopyBookType = copyBookTypes[l],
+                                            PenType = penTypes[z],
+                                            PageSize = pageSizes[x]
+                                        }
+                                    });
+                                }
                             }
                         }
                     }

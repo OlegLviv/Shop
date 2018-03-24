@@ -28,15 +28,7 @@ namespace Shop.Controllers.Api
         AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
         private readonly ProductManager _productManager;
-        const string GetProductRoute = @"GetProduct/{category}/{subCategory}/q=
-        makers={makers};
-        colors={colors};
-        priceF={priceF};
-        priceT={priceT};
-        folderTypes={folderTypes};
-        copyBookTypes={copyBookTypes};
-        penTypes={penTypes};
-        pageSizes={pageSizes}";
+        const string GetProductRoute = @"GetProduct/{category}/{subCategory}/q=makers={makers};colors={colors};priceF={priceF};priceT={priceT};folderTypes={folderTypes};copyBookTypes={copyBookTypes};penTypes={penTypes};pageSizes={pageSizes}";
 
         public ProductController(AppDbContext context, IRepositoryAsync<Product> productsRepository, ProductManager productManager)
         {
@@ -52,7 +44,7 @@ namespace Shop.Controllers.Api
             string[] folderTypes,
             string[] copyBookTypes,
             string[] penTypes,
-            int? pageSize = null,
+            string[] pageSizes,
             double? priceF = 0,
             double? priceT = 0)
         {
@@ -62,10 +54,10 @@ namespace Shop.Controllers.Api
                 this.ArrayParamsToNormalArray(colors),
                 priceF,
                 priceT,
-                folderTypes,
-                copyBookTypes,
-                penTypes,
-                pageSize);
+                this.ArrayParamsToNormalArray(folderTypes),
+                this.ArrayParamsToNormalArray(copyBookTypes),
+                this.ArrayParamsToNormalArray(penTypes),
+                this.ArrayParamsToNormalArray(pageSizes));
             var products = _productsRepository
                 .Table
                 .Include(x => x.Description);

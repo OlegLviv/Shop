@@ -16,7 +16,7 @@ namespace Core.Models.DomainModels.ProductModels
         public string Color { get; set; }
         public string FolderType { get; set; } = null;
         public string CopyBookType { get; set; } = null;
-        public int? PageSize { get; set; }
+        public string PageSize { get; set; }
         public string PenType { get; set; } = null;
         public string Descriptions { get; set; }
 
