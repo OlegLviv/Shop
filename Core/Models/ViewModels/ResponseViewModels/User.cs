@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Models.ViewModels.ReturnViewModels
+namespace Core.Models.ViewModels.ResponseViewModels
 {
     public class User
     {

@@ -81,7 +81,6 @@ class RegisterModal extends React.Component {
 
 	render() {
 		const {isShowSuccessModal} = this.state;
-		console.log(this.props);
 		return (
 			<div>
 				{!isShowSuccessModal ? <Modal isOpen={this.props.isModalOpen}

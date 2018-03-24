@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Models.DomainModels.Products
+namespace Core.Models.DomainModels.ProductModels
 {
-    public interface IProduct
+    public interface IDescription
     {
         string Name { get; set; }
         string Maker { get; set; }
-        double Price { get; set; }
+        double? Price { get; set; }
+        string Color { get; set; }
     }
 }

@@ -84,6 +84,8 @@ namespace Shop
                     );
             });
 
+            services.AddTransient<ProductManager>();
+
             services.AddMvc();
 
             services.AddSwaggerGen(c =>

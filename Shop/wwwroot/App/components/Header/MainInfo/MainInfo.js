@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import RegisterModal from '../../Modal/RegisterModal/RegisterModal';
 import LogInModal from '../../Modal/LogInModal/LogInModal';
 import './MainInfo.scss';
-import {apiWithotRedirect} from "../../../services/api";
+import {apiWithoutRedirect} from "../../../services/api";
 import {GET_USER_INFO} from "../../../services/urls/userUrls";
 import {singOutToken} from "../../../services/authService";
 
@@ -18,11 +18,11 @@ class MainInfo extends React.Component {
 	}
 
 	componentDidMount() {
-		apiWithotRedirect()
+		apiWithoutRedirect()
 			.get(GET_USER_INFO)
 			.then(resp => {
-				if (resp.data.user) {
-					this.setState({userName: resp.data.user.userName});
+				if (resp.data.userName) {
+					this.setState({userName: resp.data.userName});
 				}
 			})
 			.catch(err => {

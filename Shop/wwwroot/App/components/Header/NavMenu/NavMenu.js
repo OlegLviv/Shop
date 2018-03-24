@@ -7,7 +7,6 @@ export const NavMenu = () => {
 	return (
 		<div className="menu-container">
 			<nav className="navbar navbar-expand-lg navbar-light menu-container__navbar">
-				{/*<a className="navbar-brand" href="#">Navbar</a>*/}
 				<Link to="/" className="navbar-brand">Navbar</Link>
 				<button className="navbar-toggler" type="button" data-toggle="collapse"
 						data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -20,15 +19,15 @@ export const NavMenu = () => {
 						<input className="form-control mr-sm-2 menu-container__navbar-right__search" type="search"
 							   placeholder="Search"
 							   aria-label="Search"/>
-						<button className="btn btn-primary my-sm-0">
+						<button className="btn btn-primary my-sm-0 form-control mr-sm-2 menu-container__navbar-right__search-but">
 							<Icon name="search"/>
 						</button>
 					</div>
-					<ul class="navbar-nav mr-auto menu-container__navbar__card">
-						<li class="nav-item active">
+					<ul className="navbar-nav mr-auto menu-container__navbar__card">
+						<li className="nav-item active">
 							<Icon size="2x" name="shopping-cart ml-xl-5 ml-lg-3"/>
 						</li>
-						<li class="nav-item active">
+						<li className="nav-item active">
 							<Icon size="2x" name="heart ml-xl-5 ml-lg-3"/>
 						</li>
 					</ul>

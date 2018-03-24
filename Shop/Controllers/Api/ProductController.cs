@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
-using Core.Models.DomainModels.Products;
 using DAL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +11,9 @@ using Newtonsoft.Json;
 using Common.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Core.Interfaces;
+using Core.Models.DomainModels.ProductModels;
+using Core.Models.ViewModels.RequestViewModels;
+using BLL.Filters.ActionFilters;
 using BLL.Managers;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,65 +22,63 @@ namespace Shop.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/Product")]
+    [ModelStateFilter]
     public class ProductController : Controller
     {
         AppDbContext _context;
-        private readonly IRepositoryAsync<Catalog> _catalogRepository;
-        private readonly CatalogManager _catalogManager;
+        private readonly IRepositoryAsync<Product> _productsRepository;
+        private readonly ProductManager _productManager;
+        const string GetProductRoute = @"GetProduct/{category}/{subCategory}/q=makers={makers};colors={colors};priceF={priceF};priceT={priceT};folderTypes={folderTypes};copyBookTypes={copyBookTypes};penTypes={penTypes};pageSizes={pageSizes}";
 
-        public ProductController(AppDbContext context, IRepositoryAsync<Catalog> catalogRepository)
+        public ProductController(AppDbContext context, IRepositoryAsync<Product> productsRepository, ProductManager productManager)
         {
             _context = context;
-            _catalogRepository = catalogRepository;
-            _catalogManager = new CatalogManager(_catalogRepository);
+            _productsRepository = productsRepository;
+            _productManager = productManager;
+        }
+        [HttpGet(GetProductRoute)]
+        public IActionResult GetProduct(string category,
+            string subCategory,
+            string[] makers,
+            string[] colors,
+            string[] folderTypes,
+            string[] copyBookTypes,
+            string[] penTypes,
+            string[] pageSizes,
+            double? priceF = 0,
+            double? priceT = 0)
+        {
+            var possibleProducts = _productManager.CreatePossibleProductsByParams(category,
+                subCategory,
+                this.ArrayParamsToNormalArray(makers),
+                this.ArrayParamsToNormalArray(colors),
+                priceF,
+                priceT,
+                this.ArrayParamsToNormalArray(folderTypes),
+                this.ArrayParamsToNormalArray(copyBookTypes),
+                this.ArrayParamsToNormalArray(penTypes),
+                this.ArrayParamsToNormalArray(pageSizes));
+            var products = _productsRepository
+                .Table
+                .Include(x => x.Description);
+            var result = _productManager.Select(products, possibleProducts);
+            return this.JsonResult(result);
         }
         [HttpGet("GetProduct/{category}/{subCategory}")]
-        public IActionResult GetProduct(string category, string subCategory)
+        public IActionResult GetProduct(string category,string subCategory)
         {
-            var isGift = _catalogManager.IsGift(category);
-            var isBook = _catalogManager.IsBook(category);
-            var isStationary = _catalogManager.IsStationery(category);
-            //if (catalogwithgifts.any())
-            //{
-            //    var result = catalogwithgifts
-            //        .include(x => x.gift.caskets)
-            //        .include(x => x.gift.decorativeboxs);
-            //    if (result.firstordefault().gift.caskets.subcategoryname == subcategory)
-            //        return this.jsonresult(result
-            //            .include(x => x.gift.caskets.giftproducts));
-            //    if (result.firstordefault().gift.decorativeboxs.subcategoryname == subcategory)
-            //        return this.jsonresult(result
-            //            .include(x => x.gift.caskets.giftproducts));
-            //}
-
-            //if (catalogWithStationery.Count() > 0)
-            //    return Ok(catalogWithStationery);
-            if (isStationary)
+            //var posiibleProduct = _productManager.CreatePossibleProductByParams(category, subCategory);
+            var p = _productsRepository.Table.Include(x => x.Description);
+            foreach (var item in p)
             {
-                var r = _catalogRepository
-                    .Table
-                    .Include(x => x.Stationery.SchoolFolder)
-                    .Include(x => x.Stationery.OfficeSupplie)
-                    .Include(x => x.Stationery.CopyBook)
-                    .Include(x => x.Stationery.NoteBook)
-                    .Include(x => x.Stationery.Sticker)
-                    .Include(x => x.Stationery.Dictionary)
-                    .Include(x => x.Stationery.WritingSupplie)
-                    .Include(x => x.Stationery.SchoolSupplie)
-                    .Include(x => x.Stationery.OfficeSupplie)
-                    .Include(x => x.Stationery.ZNO)
-                    .Where(x => x.Stationery.SchoolFolder.SubCategoryName == subCategory
-                    || x.Stationery.OfficeFolder.SubCategoryName == subCategory
-                    || x.Stationery.CopyBook.SubCategoryName == subCategory
-                    || x.Stationery.NoteBook.SubCategoryName == subCategory
-                    || x.Stationery.Sticker.SubCategoryName == subCategory
-                    || x.Stationery.Dictionary.SubCategoryName == subCategory
-                    || x.Stationery.WritingSupplie.SubCategoryName == subCategory
-                    || x.Stationery.SchoolSupplie.SubCategoryName == subCategory
-                    || x.Stationery.OfficeSupplie.SubCategoryName == subCategory
-                    || x.Stationery.ZNO.SubCategoryName == subCategory);
+                var r = item.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) && item.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase);
             }
-            return Ok("UPS");
+            var products = _productsRepository
+                .Table
+                .Include(x => x.Description)
+                .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) && x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
+            //var result = _productManager.Select(products, posiibleProduct);
+            return this.JsonResult(products);
         }
     }
 }

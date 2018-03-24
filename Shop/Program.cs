@@ -32,7 +32,7 @@ namespace Shop
 
                     var dbInitializerLogger = services.GetRequiredService<ILogger<UsersDbInitializer>>();
                     UsersDbInitializer.Initialize(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
-                    ProductsDbInitializer.Initialize(context);
+                    ProductDbInitializaer.Initialize(context);
                 }
                 catch (Exception ex)
                 {
