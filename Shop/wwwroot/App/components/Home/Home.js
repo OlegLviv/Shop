@@ -14,7 +14,8 @@ class Home extends Component {
 					</div>
 					<div className="col-8">
 						<Switch>
-							<Route path="/products/:category/:subCategory" component={ProductPlace}/>
+							<Route exact path="/products/:category/:subCategory" component={ProductPlace}/>
+							<Route path="/products/:category/:subCategory/:q" component={ProductPlace}/>
 						</Switch>
 					</div>
 				</div>

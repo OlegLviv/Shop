@@ -14,13 +14,13 @@ namespace BLL.Managers
             foreach (var productF in products)
             {
                 var catecoryEq = productF.Category == product.Category && productF.SubCategory == product.SubCategory;
-                var descEq = (productF.Description.Name == product.Category || productF.Description.Name == null && product.Description.Name == "null" || product.Description.Name == "null")
-                            && (productF.Description.Maker == product.Description.Maker || productF.Description.Maker == null && product.Description.Maker == "null" || product.Description.Maker == "null")
+                var descEq =
+                            (productF.Description.Maker == product.Description.Maker || productF.Description.Maker == null && product.Description.Maker == "null" || product.Description.Maker == "null")
                             && (productF.Description.Color == product.Description.Color || productF.Description.Color == null && product.Description.Color == "null" || product.Description.Color == "null")
-                            && (productF.Description.CopyBookType == product.Description.CopyBookType || productF.Description.CopyBookType == null && product.Description.CopyBookType == null || product.Description.CopyBookType == null)
-                            && (productF.Description.FolderType == product.Description.FolderType || productF.Description.FolderType == null && product.Description.FolderType == null || product.Description.FolderType == null)
-                            && (productF.Description.PenType == product.Description.PenType || productF.Description.PenType == null && product.Description.PenType == null || product.Description.PenType == null)
-                            && (productF.Description.PageSize == product.Description.PageSize || productF.Description.PageSize == null && product.Description.PageSize == null || product.Description.PageSize == null)
+                            && (productF.Description.CopyBookType == product.Description.CopyBookType || productF.Description.CopyBookType == null && product.Description.CopyBookType == "null" || product.Description.CopyBookType == null)
+                            && (productF.Description.FolderType == product.Description.FolderType || productF.Description.FolderType == null && product.Description.FolderType == "null" || product.Description.FolderType == null)
+                            && (productF.Description.PenType == product.Description.PenType || productF.Description.PenType == null && product.Description.PenType == "null" || product.Description.PenType == null)
+                            && (productF.Description.PageSize == product.Description.PageSize || productF.Description.PageSize == null && product.Description.PageSize == "null" || product.Description.PageSize == null)
                             && ((productF.Description.Price >= product.PriceFrom && productF.Description.Price <= product.PriceTo) || product.Description.Price == 0 || product.Description.Price == 0);
                 if (catecoryEq && descEq)
                     yield return productF;
@@ -33,7 +33,7 @@ namespace BLL.Managers
                 foreach (var productF in products)
                 {
                     var catecoryEq = productF.Category == product.Category && productF.SubCategory == product.SubCategory;
-                    var descEq = 
+                    var descEq =
                                 (productF.Description.Maker == product.Description.Maker || productF.Description.Maker == null && product.Description.Maker == "null" || product.Description.Maker == "null")
                                 && (productF.Description.Color == product.Description.Color || productF.Description.Color == null && product.Description.Color == "null" || product.Description.Color == "null")
                                 && (productF.Description.CopyBookType == product.Description.CopyBookType || productF.Description.CopyBookType == null && product.Description.CopyBookType == "null" || product.Description.CopyBookType == null)
@@ -93,6 +93,16 @@ namespace BLL.Managers
                 }
             }
             return productModels;
+        }
+
+        public ProductViewModel CreatePossibleProductByParams(string category, string subCategory)
+        {
+            return new ProductViewModel
+            {
+                Category = category,
+                SubCategory = subCategory,
+                Description = new Description()
+            };
         }
     }
 }

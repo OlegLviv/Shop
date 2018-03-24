@@ -25,22 +25,22 @@ namespace DAL.Initializator
             var products = new List<Product>();
             var product1 = new Product
             {
-                Category = "Stationary",
-                SubCategory = "ForShcoll"
+                Category = "Stationery",
+                SubCategory = "ForSchool"
             };
             var product2 = new Product
             {
-                Category = "Stationary",
-                SubCategory = "ForShcoll"
+                Category = "Stationery",
+                SubCategory = "ForSchool"
             };
             var product3 = new Product
             {
-                Category = "Stationary",
-                SubCategory = "ForShcoll"
+                Category = "Stationery",
+                SubCategory = "ForSchool"
             };
             var product4 = new Product
             {
-                Category = "Stationary",
+                Category = "Stationery",
                 SubCategory = "CopyBook"
             };
             var description1 = new Description
@@ -49,7 +49,10 @@ namespace DAL.Initializator
                 Price = 300,
                 Product = product1,
                 ProductId = product1.Id,
-                Color = "black"
+                Color = "black",
+                Name = "Folder",
+                FolderType = "ForWork",
+                Descriptions = "asdasasd"
             };
             var description2 = new Description
             {
@@ -57,7 +60,10 @@ namespace DAL.Initializator
                 Price = 340,
                 Product = product2,
                 ProductId = product2.Id,
-                Color = "red"
+                Color = "red",
+                Name = "Folder smth",
+                FolderType = "ForWork",
+                Descriptions = "asdasdfafdf afsa "
             };
             var description3 = new Description
             {
@@ -65,15 +71,21 @@ namespace DAL.Initializator
                 Price = 234,
                 Product = product3,
                 ProductId = product3.Id,
-                Color = "black"
+                Color = "black",
+                FolderType = "ForCopyBook",
+                Descriptions = "asda asd asd"
             };
             var description4 = new Description
             {
-                Maker = "Maker4",
-                Price = 4134,
-                Product = product4,
-                ProductId = product4.Id,
-                Color = "green"
+                Maker = "Maker3",
+                Name ="copy book",
+                Price = 234,
+                Product = product3,
+                ProductId = product3.Id,
+                Color = "black",
+                CopyBookType = "Зошити шкільні",
+                PageSize = "24",
+                Descriptions = "asda asd asd"
             };
             product1.Description = description1;
             product2.Description = description2;

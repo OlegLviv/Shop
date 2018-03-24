@@ -55,7 +55,7 @@ class NavigationProducts extends React.Component {
 								stationeries.map(item => <Link
 									key={guid()}
 									className="dropdown-item"
-									to={`/products/stationary/${normalizeNavCategoryToRoute(item)}`}>{item}</Link>)
+									to={`/products/stationery/${normalizeNavCategoryToRoute(item)}`}>{item}</Link>)
 							}
 						</div>
 					</div>
