@@ -1,12 +1,12 @@
 import React from 'react';
 import './NavigationProducts.scss';
 import {Link} from 'react-router-dom';
-import {guid} from "../../utils/utils";
+import {guid, normalizeNavCategoryToRoute} from "../../utils/utils";
 
-const stationaries = [
+const stationeries = [
 	'Папки шкільні',
 	'Папки офісні',
-	'Зощити',
+	'Зошити',
 	'Блокноти',
 	'Стікери',
 	'Словники',
@@ -52,10 +52,10 @@ class NavigationProducts extends React.Component {
 						</button>
 						<div className="dropdown-menu">
 							{
-								stationaries.map(item => <Link
+								stationeries.map(item => <Link
 									key={guid()}
 									className="dropdown-item"
-									to={`/products/stationary/${item}`}>{item}</Link>)
+									to={`/products/stationary/${normalizeNavCategoryToRoute(item)}`}>{item}</Link>)
 							}
 						</div>
 					</div>
@@ -68,7 +68,10 @@ class NavigationProducts extends React.Component {
 						</button>
 						<div className="dropdown-menu">
 							{
-								gifts.map(item => <a key={guid()} className="dropdown-item" href="#">{item}</a>)
+								gifts.map(item => <Link
+									key={guid()}
+									className="dropdown-item"
+									to={`/products/gift/${normalizeNavCategoryToRoute(item)}`}>{item}</Link>)
 							}
 						</div>
 					</div>

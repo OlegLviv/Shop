@@ -6,7 +6,10 @@ const getSubCategory = (props) => props.match.params.subCategory;
 class ProductPlace extends React.Component {
 	render() {
 		return (
-			<div>{getSubCategory(this.props)}</div>
+			<div>
+				<div>{getCategory(this.props)}</div>
+				<div>{getSubCategory(this.props)}</div>
+			</div>
 		);
 	}
 }

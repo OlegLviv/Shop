@@ -16,7 +16,6 @@ class Home extends Component {
 						<Switch>
 							<Route path="/products/:category/:subCategory" component={ProductPlace}/>
 						</Switch>
-						{/*<ProductPlace/>*/}
 					</div>
 				</div>
 			</div>
