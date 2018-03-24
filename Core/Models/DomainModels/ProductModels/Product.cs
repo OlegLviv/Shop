@@ -13,15 +13,14 @@ namespace Core.Models.DomainModels.ProductModels
         public string SubCategory { get; set; }
         public Description Description { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            var product = obj as IProduct;
-            if (product == null)
-                return false;
-            var result = product.Category == Category
-                && product.SubCategory == SubCategory
-                && product.Description.Equals(Description);
-            return result;
-        }
+        //public override bool Equals(object obj)
+        //{
+        //    if (!(obj is IProduct product))
+        //        return false;
+        //    var result = product.Category == Category
+        //        && product.SubCategory == SubCategory
+        //        && product.Description.Equals(Description);
+        //    return result;
+        //}
     }
 }

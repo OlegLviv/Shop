@@ -6,34 +6,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Common.Extensions
 {
     public static class ControllerExtensions
     {
-        public async static Task<TIdentityUser> GetUserByIdentityAsync<TIdentityUser>(this ControllerBase controller, UserManager<TIdentityUser> userManager) where TIdentityUser : IdentityUser
+        public static async Task<TIdentityUser> GetUserByIdentityAsync<TIdentityUser>(this ControllerBase controller, UserManager<TIdentityUser> userManager) where TIdentityUser : IdentityUser
         {
             var identityName = controller.User.Identity.Name;
             if (identityName == null)
                 return null;
-            var user = await userManager.FindByNameAsync(identityName);
-            if (user == null)
-                user = await userManager.FindByEmailAsync(identityName);
-            if (user == null)
-                return null;
-            return user;
+            var user = await userManager.FindByNameAsync(identityName) ?? await userManager.FindByEmailAsync(identityName);
+            return user ?? null;
         }
         public static JsonResult JsonResult(this Controller controller, object data)
         {
             return controller.Json(data, new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
         }
         public static string[] ArrayParamsToNormalArray(this ControllerBase controller, string[] @params)
         {
             if (@params == null)
-                throw new ArgumentNullException("params");
+                throw new ArgumentNullException(nameof(@params));
             if (@params.Any())
             {
                 return @params[0].Split(',');

@@ -71,7 +71,6 @@ namespace Shop.Controllers.Api
                 .Table
                 .Include(x => x.Description)
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) && x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
-            //var result = _productManager.Select(products, posiibleProduct);
             return this.JsonResult(products);
         }
     }
