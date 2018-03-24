@@ -67,12 +67,6 @@ namespace Shop.Controllers.Api
         [HttpGet("GetProduct/{category}/{subCategory}")]
         public IActionResult GetProduct(string category,string subCategory)
         {
-            //var posiibleProduct = _productManager.CreatePossibleProductByParams(category, subCategory);
-            var p = _productsRepository.Table.Include(x => x.Description);
-            foreach (var item in p)
-            {
-                var r = item.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) && item.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase);
-            }
             var products = _productsRepository
                 .Table
                 .Include(x => x.Description)

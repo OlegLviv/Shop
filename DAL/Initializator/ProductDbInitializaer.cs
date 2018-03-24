@@ -26,12 +26,12 @@ namespace DAL.Initializator
             var product1 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "ForSchool"
+                SubCategory = "schoolFolders"
             };
             var product2 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "ForSchool"
+                SubCategory = "schoolFolders"
             };
             var product3 = new Product
             {
@@ -41,7 +41,27 @@ namespace DAL.Initializator
             var product4 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "CopyBook"
+                SubCategory = "copyBooks"
+            };
+            var product5 = new Product
+            {
+                Category = "Stationery",
+                SubCategory = "copyBooks"
+            };
+            var product6 = new Product
+            {
+                Category = "Stationery",
+                SubCategory = "copyBooks"
+            };
+            var product7 = new Product
+            {
+                Category = "Stationery",
+                SubCategory = "copyBooks"
+            };
+            var product8 = new Product
+            {
+                Category = "Stationery",
+                SubCategory = "copyBooks"
             };
             var description1 = new Description
             {
@@ -69,6 +89,7 @@ namespace DAL.Initializator
             {
                 Maker = "Maker3",
                 Price = 234,
+                Name = "Folder",
                 Product = product3,
                 ProductId = product3.Id,
                 Color = "black",
@@ -80,10 +101,58 @@ namespace DAL.Initializator
                 Maker = "Maker3",
                 Name ="copy book",
                 Price = 234,
-                Product = product3,
-                ProductId = product3.Id,
+                Product = product4,
+                ProductId = product4.Id,
                 Color = "black",
                 CopyBookType = "Зошити шкільні",
+                PageSize = "24",
+                Descriptions = "asda asd asd"
+            };
+            var description5 = new Description
+            {
+                Maker = "Maker3",
+                Name = "copy book",
+                Price = 24,
+                Product = product5,
+                ProductId = product5.Id,
+                Color = "black",
+                CopyBookType = "Зошити шкільні asd",
+                PageSize = "24",
+                Descriptions = "asda asd asd"
+            };
+            var description6 = new Description
+            {
+                Maker = "Maker3",
+                Name = "copy book",
+                Price = 44,
+                Product = product6,
+                ProductId = product6.Id,
+                Color = "green",
+                CopyBookType = "Зошити шкільні asd",
+                PageSize = "24",
+                Descriptions = "asda asd asd"
+            };
+            var description7 = new Description
+            {
+                Maker = "Maker4",
+                Name = "copy book asd",
+                Price = 45,
+                Product = product7,
+                ProductId = product7.Id,
+                Color = "white",
+                CopyBookType = "Зошити шкільні asd",
+                PageSize = "24",
+                Descriptions = "asda asd asd"
+            };
+            var description8 = new Description
+            {
+                Maker = "Maker4",
+                Name = "copy book c",
+                Price = 56,
+                Product = product8,
+                ProductId = product8.Id,
+                Color = "yellow",
+                CopyBookType = "Зошити шкільні asd",
                 PageSize = "24",
                 Descriptions = "asda asd asd"
             };
@@ -91,10 +160,20 @@ namespace DAL.Initializator
             product2.Description = description2;
             product3.Description = description3;
             product4.Description = description4;
+            product5.Description = description5;
+            product6.Description = description6;
+            product7.Description = description7;
+            product8.Description = description8;
+
             products.Add(product1);
             products.Add(product2);
             products.Add(product3);
             products.Add(product4);
+            products.Add(product5);
+            products.Add(product6);
+            products.Add(product7);
+            products.Add(product8);
+
             context.AddRange(products);
             context.SaveChanges();
         }

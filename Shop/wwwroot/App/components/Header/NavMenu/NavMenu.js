@@ -24,11 +24,13 @@ export const NavMenu = () => {
 						</button>
 					</div>
 					<ul className="navbar-nav mr-auto menu-container__navbar__card">
-						<li className="nav-item active">
-							<Icon size="2x" name="shopping-cart ml-xl-5 ml-lg-3"/>
+						<li className="nav-item">
+							<Icon size="2x" name="shopping-cart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-shoping"/>
+							<div className="menu-container__navbar__card__shoping-card">1</div>
 						</li>
-						<li className="nav-item active">
-							<Icon size="2x" name="heart ml-xl-5 ml-lg-3"/>
+						<li className="nav-item">
+							<Icon size="2x" name="heart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-like"/>
+							<div className="menu-container__navbar__card__like">2</div>
 						</li>
 					</ul>
 				</div>

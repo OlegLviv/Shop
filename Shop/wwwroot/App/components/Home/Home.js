@@ -9,10 +9,10 @@ class Home extends Component {
 		return (
 			<div className="home-container">
 				<div className="row">
-					<div className="col-4">
+					<div className="col-xl-3 col-lg-4">
 						<NavigationProducts/>
 					</div>
-					<div className="col-8">
+					<div className="col-xl-9 col-lg-8">
 						<Switch>
 							<Route exact path="/products/:category/:subCategory" component={ProductPlace}/>
 							<Route path="/products/:category/:subCategory/:q" component={ProductPlace}/>

@@ -16,12 +16,9 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
-    "bootstrap": "^4.0.0",
     "file-loader": "^1.1.11",
     "generate-babelrc": "^0.1.2",
-    "jquery": "^1.9.1",
     "node-sass": "^4.7.2",
-    "popper": "^1.0.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-fa": "^5.0.0",
