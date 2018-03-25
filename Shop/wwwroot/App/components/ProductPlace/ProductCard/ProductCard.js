@@ -7,8 +7,8 @@ class ProductCard extends React.Component {
         super(props);
     }
 
-    onBasketButClick = (e) => {
-        this.props.onBasketButClick(e, this.props.product.id);
+    onProductCardButClick = (e) => {
+        this.props.onProductCardButClick(e, this.props.product.id);
     };
 
     onLikeButClick = (e) => {
@@ -25,7 +25,7 @@ class ProductCard extends React.Component {
                     <h5 className="card-title text-center">{this.props.product.description.name}</h5>
                     <h6 className="card-text text-center">{`${this.props.product.description.price} грн`}</h6>
                     <div className="card__footer">
-                        <button className="btn btn-primary" onClick={this.onBasketButClick}>В кошик</button>
+                        <button className="btn btn-primary" onClick={this.onProductCardButClick}>В кошик</button>
                         <button className="btn btn-info" onClick={this.onLikeButClick}>В обране</button>
                     </div>
                 </div>
