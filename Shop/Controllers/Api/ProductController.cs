@@ -90,6 +90,8 @@ namespace Shop.Controllers.Api
                 ProductId = model.ProductId
             };
             var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return BadRequest("Can't update user");
             return Ok(user.ShopingCard);
         }
     }

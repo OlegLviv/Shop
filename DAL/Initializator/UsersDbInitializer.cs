@@ -24,6 +24,7 @@ namespace DAL.Initializator
             }
 
             await CreateDefaultRolesAndAdmin(userManager, roleManager, logger, configuration);
+            await CreateDefaultUser(userManager, configuration);
         }
         private static async Task CreateDefaultRolesAndAdmin(UserManager<User> um, RoleManager<IdentityRole> rm, ILogger<UsersDbInitializer> logger, IConfiguration configuration)
         {
@@ -49,6 +50,21 @@ namespace DAL.Initializator
             var resAddToRole = await um.AddToRoleAsync(user, administratorRole);
             if (resAddToRole.Succeeded)
                 logger.LogInformation("Admin added to role suceessfuly");
+        }
+
+        private static async Task CreateDefaultUser(UserManager<User> userManager, IConfiguration configuration)
+        {
+            var user = new User
+            {
+                Email = "olehspidey2@mail.ru",
+                UserName = "olehspidey",
+                Name = "Oleh",
+                LastName = "Kokhan",
+                PhoneNumber = "0680538860",
+                EmailConfirmed = true
+            };
+            await userManager.CreateAsync(user, "30Spudi30");
+            await userManager.AddToRoleAsync(user, configuration["Roles:Client"]);
         }
     }
 }
