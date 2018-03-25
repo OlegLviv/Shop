@@ -12,7 +12,7 @@ class ProductPlace extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: []
+            products: [],
         }
     }
 
@@ -52,7 +52,9 @@ class ProductPlace extends React.Component {
     }
 
     onLikeButClick = (e, id) => {
-        addCookies("products", id, 1);
+        if (!this.props.isLogIn) {
+            addCookies("products", id, 1);
+        }
     };
 
     render() {
