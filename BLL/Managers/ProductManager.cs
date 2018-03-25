@@ -46,6 +46,12 @@ namespace BLL.Managers
                 }
             }
         }
+
+        public IEnumerable<Product> Select(IQueryable<Product> products, string[] ids)
+        {
+            return ids.Select(id => products
+                .FirstOrDefault(x => x.Id == id));
+        }
         public List<ProductViewModel> CreatePossibleProductsByParams(string category,
             string subCategory,
             string[] makers,

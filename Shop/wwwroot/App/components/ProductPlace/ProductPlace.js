@@ -1,6 +1,6 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductUrl} from "../../services/urls/productUrls";
+import {getProductUrlByCatSubCat} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addCookies} from "../../services/cookies";
@@ -17,7 +17,7 @@ class ProductPlace extends React.Component {
 	}
 
 	componentDidMount() {
-		const prodUrl = getProductUrl(getCategory(this.props), getSubCategory(this.props));
+		const prodUrl = getProductUrlByCatSubCat(getCategory(this.props), getSubCategory(this.props));
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
@@ -32,7 +32,7 @@ class ProductPlace extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const prodUrl = getProductUrl(getCategory(nextProps), getSubCategory(nextProps));
+		const prodUrl = getProductUrlByCatSubCat(getCategory(nextProps), getSubCategory(nextProps));
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {

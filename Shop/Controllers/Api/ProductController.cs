@@ -78,6 +78,14 @@ namespace Shop.Controllers.Api
             return this.JsonResult(products);
         }
 
+        [HttpGet("GetProducts/{productIds}")]
+        public IActionResult GetProducts(string[] productIds)
+        {
+            var products = _productManager
+                .Select(_productsRepository.Table.Include(x => x.Description), this.ArrayParamsToNormalArray(productIds));
+            return this.JsonResult(products);
+        }
+
         public async Task<IActionResult> AddProductToShopingCard([FromBody] UserAddProductToShopingCard model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId) ?? await this.GetUserByIdentityAsync(_userManager);

@@ -1,10 +1,26 @@
 import React from 'react';
 import './ProductCardPlace.scss';
 import {Icon} from 'react-fa';
+import {getCookie} from "../../services/cookies";
+import {apiWithoutRedirect} from "../../services/api";
+import {getProductsUrlByIds} from "../../services/urls/productUrls";
 
 class ProductCardPlace extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			products: []
+		}
+	}
+
+	componentDidMount() {
+		const productIds = getCookie('productsCard');
+		apiWithoutRedirect()
+			.get(getProductsUrlByIds(productIds))
+			.then(resp => {
+				console.log('got prods:', resp.data);
+				this.setState({products: resp.data});
+			})
 	}
 
 	render() {
@@ -27,21 +43,34 @@ class ProductCardPlace extends React.Component {
 					</tr>
 					</thead>
 					<tbody>
-					<tr>
-						<th scope="row">1</th>
-						<td>
-							<div className="media">
-								<img className="mr-5" src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
-								<div className="media-body">
-									<h3>Name</h3>
-									<h6 className="my-3">Kod</h6>
-								</div>
-							</div>
-						</td>
-						<td>Mark</td>
-						<td>Otto</td>
-						<td>@mdo</td>
-					</tr>
+					{
+						this.state.products.map((item, i) => {
+							return (
+								<tr key={item.id}>
+									<th>{i + 1}</th>
+									<td>
+										<div className="media">
+											<img className="mr-5"
+												 src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
+											<div className="media-body">
+												<h3>{item.description.name}</h3>
+												<h6 className="my-3">Kod</h6>
+											</div>
+										</div>
+									</td>
+									<td>{item.description.price}</td>
+									<td>
+										<div className="btn-group">
+											<button type="button" className="btn btn-secondary">Left</button>
+											<button type="button" className="btn btn-secondary">Middle</button>
+											<button type="button" className="btn btn-secondary">Right</button>
+										</div>
+									</td>
+									<td>ds</td>
+								</tr>
+							)
+						})
+					}
 					</tbody>
 				</table>
 			</div>
