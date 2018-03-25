@@ -4,12 +4,14 @@ import {Icon} from 'react-fa';
 import {getCookie} from "../../services/cookies";
 import {apiWithoutRedirect} from "../../services/api";
 import {getProductsUrlByIds} from "../../services/urls/productUrls";
+import {Link} from 'react-router-dom';
 
 class ProductCardPlace extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			products: []
+			products: [],
+			productsCounts: []
 		}
 	}
 
@@ -20,13 +22,47 @@ class ProductCardPlace extends React.Component {
 			.then(resp => {
 				console.log('got prods:', resp.data);
 				this.setState({products: resp.data});
+				this.initProductsCounts(resp.data);
 			})
 	}
 
+	initProductsCounts = (products) => {
+		const newProductsCounts = [];
+		for (let i = 0; i < products.length; i++) {
+			newProductsCounts[i] = 1;
+		}
+		this.setState({productsCounts: newProductsCounts});
+	};
+
+	getTotalPrice = () => {
+		const {products, productsCounts} = this.state;
+		let total = 1;
+		for (let i = 0; i < products.length; i++) {
+			total += products[i].description.price * productsCounts[i];
+		}
+		return total;
+	};
+
+	onIncProductsCount(i) {
+		const productsCounts = this.state.productsCounts;
+		productsCounts[i] = this.state.productsCounts[i] + 1;
+		this.setState({productsCounts: productsCounts});
+	}
+
+	onDecProductsCount(i) {
+		const productsCounts = this.state.productsCounts;
+		if (this.state.productsCounts[i] === 0) {
+			return;
+		}
+		productsCounts[i] = this.state.productsCounts[i] - 1;
+		this.setState({productsCounts: productsCounts});
+	}
+
+	// todo need to carry out to <tr>
 	render() {
 		return (
 			<div className="container-p-card-place">
-				<div className="container-p-card-place__footer">
+				<div className="container-p-card-place__header">
 					<button className="btn btn-outline-danger">Очистити кошик
 						<Icon name="trash ml-1"/>
 					</button>
@@ -61,18 +97,31 @@ class ProductCardPlace extends React.Component {
 									<td>{item.description.price}</td>
 									<td>
 										<div className="btn-group">
-											<button type="button" className="btn btn-secondary">Left</button>
-											<button type="button" className="btn btn-secondary">Middle</button>
-											<button type="button" className="btn btn-secondary">Right</button>
+											<button type="button" className="btn btn-secondary"
+													onClick={() => this.onDecProductsCount(i)}>-
+											</button>
+											<input type="number" value={this.state.productsCounts[i]}/>
+											<button type="button" className="btn btn-secondary"
+													onClick={() => this.onIncProductsCount(i)}>+
+											</button>
 										</div>
 									</td>
-									<td>ds</td>
+									<td>{item.description.price * this.state.productsCounts[i]}</td>
 								</tr>
 							)
 						})
 					}
 					</tbody>
 				</table>
+				<div className="container-p-card-place__footer">
+					<Link to="/" className="btn btn-outline-info container-p-card-place__footer__btn-continue">Продовжити
+						покупки
+					</Link>
+					<div className="container-p-card-place__footer__total-info">
+						<h3>{`Разом: ${this.getTotalPrice()} грн`}</h3>
+						<button className="btn btn-primary">Оформити замовлення</button>
+					</div>
+				</div>
 			</div>
 		);
 	}

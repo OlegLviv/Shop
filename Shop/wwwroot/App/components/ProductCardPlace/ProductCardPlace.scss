@@ -4,4 +4,13 @@
 	min-width: 7rem;
 	max-width: 7rem;
   }
+  &__footer {
+	display: flex;
+	justify-content: space-between;
+	background: #f3f3f3;
+	padding: 3rem 2rem 3rem 2rem;
+	&__btn-continue {
+	  max-height: 2.5rem;
+	}
+  }
 }
