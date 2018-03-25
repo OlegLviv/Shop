@@ -3,6 +3,7 @@ import {apiWithoutRedirect} from "../../services/api";
 import {getProductUrl} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
+import {addCookies} from "../../services/cookies";
 
 const getCategory = (props) => props.match.params.category;
 const getSubCategory = (props) => props.match.params.subCategory;
@@ -50,6 +51,10 @@ class ProductPlace extends React.Component {
         });
     }
 
+    onLikeButClick = (e, id) => {
+        addCookies("products", id, 1);
+    };
+
     render() {
         return (
             <div className="container-fluid container-products">
@@ -57,7 +62,7 @@ class ProductPlace extends React.Component {
                     {this.state.products.map(item => {
                         return (
                             <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 container-products__row__item">
-                                <ProductCard product={item} key={item.id}/>
+                                <ProductCard product={item} key={item.id} onLikeButClick={this.onLikeButClick}/>
                             </div>
                         )
                     })}

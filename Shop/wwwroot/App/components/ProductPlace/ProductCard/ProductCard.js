@@ -8,11 +8,11 @@ class ProductCard extends React.Component {
     }
 
     onBasketButClick = (e) => {
-        this.props.onBasketButClick(e);
+        this.props.onBasketButClick(e, this.props.product.id);
     };
 
     onLikeButClick = (e) => {
-        this.props.onLikeButClick(e);
+        this.props.onLikeButClick(e, this.props.product.id);
     };
 
     render() {
@@ -33,11 +33,5 @@ class ProductCard extends React.Component {
         );
     }
 }
-
-ProductCard.propTypes = {
-    onBasketButClick: PropTypes.func,
-    onLikeButClick: PropTypes.func,
-    product: PropTypes.object.isRequired
-};
 
 export default ProductCard;
