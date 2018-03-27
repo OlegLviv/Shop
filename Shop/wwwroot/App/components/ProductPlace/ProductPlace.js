@@ -4,6 +4,7 @@ import {getProductUrlByCatSubCat} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addCookies} from "../../services/cookies";
+import {addObjectQueryToProducts} from "../../services/productsServices";
 
 const getCategory = (props) => props.match.params.category;
 const getSubCategory = (props) => props.match.params.subCategory;
@@ -23,6 +24,7 @@ class ProductPlace extends React.Component {
 			.then(resp => {
 				// todo zh is this need
 				// this.onGetCategorySubCategory(this.props);
+				addObjectQueryToProducts(resp.data);
 				this.setState({products: resp.data});
 				console.log('respDm', resp.data);
 			})
@@ -36,6 +38,7 @@ class ProductPlace extends React.Component {
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
+				addObjectQueryToProducts(resp.data);
 				this.setState({products: resp.data});
 				console.log('respWrp', resp.data);
 				// this.onGetCategorySubCategory(nextProps);
@@ -51,6 +54,7 @@ class ProductPlace extends React.Component {
 			subCategory: getSubCategory(props)
 		});
 	}
+
 	// TODO need add functional with loginned users
 	onProductCardButClick = (e, id) => {
 		if (!this.props.isLogIn) {

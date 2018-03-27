@@ -31,37 +31,44 @@ namespace DAL.Initializator
             var product2 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "schoolFolders"
+                SubCategory = "schoolFolders",
+                Query = "name=asd;color=white"
             };
             var product3 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "ForSchool"
+                SubCategory = "ForSchool",
+                Query = "name=asd;color=red"
             };
             var product4 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "copyBooks"
+                SubCategory = "copyBooks",
+                Query = "name=name;type=1;color=red"
             };
             var product5 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "copyBooks"
+                SubCategory = "copyBooks",
+                Query = "name=name2"
             };
             var product6 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "copyBooks"
+                SubCategory = "copyBooks",
+                Query = "name=nive;type=1"
             };
             var product7 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "copyBooks"
+                SubCategory = "copyBooks",
+                Query = "name=name2;type=1"
             };
             var product8 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "copyBooks"
+                SubCategory = "copyBooks",
+                Query = "name=name1;color=black"
             };
             var description1 = new Description
             {

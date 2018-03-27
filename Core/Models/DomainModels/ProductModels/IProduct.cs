@@ -8,6 +8,6 @@ namespace Core.Models.DomainModels.ProductModels
     {
         string Category { get; set; }
         string SubCategory { get; set; }
-        Description Description { get; set; }
+        string Query { get; set; }
     }
 }

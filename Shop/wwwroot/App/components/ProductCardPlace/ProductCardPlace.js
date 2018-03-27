@@ -6,6 +6,7 @@ import {apiWithoutRedirect} from "../../services/api";
 import {getProductsUrlByIds} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
+import {addObjectQueryToProducts} from "../../services/productsServices";
 
 const renderNoProducts = () => {
 	return (
@@ -33,6 +34,8 @@ class ProductCardPlace extends React.Component {
 			.then(resp => {
 				console.log('got prods:', resp);
 				if (productIds) {
+					addObjectQueryToProducts(resp.data);
+					console.log('new prods:', resp.data);
 					this.setState({products: resp.data});
 					this.initProductsCounts(resp.data);
 				}
@@ -51,7 +54,7 @@ class ProductCardPlace extends React.Component {
 		const {products, productsCounts} = this.state;
 		let total = 0;
 		for (let i = 0; i < products.length; i++) {
-			total += products[i].description.price * productsCounts[i];
+			total += products[i].objectQuery.price * productsCounts[i];
 		}
 		return total;
 	};
@@ -108,12 +111,12 @@ class ProductCardPlace extends React.Component {
 												<img className="mr-2 product-img"
 													 src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
 												<div className="media-body">
-													<h5>{item.description.name}</h5>
+													<h5>{item.objectQuery.name}</h5>
 													<div className="my-3">Kod</div>
 												</div>
 											</div>
 										</td>
-										<td data-label="Ціна"><h5>{item.description.price}</h5></td>
+										<td data-label="Ціна"><h5>{item.objectQuery.price}</h5></td>
 										<td data-label="Кількість">
 											<div className="btn-group">
 												<button type="button" className="btn btn-secondary"
@@ -126,7 +129,7 @@ class ProductCardPlace extends React.Component {
 											</div>
 										</td>
 										<td data-label="Вартість">
-											<h5>{`${item.description.price * this.state.productsCounts[i]} грн`}</h5>
+											<h5>{`${item.objectQuery.price * this.state.productsCounts[i]} грн`}</h5>
 										</td>
 									</tr>
 								)
