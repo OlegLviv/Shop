@@ -35,8 +35,10 @@ table td[data-label=Номер] {
 
 input[type=number] {
   max-width: 1.5rem;
-  max-height: 2.1rem;
+  max-height: 2.05rem;
   text-align: center;
+  border-right: none;
+  border-left: none;
 }
 
 input[type=number]::-webkit-inner-spin-button,

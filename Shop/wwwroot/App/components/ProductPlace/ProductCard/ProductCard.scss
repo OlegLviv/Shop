@@ -35,7 +35,7 @@
   max-height: 15rem;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1230px) {
   .card {
 	&__footer {
 	  flex-direction: column;
@@ -57,7 +57,7 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 760px) {
   .card {
 	&__footer {
 	  flex-direction: column;

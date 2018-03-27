@@ -16,13 +16,12 @@
   }
 }
 
-.btn-primary {
+.btn-shadow-s {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5);
   transition-property: all;
   transition-duration: 0.7s;
 }
 
-.btn-primary:hover {
+.btn-shadow-s:hover {
   transform: scale(1.1);
 }
-

@@ -12,7 +12,7 @@ const renderNoProducts = () => {
 		<div className="text-center">
 			<h1>Кошик</h1>
 			<h4>У вас немає товарів в кошику.</h4>
-			<Link to="/" className="btn btn-primary btn-lg">Перейти до покупок</Link>
+			<Link to="/" className="btn btn-primary btn-lg btn-shadow-s">Перейти до покупок</Link>
 		</div>
 	)
 };
@@ -141,7 +141,7 @@ class ProductCardPlace extends React.Component {
 						<div className="container-p-card-place__footer__total-info">
 							<h3>{`Разом: ${this.getTotalPrice()} грн`}</h3>
 							<button
-								className="btn btn-primary container-p-card-place__footer__total-info__btn-post">Оформити
+								className="btn btn-primary btn-shadow-s btn container-p-card-place__footer__total-info__btn-post">Оформити
 								замовлення
 							</button>
 						</div>
