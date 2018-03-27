@@ -72,17 +72,14 @@ namespace Shop
 
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
 
-            services.AddTransient<IEmailSender, EmailSender>(service =>
-            {
-                return new EmailSender(new System.Net.NetworkCredential
+            services.AddTransient<IEmailSender, EmailSender>(service => new EmailSender(new System.Net.NetworkCredential
                 {
                     UserName = Configuration["EmailCredential:UserName"],
                     Password = Configuration["EmailCredential:Password"]
                 },
-                    host: Configuration["SmtpData:Host"],
-                    port: int.Parse(Configuration["SmtpData:Port"])
-                    );
-            });
+                host: Configuration["SmtpData:Host"],
+                port: int.Parse(Configuration["SmtpData:Port"])
+            ));
 
             services.AddTransient<ProductManager>();
 
