@@ -46,13 +46,15 @@ namespace Shop.Controllers.Api
             _userManager = userManager;
             _mapper = mapper;
         }
+
         [HttpGet("GetProducts/{category}/{subCategory}")]
         public IActionResult GetProducts(string category, string subCategory)
         {
             var products = _productsRepository
                 .Table
                 .Include(x => x.Description)
-                .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) && x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
+                .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
+                            x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
             return this.JsonResult(products);
         }
 
@@ -60,7 +62,8 @@ namespace Shop.Controllers.Api
         public IActionResult GetProducts(string[] productIds)
         {
             var products = _productManager
-                .Select(_productsRepository.Table.Include(x => x.Description), this.ArrayParamsToNormalArray(productIds));
+                .Select(_productsRepository.Table.Include(x => x.Description),
+                    this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
         }
 
@@ -71,16 +74,18 @@ namespace Shop.Controllers.Api
                 .Table
                 .Where(x => x.Category == category && x.SubCategory == subCategory);
             var result = _productManager.SelectProducts(query, products);
-            var mapProduct = _mapper.Map<ProductDto>(result);
-            return this.JsonResult(mapProduct);
+            //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
+            return this.JsonResult(result);
         }
 
         #region POST
+
         // todo maybe it's no need
         [HttpPost("AddProductToShopingCard")]
         public async Task<IActionResult> AddProductToShopingCard([FromBody] UserAddProductToShopingCard model)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId) ?? await this.GetUserByIdentityAsync(_userManager);
+            var user = await _userManager.FindByIdAsync(model.UserId) ??
+                       await this.GetUserByIdentityAsync(_userManager);
             if (user == null)
                 return BadRequest("User don't exist");
             user.ShopingCard = new ShopingCard

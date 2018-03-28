@@ -21,7 +21,6 @@ class Layout extends React.Component {
 	}
 
 	onLogIn = (user) => {
-		console.log('yser', user);
 		this.setState({
 			isLogIn: true,
 			user: user

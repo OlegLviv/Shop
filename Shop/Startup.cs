@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -85,7 +86,7 @@ namespace Shop
 
             services.AddTransient<ProductManager>();
 
-            services.AddAutoMapper(x => x.AddProfile(new MappingsProfile()));
+            services.AddAutoMapper(typeof(MappingsProfile).GetTypeInfo().Assembly);
 
             services.AddMvc();
 

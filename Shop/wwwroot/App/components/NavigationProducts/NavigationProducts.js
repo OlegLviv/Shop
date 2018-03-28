@@ -2,6 +2,7 @@ import React from 'react';
 import './NavigationProducts.scss';
 import {Link} from 'react-router-dom';
 import {guid, normalizeNavCategoryToRoute} from "../../utils/utils";
+import {ExpandedNavigationProducts} from "./ExpandedNavigationProducts";
 
 const stationeries = [
 	'Папки шкільні',
@@ -28,7 +29,14 @@ const books = [
 ];
 
 class NavigationProducts extends React.Component {
-	render() {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isExpanded: false
+		}
+	}
+
+	renderNavProd = () => {
 		return (
 			<ul className="list-group-flush">
 				<li className="list-group-item home-container__list-group-item-head">Каталог товарів</li>
@@ -53,6 +61,9 @@ class NavigationProducts extends React.Component {
 						<div className="dropdown-menu">
 							{
 								stationeries.map(item => <Link
+									onClick={() => {
+										this.setState({isExpanded: true})
+									}}
 									key={guid()}
 									className="dropdown-item"
 									to={`/products/stationery/${normalizeNavCategoryToRoute(item)}`}>{item}</Link>)
@@ -90,6 +101,16 @@ class NavigationProducts extends React.Component {
 					</div>
 				</li>
 			</ul>
+		)
+	};
+
+	render() {
+		return (
+			<div>
+				{
+					!this.state.isExpanded ? this.renderNavProd() : <ExpandedNavigationProducts/>
+				}
+			</div>
 		);
 	}
 }

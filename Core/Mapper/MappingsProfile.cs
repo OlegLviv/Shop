@@ -7,12 +7,12 @@ using Core.Models.DTO;
 
 namespace Core.Mapper
 {
-    public class MappingsProfile:Profile
+    public class MappingsProfile : Profile
     {
         public MappingsProfile()
         {
-            CreateMap<ProductDto,Product>()
-                .ForAllMembers(c=>c.Ignore());
+            CreateMap<ProductDto, Product>()
+                .ForAllMembers(c => c.Ignore());
         }
     }
 }
