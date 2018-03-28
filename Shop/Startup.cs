@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using BLL.Managers;
 using BLL.Services;
 using Core.Interfaces;
+using Core.Mapper;
 using Core.Models.DomainModels;
 using DAL;
 using DAL.Repositories;
@@ -72,19 +75,18 @@ namespace Shop
 
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
 
-            services.AddTransient<IEmailSender, EmailSender>(service =>
+            services.AddTransient<IEmailSender, EmailSender>(service => new EmailSender(new System.Net.NetworkCredential
             {
-                return new EmailSender(new System.Net.NetworkCredential
-                {
-                    UserName = Configuration["EmailCredential:UserName"],
-                    Password = Configuration["EmailCredential:Password"]
-                },
-                    host: Configuration["SmtpData:Host"],
-                    port: int.Parse(Configuration["SmtpData:Port"])
-                    );
-            });
+                UserName = Configuration["EmailCredential:UserName"],
+                Password = Configuration["EmailCredential:Password"]
+            },
+                host: Configuration["SmtpData:Host"],
+                port: int.Parse(Configuration["SmtpData:Port"])
+            ));
 
             services.AddTransient<ProductManager>();
+
+            services.AddAutoMapper(typeof(MappingsProfile).GetTypeInfo().Assembly);
 
             services.AddMvc();
 
@@ -104,10 +106,11 @@ namespace Shop
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // TODO need remov this
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
 
             app.UseStaticFiles();
 

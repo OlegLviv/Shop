@@ -1,0 +1,22 @@
+.expanded-nav {
+  &__header {
+	background: #252525;
+	color: white;
+	padding: .75rem 1.25rem;
+  }
+  &__body {
+	padding: 1rem;
+	&__price {
+	  &__from-to {
+		padding-bottom: 1rem;
+		padding-top: 1rem;
+		display: flex;
+		justify-content: space-evenly;
+	  }
+	  &__from-to input {
+		max-width: 5rem;
+		text-align: center;
+	  }
+	}
+  }
+}

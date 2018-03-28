@@ -9,5 +9,7 @@ namespace Core.Models.DomainModels
     {
         public string Name { get; set; }
         public string LastName { get; set; }
+
+        public ShopingCard ShopingCard { get; set; }
     }
 }

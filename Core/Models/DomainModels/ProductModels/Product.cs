@@ -11,16 +11,8 @@ namespace Core.Models.DomainModels.ProductModels
         public string Category { get; set; }
         [Required]
         public string SubCategory { get; set; }
+        [Required]
+        public string Query { get; set; }
         public Description Description { get; set; }
-
-        //public override bool Equals(object obj)
-        //{
-        //    if (!(obj is IProduct product))
-        //        return false;
-        //    var result = product.Category == Category
-        //        && product.SubCategory == SubCategory
-        //        && product.Description.Equals(Description);
-        //    return result;
-        //}
     }
 }

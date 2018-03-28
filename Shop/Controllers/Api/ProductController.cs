@@ -15,6 +15,10 @@ using Core.Models.DomainModels.ProductModels;
 using Core.Models.ViewModels.RequestViewModels;
 using BLL.Filters.ActionFilters;
 using BLL.Managers;
+using Microsoft.AspNetCore.Identity;
+using System.Dynamic;
+using AutoMapper;
+using Core.Models.DTO;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,53 +29,77 @@ namespace Shop.Controllers.Api
     [ModelStateFilter]
     public class ProductController : Controller
     {
-        AppDbContext _context;
+        private readonly AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
         private readonly ProductManager _productManager;
-        const string GetProductRoute = @"GetProduct/{category}/{subCategory}/q=makers={makers};colors={colors};priceF={priceF};priceT={priceT};folderTypes={folderTypes};copyBookTypes={copyBookTypes};penTypes={penTypes};pageSizes={pageSizes}";
+        private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
 
-        public ProductController(AppDbContext context, IRepositoryAsync<Product> productsRepository, ProductManager productManager)
+        public ProductController(AppDbContext context,
+            IRepositoryAsync<Product> productsRepository,
+            ProductManager productManager,
+            UserManager<User> userManager, IMapper mapper)
         {
             _context = context;
             _productsRepository = productsRepository;
             _productManager = productManager;
+            _userManager = userManager;
+            _mapper = mapper;
         }
-        [HttpGet(GetProductRoute)]
-        public IActionResult GetProduct(string category,
-            string subCategory,
-            string[] makers,
-            string[] colors,
-            string[] folderTypes,
-            string[] copyBookTypes,
-            string[] penTypes,
-            string[] pageSizes,
-            double? priceF = 0,
-            double? priceT = 0)
-        {
-            var possibleProducts = _productManager.CreatePossibleProductsByParams(category,
-                subCategory,
-                this.ArrayParamsToNormalArray(makers),
-                this.ArrayParamsToNormalArray(colors),
-                priceF,
-                priceT,
-                this.ArrayParamsToNormalArray(folderTypes),
-                this.ArrayParamsToNormalArray(copyBookTypes),
-                this.ArrayParamsToNormalArray(penTypes),
-                this.ArrayParamsToNormalArray(pageSizes));
-            var products = _productsRepository
-                .Table
-                .Include(x => x.Description);
-            var result = _productManager.Select(products, possibleProducts);
-            return this.JsonResult(result);
-        }
-        [HttpGet("GetProduct/{category}/{subCategory}")]
-        public IActionResult GetProduct(string category,string subCategory)
+
+        [HttpGet("GetProducts/{category}/{subCategory}")]
+        public IActionResult GetProducts(string category, string subCategory)
         {
             var products = _productsRepository
                 .Table
                 .Include(x => x.Description)
-                .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) && x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
+                .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
+                            x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
             return this.JsonResult(products);
         }
+
+        [HttpGet("GetProducts/{productIds}")]
+        public IActionResult GetProducts(string[] productIds)
+        {
+            var products = _productManager
+                .Select(_productsRepository.Table.Include(x => x.Description),
+                    this.ArrayParamsToNormalArray(productIds));
+            return this.JsonResult(products);
+        }
+
+        [HttpGet("GetProducts/{category}/{subCategory}/{query}")]
+        public IActionResult GetProducts(string category, string subCategory, string query)
+        {
+            var products = _productsRepository
+                .Table
+                .Where(x => x.Category == category && x.SubCategory == subCategory);
+            var result = _productManager.SelectProducts(query, products);
+            //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
+            return this.JsonResult(result);
+        }
+
+        #region POST
+
+        // todo maybe it's no need
+        [HttpPost("AddProductToShopingCard")]
+        public async Task<IActionResult> AddProductToShopingCard([FromBody] UserAddProductToShopingCard model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId) ??
+                       await this.GetUserByIdentityAsync(_userManager);
+            if (user == null)
+                return BadRequest("User don't exist");
+            user.ShopingCard = new ShopingCard
+            {
+                User = user,
+                UserId = user.Id,
+                ProductId = model.ProductId
+            };
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return BadRequest("Can't update user");
+            return Ok(user.ShopingCard);
+        }
+
+        #endregion
     }
 }

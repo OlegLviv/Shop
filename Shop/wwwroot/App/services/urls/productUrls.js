@@ -1,1 +1,3 @@
-export const getProductUrl = (category, subCategory) => `/api/product/GetProduct/${category}/${subCategory}`;
+export const getProductUrlByCatSubCat = (category, subCategory) => `/api/product/GetProducts/${category}/${subCategory}`;
+
+export const getProductsUrlByIds = (ids) => `/api/product/GetProducts/${ids}`;
