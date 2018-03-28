@@ -7,6 +7,10 @@
   &__body {
 	padding: 1rem;
 	&__price {
+	  &__header {
+		display: flex;
+		cursor: pointer;
+	  }
 	  &__from-to {
 		padding-bottom: 1rem;
 		padding-top: 1rem;
@@ -19,4 +23,12 @@
 	  }
 	}
   }
+}
+
+.chevron {
+  cursor: pointer;
+}
+
+.chevron:hover {
+  color: #007bff;
 }

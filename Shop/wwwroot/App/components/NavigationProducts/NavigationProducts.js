@@ -108,7 +108,7 @@ class NavigationProducts extends React.Component {
 		return (
 			<div>
 				{
-					// !this.state.isExpanded ? this.renderNavProd() :
+					!this.state.isExpanded ? this.renderNavProd() :
 					<ExpandedNavigationProducts/>
 				}
 			</div>
