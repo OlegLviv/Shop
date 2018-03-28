@@ -2,7 +2,7 @@ import React from 'react';
 import './NavigationProducts.scss';
 import {Link} from 'react-router-dom';
 import {guid, normalizeNavCategoryToRoute} from "../../utils/utils";
-import {ExpandedNavigationProducts} from "./ExpandedNavigationProducts";
+import ExpandedNavigationProducts from "./ExpandedNavigationProducts";
 
 const stationeries = [
 	'Папки шкільні',
@@ -108,7 +108,8 @@ class NavigationProducts extends React.Component {
 		return (
 			<div>
 				{
-					!this.state.isExpanded ? this.renderNavProd() : <ExpandedNavigationProducts/>
+					// !this.state.isExpanded ? this.renderNavProd() :
+					<ExpandedNavigationProducts/>
 				}
 			</div>
 		);
