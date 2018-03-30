@@ -4,7 +4,7 @@ import {getProductUrlByCatSubCat} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addCookies} from "../../services/cookies";
-import {addObjectQueryToProducts} from "../../services/productsServices";
+import {addObjectQueryToProducts} from "../../utils/productsUtils";
 import NavigationProducts from '../NavigationProducts/NavigationProducts';
 import ExpandedNavigationProducts from "../NavigationProducts/ExpandedNavigationProducts";
 
@@ -28,7 +28,7 @@ class ProductPlace extends React.Component {
 				// todo zh is this need
 				addObjectQueryToProducts(resp.data);
 				this.setState({products: resp.data});
-				console.log('respDm', resp.data);
+				// console.log('respDm', resp.data);
 			})
 			.catch(err => {
 				console.log(err.response);
@@ -42,7 +42,7 @@ class ProductPlace extends React.Component {
 			.then(resp => {
 				addObjectQueryToProducts(resp.data);
 				this.setState({products: resp.data});
-				console.log('respWrp', resp.data);
+				// console.log('respWrp', resp.data);
 			})
 			.catch(err => {
 				console.log(err.response);
@@ -67,7 +67,8 @@ class ProductPlace extends React.Component {
 			<div className="row">
 				<div className="col-xl-3 col-lg-4">
 					{
-						this.state.products.length > 0 ? <ExpandedNavigationProducts/> : <NavigationProducts/>
+						this.state.products.length > 0 ? <ExpandedNavigationProducts products={this.state.products}/> :
+							<NavigationProducts/>
 					}
 				</div>
 				<div className="col-xl-9 col-lg-8">

@@ -10,7 +10,7 @@ class Home extends Component {
 
 
 	render() {
-		console.log('home', this.props.isLogIn);
+		// console.log('home', this.props.isLogIn);
 		return (
 			<div className="home-container">
 				<Switch>

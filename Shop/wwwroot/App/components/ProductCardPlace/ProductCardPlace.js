@@ -6,7 +6,7 @@ import {apiWithoutRedirect} from "../../services/api";
 import {getProductsUrlByIds} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
-import {addObjectQueryToProducts} from "../../services/productsServices";
+import {addObjectQueryToProducts} from "../../utils/productsUtils";
 
 const renderNoProducts = () => {
 	return (

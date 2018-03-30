@@ -39,3 +39,5 @@ export const normalizeNavCategoryToRoute = (subCategory) => {
 			return 'figures';
 	}
 };
+
+export const objectToArrayKeys = (obj) => Object.keys(obj).map(i => i);
