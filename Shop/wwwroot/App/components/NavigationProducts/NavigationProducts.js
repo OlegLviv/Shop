@@ -2,7 +2,6 @@ import React from 'react';
 import './NavigationProducts.scss';
 import {Link} from 'react-router-dom';
 import {guid, normalizeNavCategoryToRoute} from "../../utils/utils";
-import ExpandedNavigationProducts from "./ExpandedNavigationProducts";
 
 const stationeries = [
 	'Папки шкільні',
@@ -31,9 +30,6 @@ const books = [
 class NavigationProducts extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			isExpanded: false
-		}
 	}
 
 	renderNavProd = () => {
@@ -61,9 +57,6 @@ class NavigationProducts extends React.Component {
 						<div className="dropdown-menu">
 							{
 								stationeries.map(item => <Link
-									onClick={() => {
-										this.setState({isExpanded: true})
-									}}
 									key={guid()}
 									className="dropdown-item"
 									to={`/products/stationery/${normalizeNavCategoryToRoute(item)}`}>{item}</Link>)
@@ -108,8 +101,7 @@ class NavigationProducts extends React.Component {
 		return (
 			<div>
 				{
-					!this.state.isExpanded ? this.renderNavProd() :
-					<ExpandedNavigationProducts/>
+					this.renderNavProd()
 				}
 			</div>
 		);

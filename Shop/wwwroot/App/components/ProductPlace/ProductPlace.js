@@ -5,6 +5,9 @@ import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addCookies} from "../../services/cookies";
 import {addObjectQueryToProducts} from "../../services/productsServices";
+import NavigationProducts from '../NavigationProducts/NavigationProducts';
+import ExpandedNavigationProducts from "../NavigationProducts/ExpandedNavigationProducts";
+
 
 const getCategory = (props) => props.match.params.category;
 const getSubCategory = (props) => props.match.params.subCategory;
@@ -61,19 +64,29 @@ class ProductPlace extends React.Component {
 
 	render() {
 		return (
-			<div className="container-fluid container-products">
-				<div className="row container-products__row">
-					{this.state.products.map(item => {
-						return (
-							<div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 container-products__row__item">
-								<ProductCard
-									product={item}
-									key={item.id}
-									onLikeButClick={this.onLikeButClick}
-									onProductCardButClick={this.onProductCardButClick}/>
-							</div>
-						)
-					})}
+			<div className="row">
+				<div className="col-xl-3 col-lg-4">
+					{
+						this.state.products.length > 0 ? <ExpandedNavigationProducts/> : <NavigationProducts/>
+					}
+				</div>
+				<div className="col-xl-9 col-lg-8">
+					<div className="container-fluid container-products">
+						<div className="row container-products__row">
+							{this.state.products.map(item => {
+								return (
+									<div
+										className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 container-products__row__item">
+										<ProductCard
+											product={item}
+											key={item.id}
+											onLikeButClick={this.onLikeButClick}
+											onProductCardButClick={this.onProductCardButClick}/>
+									</div>
+								)
+							})}
+						</div>
+					</div>
 				</div>
 			</div>
 		);
