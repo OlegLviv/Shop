@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Core.Models.DomainModels.ProductModels
+namespace Core.Models.DomainModels
 {
-    public class Product : BaseEntity, IProduct
+    public class Category
     {
         [Required]
-        public string Category { get; set; }
+        public string Name { get; set; }
         [Required]
         public string SubCategory { get; set; }
         [Required]
-        public string Query { get; set; }
-        public Description Description { get; set; }
+        public string ViewName { get; set; }
+        [Required]
+        public string ViewSubCategoryName { get; set; }
     }
 }

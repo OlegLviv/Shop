@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Core.Models.DomainModels;
 
-namespace Core.Models.DTO
+namespace Core.Models.DomainModels
 {
-    public class ProductDto : IProduct
+    public class Product : BaseEntity, IProduct
     {
         [Required]
         public string Category { get; set; }

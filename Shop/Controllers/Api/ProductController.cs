@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using Common.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Core.Interfaces;
-using Core.Models.DomainModels.ProductModels;
 using Core.Models.ViewModels.RequestViewModels;
 using BLL.Filters.ActionFilters;
 using BLL.Managers;
@@ -52,7 +51,6 @@ namespace Shop.Controllers.Api
         {
             var products = _productsRepository
                 .Table
-                .Include(x => x.Description)
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
             return this.JsonResult(products);
@@ -62,7 +60,7 @@ namespace Shop.Controllers.Api
         public IActionResult GetProducts(string[] productIds)
         {
             var products = _productManager
-                .Select(_productsRepository.Table.Include(x => x.Description),
+                .Select(_productsRepository.Table,
                     this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
         }

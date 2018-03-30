@@ -54,7 +54,7 @@ class ProductCardPlace extends React.Component {
 		const {products, productsCounts} = this.state;
 		let total = 0;
 		for (let i = 0; i < products.length; i++) {
-			total += products[i].objectQuery.price * productsCounts[i];
+			total += products[i].price * productsCounts[i];
 		}
 		return total;
 	};
@@ -111,25 +111,25 @@ class ProductCardPlace extends React.Component {
 												<img className="mr-2 product-img"
 													 src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
 												<div className="media-body">
-													<h5>{item.objectQuery.name}</h5>
+													<h5>{item.name}</h5>
 													<div className="my-3">Kod</div>
 												</div>
 											</div>
 										</td>
-										<td data-label="Ціна"><h5>{item.objectQuery.price}</h5></td>
+										<td data-label="Ціна"><h5>{item.price}</h5></td>
 										<td data-label="Кількість">
 											<div className="btn-group">
-												<button type="button" className="btn btn-secondary"
+												<button type="button" className="btn btn-dark"
 														onClick={() => this.onDecProductsCount(i)}>-
 												</button>
 												<input type="number" value={this.state.productsCounts[i]}/>
-												<button type="button" className="btn btn-secondary"
+												<button type="button" className="btn btn-dark"
 														onClick={() => this.onIncProductsCount(i)}>+
 												</button>
 											</div>
 										</td>
 										<td data-label="Вартість">
-											<h5>{`${item.objectQuery.price * this.state.productsCounts[i]} грн`}</h5>
+											<h5>{`${item.price * this.state.productsCounts[i]} грн`}</h5>
 										</td>
 									</tr>
 								)
