@@ -6,8 +6,8 @@ import {Icon} from 'react-fa';
 import {objectToArrayKeys} from "../../utils/utils";
 import {productColors} from "../../utils/productsUtils";
 
-const maxPrice = 500;
-const minPrice = 20;
+const maxPrice = 1000;
+const minPrice = 0;
 
 const getProductArrayQueryWithMaxProps = (products) => {
     let maxObjArr = objectToArrayKeys(products[0].objectQuery);

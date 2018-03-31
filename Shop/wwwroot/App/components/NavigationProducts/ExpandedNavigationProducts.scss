@@ -42,11 +42,12 @@
           justify-content: space-between;
         }
         &__item input {
-          -webkit-transform: scale(1.2);
-          -moz-transform: scale(1.2);
-          -ms-transform: scale(1.2);
-          -o-transform: scale(1.2);
-          transform: scale(1.2);
+          border: none;
+          -webkit-transform: scale(2);
+          -moz-transform: scale(2);
+          -ms-transform: scale(2);
+          -o-transform: scale(2);
+          transform: scale(2);
           cursor: pointer;
         }
       }
