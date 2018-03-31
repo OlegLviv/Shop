@@ -33,12 +33,12 @@ class ProductCard extends React.Component {
                      src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
                      alt="Card image cap"/>
                 <div className="card-body">
-                    <Link to={`product/${this.props.product.id}`}>
+                    <Link to={`/product/${this.props.product.id}`}>
                         <h5 className="card-title text-center">{this.props.product.name}</h5>
                     </Link>
                     <h4 className="text-center">{`${this.props.product.price} грн`}</h4>
                     <div className="card__footer">
-                        <button className="btn btn-primary"
+                        <button className="btn btn-dark"
                                 onClick={this.onProductCardButClick}
                                 disabled={!this.state.isEnableInProductCardBut}>{this.state.inProductCardTextBut}</button>
                         <button className="btn btn-info" onClick={this.onLikeButClick}>В обране</button>

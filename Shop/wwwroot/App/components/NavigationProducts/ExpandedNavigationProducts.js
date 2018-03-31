@@ -80,7 +80,7 @@ class ExpandedNavigationProducts extends React.Component {
         if (products.length === 0)
             return;
         const arrayQueryWithMaxProps = getProductArrayQueryWithMaxProps(products);
-        console.log('max: ', arrayQueryWithMaxProps);
+        // console.log('max: ', arrayQueryWithMaxProps);
         return arrayQueryWithMaxProps.map(item => {
             switch (item) {
                 case 'color':

@@ -46,6 +46,18 @@ namespace Shop.Controllers.Api
             _mapper = mapper;
         }
 
+        [HttpGet("GetProduct/{productId}")]
+        public async Task<IActionResult> GetProduct(string productId)
+        {
+            if (string.IsNullOrEmpty(productId))
+                return BadRequest("Incorrect productId");
+            var product = await _productsRepository
+                .GetByIdAsync(productId);
+            if (product == null)
+                NotFound("Product with this id not found");
+            return this.JsonResult(product);
+        }
+
         [HttpGet("GetProducts/{category}/{subCategory}")]
         public IActionResult GetProducts(string category, string subCategory)
         {

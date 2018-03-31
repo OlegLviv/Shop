@@ -12,8 +12,8 @@ namespace DAL.Repositories
 {
     public class RepositoryAsync<TEntity> : IRepositoryAsync<TEntity> where TEntity : class, IBaseEntity
     {
-        readonly AppDbContext _context;
-        DbSet<TEntity> _entities;
+        private readonly AppDbContext _context;
+        private DbSet<TEntity> _entities;
 
         public RepositoryAsync(AppDbContext context)
         {
@@ -31,20 +31,14 @@ namespace DAL.Repositories
             }
         }
 
-        public IQueryable<TEntity> Table
-        {
-            get
-            {
-                return this.Entities;
-            }
-        }
+        public IQueryable<TEntity> Table => this.Entities;
 
-        public async virtual Task<TEntity> GetByIdAsync(string id)
+        public virtual async Task<TEntity> GetByIdAsync(string id)
         {
             return await this.Entities.FindAsync(id);
         }
 
-        public async virtual Task<int> InsertAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<int> InsertAsync(IEnumerable<TEntity> entities)
         {
             try
             {
@@ -58,7 +52,7 @@ namespace DAL.Repositories
             }
         }
 
-        public async virtual Task<int> UpdateAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<int> UpdateAsync(IEnumerable<TEntity> entities)
         {
             try
             {
@@ -75,7 +69,7 @@ namespace DAL.Repositories
                 return -1;
             }
         }
-        public async virtual Task<int> DeleteAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<int> DeleteAsync(IEnumerable<TEntity> entities)
         {
             try
             {
