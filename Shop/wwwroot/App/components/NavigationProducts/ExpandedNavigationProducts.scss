@@ -1,22 +1,71 @@
 .expanded-nav {
   &__header {
-	background: #252525;
-	color: white;
-	padding: .75rem 1.25rem;
+    background: #252525;
+    color: white;
+    padding: .75rem 1.25rem;
   }
   &__body {
-	padding: 1rem;
-	&__price {
-	  &__from-to {
-		padding-bottom: 1rem;
-		padding-top: 1rem;
-		display: flex;
-		justify-content: space-evenly;
-	  }
-	  &__from-to input {
-		max-width: 5rem;
-		text-align: center;
-	  }
-	}
+    padding: 1rem;
+    &__price {
+      &__header {
+        display: flex;
+        cursor: pointer;
+      }
+      &__from-to {
+        padding-bottom: 1rem;
+        padding-top: 1rem;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+      }
+      &__from-to input {
+        max-width: 5rem;
+        text-align: center;
+      }
+    }
+    &__filter-name {
+      &__header {
+        padding-top: 1rem;
+        display: flex;
+        cursor: pointer;
+      }
+      &__colors {
+        padding-bottom: 1rem;
+        padding-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+      }
+      &__suggest-cont {
+        &__item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        &__item input {
+          border: none;
+          -webkit-transform: scale(2);
+          -moz-transform: scale(2);
+          -ms-transform: scale(2);
+          -o-transform: scale(2);
+          transform: scale(2);
+          cursor: pointer;
+        }
+      }
+    }
   }
+}
+
+.chevron {
+  cursor: pointer;
+}
+
+.chevron:hover {
+  color: #007bff;
+}
+
+.color-div {
+  min-width: 2rem;
+  min-height: 1rem;
+  cursor: pointer;
+  border: 1px #d3d3d3 solid;
 }

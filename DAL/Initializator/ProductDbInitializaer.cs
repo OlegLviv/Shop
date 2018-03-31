@@ -1,9 +1,6 @@
-﻿using Core.Models.DomainModels.ProductModels;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Core.Models.DomainModels;
 
 namespace DAL.Initializator
 {
@@ -26,151 +23,67 @@ namespace DAL.Initializator
             var product1 = new Product
             {
                 Category = "Stationery",
-                SubCategory = "schoolFolders"
+                SubCategory = "schoolFolders",
+                Query = "color=white;height=30",
+                Price = 30,
+                Name = "Simple folder1"
             };
             var product2 = new Product
             {
                 Category = "Stationery",
                 SubCategory = "schoolFolders",
-                Query = "name=asd;color=white"
+                Query = "color=white;width=40",
+                Price = 54,
+                Name = "Simple folder2"
             };
             var product3 = new Product
             {
                 Category = "Stationery",
                 SubCategory = "ForSchool",
-                Query = "name=asd;color=red"
+                Query = "color=red;type=30",
+                Price = 543,
+                Name = "Simple folder2"
             };
             var product4 = new Product
             {
                 Category = "Stationery",
                 SubCategory = "copyBooks",
-                Query = "name=name;type=1;color=red"
+                Query = "type=1;color=red",
+                Price = 545,
+                Name = "Simple cbb"
             };
             var product5 = new Product
             {
                 Category = "Stationery",
                 SubCategory = "copyBooks",
-                Query = "name=name2"
+                Query = "type=typ1;color=red",
+                Price = 534,
+                Name = "Simple cb3"
             };
             var product6 = new Product
             {
                 Category = "Stationery",
                 SubCategory = "copyBooks",
-                Query = "name=nive;type=1"
+                Query = "type=1;color=green",
+                Price = 23,
+                Name = "Simple cb"
             };
             var product7 = new Product
             {
                 Category = "Stationery",
                 SubCategory = "copyBooks",
-                Query = "name=name2;type=1"
+                Query = "color=white;type=1",
+                Price = 546,
+                Name = "Simple cb"
             };
             var product8 = new Product
             {
                 Category = "Stationery",
                 SubCategory = "copyBooks",
-                Query = "name=name1;color=black"
+                Query = "typ=2;color=black",
+                Price = 54,
+                Name = "Simple cb"
             };
-            var description1 = new Description
-            {
-                Maker = "Maker1",
-                Price = 300,
-                Product = product1,
-                ProductId = product1.Id,
-                Color = "black",
-                Name = "Folder",
-                FolderType = "ForWork",
-                Descriptions = "asdasasd"
-            };
-            var description2 = new Description
-            {
-                Maker = "Maker2",
-                Price = 340,
-                Product = product2,
-                ProductId = product2.Id,
-                Color = "red",
-                Name = "Folder smth",
-                FolderType = "ForWork",
-                Descriptions = "asdasdfafdf afsa "
-            };
-            var description3 = new Description
-            {
-                Maker = "Maker3",
-                Price = 234,
-                Name = "Folder",
-                Product = product3,
-                ProductId = product3.Id,
-                Color = "black",
-                FolderType = "ForCopyBook",
-                Descriptions = "asda asd asd"
-            };
-            var description4 = new Description
-            {
-                Maker = "Maker3",
-                Name ="copy book",
-                Price = 234,
-                Product = product4,
-                ProductId = product4.Id,
-                Color = "black",
-                CopyBookType = "Зошити шкільні",
-                PageSize = "24",
-                Descriptions = "asda asd asd"
-            };
-            var description5 = new Description
-            {
-                Maker = "Maker3",
-                Name = "copy book",
-                Price = 24,
-                Product = product5,
-                ProductId = product5.Id,
-                Color = "black",
-                CopyBookType = "Зошити шкільні asd",
-                PageSize = "24",
-                Descriptions = "asda asd asd"
-            };
-            var description6 = new Description
-            {
-                Maker = "Maker3",
-                Name = "copy book",
-                Price = 44,
-                Product = product6,
-                ProductId = product6.Id,
-                Color = "green",
-                CopyBookType = "Зошити шкільні asd",
-                PageSize = "24",
-                Descriptions = "asda asd asd"
-            };
-            var description7 = new Description
-            {
-                Maker = "Maker4",
-                Name = "copy book asd",
-                Price = 45,
-                Product = product7,
-                ProductId = product7.Id,
-                Color = "white",
-                CopyBookType = "Зошити шкільні asd",
-                PageSize = "24",
-                Descriptions = "asda asd asd"
-            };
-            var description8 = new Description
-            {
-                Maker = "Maker4",
-                Name = "copy book c",
-                Price = 56,
-                Product = product8,
-                ProductId = product8.Id,
-                Color = "yellow",
-                CopyBookType = "Зошити шкільні asd",
-                PageSize = "24",
-                Descriptions = "asda asd asd"
-            };
-            product1.Description = description1;
-            product2.Description = description2;
-            product3.Description = description3;
-            product4.Description = description4;
-            product5.Description = description5;
-            product6.Description = description6;
-            product7.Description = description7;
-            product8.Description = description8;
 
             products.Add(product1);
             products.Add(product2);

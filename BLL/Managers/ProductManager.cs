@@ -1,6 +1,6 @@
-﻿using Core.Models.DomainModels.ProductModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Core.Models.DomainModels;
 
 namespace BLL.Managers
 {

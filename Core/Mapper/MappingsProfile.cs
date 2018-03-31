@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
-using Core.Models.DomainModels.ProductModels;
+using Core.Models.DomainModels;
 using Core.Models.DTO;
 
 namespace Core.Mapper
