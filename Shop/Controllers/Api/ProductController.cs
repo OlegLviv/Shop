@@ -92,6 +92,17 @@ namespace Shop.Controllers.Api
             return this.JsonResult(products);
         }
 
+        [HttpGet("Shearch/{name}")]
+        public IActionResult Shearch(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return BadRequest("Incorrect name");
+            var products = _productsRepository
+                .Table
+                .Where(x => x.Name.ToLower().Contains(name.ToLower()));
+            return this.JsonResult(products);
+        }
+
         #region POST
 
         // todo maybe it's no need
