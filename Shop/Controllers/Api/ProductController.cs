@@ -56,6 +56,21 @@ namespace Shop.Controllers.Api
             return this.JsonResult(products);
         }
 
+        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}")]
+        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query)
+        {
+            var products = _productsRepository
+                .Table
+                .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
+                            x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase) &&
+                            x.Price >= priceFrom && x.Price <= priceTo);
+            if (string.IsNullOrEmpty(query))
+                return this.JsonResult(products);
+            var result = _productManager.SelectProducts(query, products);
+            //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
+            return this.JsonResult(result);
+        }
+
         [HttpGet("GetProducts/{productIds}")]
         public IActionResult GetProducts(string[] productIds)
         {
@@ -63,17 +78,6 @@ namespace Shop.Controllers.Api
                 .Select(_productsRepository.Table,
                     this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
-        }
-
-        [HttpGet("GetProducts/{category}/{subCategory}/{query}")]
-        public IActionResult GetProducts(string category, string subCategory, string query)
-        {
-            var products = _productsRepository
-                .Table
-                .Where(x => x.Category == category && x.SubCategory == subCategory);
-            var result = _productManager.SelectProducts(query, products);
-            //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
-            return this.JsonResult(result);
         }
 
         #region POST

@@ -33,7 +33,7 @@ class ProductCard extends React.Component {
 					 alt="Card image cap"/>
 				<div className="card-body">
 					<h5 className="card-title text-center">{this.props.product.name}</h5>
-					<h6 className="card-text text-center">{`${this.props.product.price} грн`}</h6>
+					<h6 className="text-center">{`${this.props.product.price} грн`}</h6>
 					<div className="card__footer">
 						<button className="btn btn-primary"
 								onClick={this.onProductCardButClick}
