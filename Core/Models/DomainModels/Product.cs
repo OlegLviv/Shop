@@ -5,6 +5,9 @@ namespace Core.Models.DomainModels
     public class Product : BaseEntity, IProduct
     {
         [Required]
+        [MaxLength(128)]
+        public string Name { get; set; }
+        [Required]
         public string Category { get; set; }
         [Required]
         public string SubCategory { get; set; }
@@ -12,7 +15,7 @@ namespace Core.Models.DomainModels
         public string Query { get; set; }
         [Required]
         public double Price { get; set; }
-        [Required]
-        public string Name { get; set; }
+        public string Description { get; set; }
+        public Comment Comment { get; set; }
     }
 }

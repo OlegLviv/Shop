@@ -3,9 +3,13 @@
   &__row {
     &__product-img-container {
       &__main-img {
-        max-height: 25rem;
         display: flex;
         justify-content: center;
+      }
+      &__main-img img {
+        max-height: 25rem;
+        max-width: 20rem;
+        min-width: 15rem;
       }
       &__sm-img {
         display: flex;
@@ -32,18 +36,36 @@
       }
     }
     &__info-container {
+      padding-top: 2rem;
+      padding-left: 3rem;
+      background: #f3f3f3;
+      border-radius: 5px;
       &__main-info {
         &__price {
           display: flex;
           align-items: baseline;
         }
       }
+      &__to-card {
+        &__btn-to-card button {
+          margin: 2rem 2rem 2rem 0;
+        }
+      }
     }
   }
 }
 
-h4 {
+.nav-item-dev {
+  cursor: pointer;
+}
+
+.h4-dev {
   color: #252525;
+  padding-right: 3rem;
+}
+
+.card-header-tabs {
+  background: #f3f3f3;
 }
 
 h3 {

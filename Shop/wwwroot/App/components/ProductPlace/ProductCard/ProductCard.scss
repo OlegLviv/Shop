@@ -1,4 +1,4 @@
-.card {
+.card-dev {
   box-shadow: 1px 1px 10px 10px rgba(0, 0, 0, 0.05);
   transition-property: all;
   transition-duration: 1s;
@@ -9,7 +9,7 @@
   }
 }
 
-.card:hover {
+.card-dev:hover {
   transform: scale(1.1);
   -webkit-transform: scale(1.1);
   z-index: 10 !important;
@@ -36,14 +36,14 @@ h5 {
   text-shadow: 1px 2px 5px #aaa
 }
 
-h4{
+h4 {
   color: #10498A;
   font-weight: 700;
   text-shadow: 1px 2px 5px #aaa
 }
 
 @media (max-width: 1230px) {
-  .card {
+  .card-dev {
     &__footer {
       flex-direction: column;
     }
@@ -54,7 +54,7 @@ h4{
 }
 
 @media (max-width: 990px) {
-  .card {
+  .card-dev {
     &__footer {
       flex-direction: row;
     }
@@ -65,7 +65,7 @@ h4{
 }
 
 @media (max-width: 760px) {
-  .card {
+  .card-dev {
     &__footer {
       flex-direction: column;
     }
@@ -76,12 +76,12 @@ h4{
 }
 
 @media (max-width: 576px) {
-  .card {
+  .card-dev {
     &__footer {
       flex-direction: row;
     }
   }
-  .btn {
+  .card-dev {
     margin-bottom: 0;
   }
 }
