@@ -30,10 +30,10 @@ export const NavMenu = () => {
 				<button className="navbar-toggler" type="button" data-toggle="collapse"
 						data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 						aria-expanded="false" aria-label="Toggle navigation">
-					<span className="navbar-toggler-icon"></span>
+					<span className="navbar-toggler-icon"/>
 				</button>
 				<div className="collapse navbar-collapse menu-container__navbar-right" id="navbarSupportedContent">
-					<div></div>
+					<div/>
 					<div className="form-inline my-2">
 						<input className="form-control mr-sm-2 menu-container__navbar-right__search" type="search"
 							   placeholder="Search"

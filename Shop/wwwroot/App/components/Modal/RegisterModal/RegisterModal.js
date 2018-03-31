@@ -101,7 +101,7 @@ class RegisterModal extends React.Component {
 								   onChange={this.onChangeName}/>
 						</div>
 						<div className="form-group">
-							<label htmlFor="inputLastName">Фамілія</label>
+							<label htmlFor="inputLastName">Прізвище</label>
 							<input type="text"
 								   className="form-control"
 								   id="inputLastName"

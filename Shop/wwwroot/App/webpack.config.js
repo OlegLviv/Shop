@@ -1,7 +1,4 @@
-﻿require("babel-core").transform("code", {
-	presets: ["es2017"]
-});
-module.exports = {
+﻿module.exports = {
 	context: __dirname,
 	entry: './index.js',
 	output: {
