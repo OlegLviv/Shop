@@ -67,7 +67,7 @@ namespace Shop.Controllers.Api
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
             return this.JsonResult(products);
         }
-
+        [ResponseCache(Duration = 60,Location = ResponseCacheLocation.Client)]
         [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}")]
         public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query)
         {

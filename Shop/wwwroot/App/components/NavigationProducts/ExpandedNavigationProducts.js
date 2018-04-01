@@ -134,7 +134,7 @@ class ExpandedNavigationProducts extends React.Component {
                                 onChange={this.onRangeChangeValue}/>
                         </div>}
                     </div>
-                    {this.renderFiltersByQuery()}
+                    {/*{this.renderFiltersByQuery()}*/}
                 </div>
             </div>
         )

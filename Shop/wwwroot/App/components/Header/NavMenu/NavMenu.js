@@ -41,6 +41,7 @@ class NavMenu extends React.Component {
         }
     }
 
+    // todo need fix bug if input empty
     onChangeAutocomplete = (e) => {
         const {value} = e.target;
         apiWithoutRedirect()
