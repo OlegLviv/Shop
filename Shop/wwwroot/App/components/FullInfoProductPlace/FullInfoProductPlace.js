@@ -15,12 +15,22 @@ class FullInfoProductPlace extends React.Component {
         }
     }
 
+    // todo need add catch
     componentDidMount() {
         apiWithoutRedirect()
             .get(getProductUrlById(getProductId(this.props)))
             .then(resp => {
                 this.setState({product: resp.data});
-            })
+            });
+    }
+
+    // todo need add catch
+    componentWillReceiveProps(nextProps) {
+        apiWithoutRedirect()
+            .get(getProductUrlById(getProductId(nextProps)))
+            .then(resp => {
+                this.setState({product: resp.data});
+            });
     }
 
     onProductCountDec = () => {
@@ -101,11 +111,6 @@ class FullInfoProductPlace extends React.Component {
             </div>
         )
     };
-
-
-    // componentWillReceiveProps(nextProps) {
-    //
-    // }
 
     render() {
         return (

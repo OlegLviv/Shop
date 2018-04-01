@@ -92,8 +92,8 @@ namespace Shop.Controllers.Api
             return this.JsonResult(products);
         }
 
-        [HttpGet("Shearch/{name}")]
-        public IActionResult Shearch(string name)
+        [HttpGet("GetProducts/{name}")]
+        public IActionResult GetProducts(string name)
         {
             if (string.IsNullOrEmpty(name))
                 return BadRequest("Incorrect name");

@@ -4,6 +4,8 @@ import {Icon} from 'react-fa';
 import {Link} from 'react-router-dom';
 import {getCookie} from '../../../services/cookies';
 import Autocomplete from 'react-autocomplete';
+import {apiWithoutRedirect} from "../../../services/api";
+import {getProductsUrlByName} from "../../../services/urls/productUrls";
 
 const getLikeProductsCount = () => {
     const prodCookie = getCookie('likeProducts');
@@ -11,6 +13,15 @@ const getLikeProductsCount = () => {
         return 0;
     }
     return prodCookie.split(',').length;
+};
+
+const autocompleteMenuStyle = {
+    boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+    position: 'fixed',
+    overflow: 'auto',
+    maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
+    'z-index': '10',
+    'min-width': '20rem'
 };
 
 const getProductCardItemCount = () => {
@@ -25,19 +36,32 @@ class NavMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchVal: ''
+            searchVal: '',
+            products: []
         }
     }
 
     onChangeAutocomplete = (e) => {
-        this.setState({searchVal: e.target.value});
+        const {value} = e.target;
+        apiWithoutRedirect()
+            .get(getProductsUrlByName(value))
+            .then(reps => {
+                this.setState({products: reps.data});
+            });
+        this.setState({searchVal: value});
     };
 
     onSelectAutocomplete = (val) => {
         this.setState({searchVal: val})
     };
 
-    renderAutocompleteItem = (productId, title) => <Link to={`/product/${productId}`}>{title}</Link>;
+    renderAutocompleteItem = ({id, name}) => {
+        return (
+            <div className="menu-container__navbar-right__search__search-item">
+                <Link to={`/product/${id}`}>{name}</Link>
+            </div>
+        );
+    };
 
     render() {
         const likeProdCount = getLikeProductsCount();
@@ -59,16 +83,14 @@ class NavMenu extends React.Component {
                             {/*aria-label="Search"/>*/}
                             <Autocomplete
                                 inputProps={({
-                                    class: 'form-control mr-sm-2 menu-container__navbar-right__search'
+                                    class: 'form-control mr-sm-2 menu-container__navbar-right__search',
+                                    placeholder: 'Пошук товарів...'
                                 })}
-                                getItemValue={(item) => item.label}
-                                items={[
-                                    {label: 'apple'},
-                                    {label: 'banana'},
-                                    {label: 'pear'}
-                                ]}
-                                renderItem={(item, isHighlighted) => {
-                                    return this.renderAutocompleteItem(item, item.label);
+                                menuStyle={autocompleteMenuStyle}
+                                getItemValue={(product) => product.name}
+                                items={this.state.products}
+                                renderItem={(product, isHighlighted) => {
+                                    return this.renderAutocompleteItem(product);
                                 }
                                 }
                                 value={this.state.searchVal}

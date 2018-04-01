@@ -4,4 +4,6 @@ export const getProductUrlById = (productId) => `/api/product/GetProduct/${produ
 
 export const getProductsUrlByIds = (ids) => `/api/product/GetProducts/${ids}`;
 
+export const getProductsUrlByName = (name) => `/api/product/GetProducts/${name}`;
+
 export const getProductsUrlByQuery = (category, subCategory, priceFrom, priceTo, query) => `/api/product/GetProducts/${category}/${subCategory}/${priceFrom}/${priceTo}/${query}`;
