@@ -2,6 +2,7 @@ import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
 import {getProductUrlById} from "../../services/urls/productUrls";
 import './FullInfoProductPlace.scss';
+import {Spinner} from "../Spinner/Spinner";
 
 const getProductId = (props) => props.match.params.productId;
 
@@ -52,6 +53,7 @@ class FullInfoProductPlace extends React.Component {
         );
     };
 
+    //todo need add characteristics logic
     renderCharacteristics = () => {
         return (
             <div className="card-body-text">
@@ -61,6 +63,7 @@ class FullInfoProductPlace extends React.Component {
         );
     };
 
+    //todo need add feedback logic
     renderFeedback = () => {
         return (
             <div className="card-body-text">
@@ -165,7 +168,7 @@ class FullInfoProductPlace extends React.Component {
                         </div>
                         {this.renderNavAboutProduct()}
                     </div>
-                    : <div>loading</div>}
+                    : <Spinner/>}
             </div>
         )
     }
