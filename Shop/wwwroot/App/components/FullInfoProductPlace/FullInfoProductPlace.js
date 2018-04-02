@@ -110,7 +110,6 @@ class FullInfoProductPlace extends React.Component {
 
 	//todo need add feedback logic
 	renderFeedback = () => {
-		console.log(this.state.productFeedback);
 		if (!this.state.productFeedback) {
 			return <Spinner/>
 		}
@@ -129,7 +128,7 @@ class FullInfoProductPlace extends React.Component {
 										className="container-c-b__card-body-content__comment__userName">{`${item.userName} ${item.userLastName}`}
 									</div>
 									<div
-										className="container-c-b__card-body-content__comment__date">{item.date}</div>
+										className="container-c-b__card-body-content__comment__date">{new Date(item.date * 1000).toDateString()}</div>
 									<div
 										className="container-c-b__card-body-content__comment__commentBody">{item.body}</div>
 								</div>
@@ -163,7 +162,7 @@ class FullInfoProductPlace extends React.Component {
 				break;
 		}
 		return (
-			<div className="card text-center">
+			<div className="card text-center card-about-prod">
 				<div className="card-header">
 					<ul className="nav nav-tabs card-header-tabs">
 						<li className="nav-item nav-item-dev"

@@ -36,6 +36,7 @@
 	  }
 	}
 	&__info-container {
+	  border: 1px #d3d3d3 solid;
 	  padding-top: 2rem;
 	  padding-left: 3rem;
 	  background: #f3f3f3;
@@ -56,8 +57,8 @@
 }
 
 .container-c-b {
+  margin-top: 2rem;
   &__card-body-content {
-	margin-top: 2rem;
 	display: flex;
 	justify-content: center;
 	&__comment {
@@ -65,8 +66,8 @@
 	  transition-duration: .7s;
 	  padding: 2rem 3rem 2rem 3rem;
 	  background: #f3f3f3;
-	  max-width: 35rem;
-	  min-width: 30rem;
+	  max-width: 30rem;
+	  min-width: 25rem;
 	  min-height: 10rem;
 	  border-radius: 10px;
 	  box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, 0.1);
@@ -108,10 +109,26 @@
   padding-right: 3rem;
 }
 
+.card-about-prod {
+  margin-top: 3rem;
+}
+
 .card-header {
   background: #f3f3f3;
 }
 
 h3 {
   color: #10498A;
+}
+
+@media screen and (max-width: 760px) {
+  .container-c-b {
+	&__card-body-content {
+	  &__comment {
+		min-height: 8rem;
+		max-width: 20rem;
+		min-width: 17rem;
+	  }
+	}
+  }
 }
