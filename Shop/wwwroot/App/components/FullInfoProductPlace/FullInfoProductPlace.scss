@@ -57,16 +57,29 @@
 
 .container-c-b {
   &__card-body-content {
+	margin-top: 2rem;
 	display: flex;
 	justify-content: center;
 	&__comment {
+	  transition-property: all;
+	  transition-duration: .7s;
 	  padding: 2rem 3rem 2rem 3rem;
 	  background: #f3f3f3;
-	  max-width: 20rem;
+	  max-width: 35rem;
+	  min-width: 30rem;
+	  min-height: 10rem;
 	  border-radius: 10px;
 	  box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, 0.1);
+	  border: 1px #d3d3d3 solid;
+	  &__date {
+		font-size: 10px;
+	  }
 	  &__userName {
 		font-weight: 500;
+		font-size: 20px;
+	  }
+	  &__commentBody {
+		font-size: 16px;
 	  }
 	}
   }
@@ -76,8 +89,13 @@
 	justify-content: center;
   }
   &__submit-box textarea {
-	max-width: 25rem;
+	max-width: 30rem;
 	max-height: 10rem;
+	min-height: 3rem;
+  }
+  &__submit-box button {
+	margin-left: 1rem;
+	max-height: 3rem;
   }
 }
 

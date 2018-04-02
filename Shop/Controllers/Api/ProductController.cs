@@ -11,13 +11,13 @@ using Newtonsoft.Json;
 using Common.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Core.Interfaces;
-using Core.Models.ViewModels.RequestViewModels;
 using BLL.Filters.ActionFilters;
 using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
 using System.Dynamic;
 using AutoMapper;
 using Core.Models.DTO;
+using Core.Models.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -46,6 +46,8 @@ namespace Shop.Controllers.Api
             _mapper = mapper;
         }
 
+        #region GET
+
         [HttpGet("GetProduct/{productId}")]
         public async Task<IActionResult> GetProduct(string productId)
         {
@@ -67,7 +69,7 @@ namespace Shop.Controllers.Api
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
             return this.JsonResult(products);
         }
-        [ResponseCache(Duration = 60,Location = ResponseCacheLocation.Client)]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}")]
         public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query)
         {
@@ -103,6 +105,39 @@ namespace Shop.Controllers.Api
             return this.JsonResult(products);
         }
 
+        [HttpGet("GetProductFeedback/{productId}")]
+        public async Task<IActionResult> GetProductFeedback(string productId)
+        {
+            if (string.IsNullOrEmpty(productId))
+                return BadRequest("Incorrent id");
+            var product = _productsRepository
+                .Table
+                .Include(x => x.Feedbacks)
+                .FirstOrDefault(x => x.Id == productId);
+
+            if (product == null)
+                return BadRequest("Product don't exist");
+
+            var productFeedbacks = product.Feedbacks;
+            var feedbacks = new List<FeedbackDto>(productFeedbacks.Count);
+            foreach (var productFeedback in productFeedbacks)
+            {
+                var user = await _userManager.FindByIdAsync(productFeedback.UserId);
+                if (user == null)
+                    return BadRequest("Incorrent user id");
+                feedbacks.Add(new FeedbackDto
+                {
+                    UserName = user.Name,
+                    UserLastName = user.LastName,
+                    Body = productFeedback.Body,
+                    Date = ((DateTimeOffset)productFeedback.Date).ToUnixTimeSeconds()
+                });
+            }
+            return this.JsonResult(feedbacks.OrderBy(x => x.Date));
+        }
+
+        #endregion
+
         #region POST
 
         // todo maybe it's no need
@@ -123,6 +158,49 @@ namespace Shop.Controllers.Api
             if (!result.Succeeded)
                 return BadRequest("Can't update user");
             return Ok(user.ShopingCard);
+        }
+
+        #endregion
+
+        #region PUT
+
+        [HttpPut("SendFeedback")]
+        public async Task<IActionResult> SendFeeback([FromBody] SendFeedbackViewModel model)
+        {
+            var product = await _productsRepository
+                .GetByIdAsync(model.ProductId);
+            if (product == null)
+                return BadRequest("Product don't exist");
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
+                return BadRequest("User with this id don't exist");
+            var feedback = new Feedback
+            {
+                Product = product,
+                ProductId = product.Id,
+                Body = model.Body,
+                Date = DateTime.Now,
+                UserId = model.UserId
+            };
+            if (product.Feedbacks == null)
+                product.Feedbacks = new List<Feedback>
+                {
+                    feedback
+                };
+            product
+                .Feedbacks
+                .Add(feedback);
+            var updateResult = await _productsRepository
+                .UpdateAsync(product);
+            if (updateResult <= 0)
+                throw new Exception("Can't update product");
+            return this.JsonResult(new FeedbackDto
+            {
+                UserName = user.Name,
+                UserLastName = user.LastName,
+                Date = ((DateTimeOffset)feedback.Date).ToUnixTimeSeconds(),
+                Body = feedback.Body
+            });
         }
 
         #endregion

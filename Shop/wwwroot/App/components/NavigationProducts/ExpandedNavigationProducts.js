@@ -130,7 +130,7 @@ class ExpandedNavigationProducts extends React.Component {
                                 min={minPrice}
                                 max={maxPrice}
                                 defaultValue={[minPrice, maxPrice]}
-                                tipFormatter={value => `${value}грн`}
+                                tipFormatter={value => `${value} грн`}
                                 onChange={this.onRangeChangeValue}/>
                         </div>}
                     </div>

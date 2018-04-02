@@ -22,7 +22,7 @@ namespace DAL.Migrations
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Core.Models.DomainModels.Comment", b =>
+            modelBuilder.Entity("Core.Models.DomainModels.Feedback", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Feedback");
                 });
 
             modelBuilder.Entity("Core.Models.DomainModels.Product", b =>
@@ -287,7 +287,7 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("Core.Models.DomainModels.Product", b =>
                 {
-                    b.HasOne("Core.Models.DomainModels.Comment", "Comment")
+                    b.HasOne("Core.Models.DomainModels.Feedback", "Feedback")
                         .WithMany()
                         .HasForeignKey("CommentId");
                 });

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.Models.DomainModels
 {
@@ -16,6 +17,6 @@ namespace Core.Models.DomainModels
         [Required]
         public double Price { get; set; }
         public string Description { get; set; }
-        public Comment Comment { get; set; }
+        public List<Feedback> Feedbacks { get; set; }
     }
 }

@@ -53,7 +53,7 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Feedback",
                 columns: table => new
                 {
                     Id = table.Column<string>(maxLength: 36, nullable: false),
@@ -210,7 +210,7 @@ namespace DAL.Migrations
                     table.ForeignKey(
                         name: "FK_Products_Comment_CommentId",
                         column: x => x.CommentId,
-                        principalTable: "Comment",
+                        principalTable: "Feedback",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -294,7 +294,7 @@ namespace DAL.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Feedback");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

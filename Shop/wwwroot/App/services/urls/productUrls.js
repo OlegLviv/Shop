@@ -7,3 +7,7 @@ export const getProductsUrlByIds = (ids) => `/api/product/GetProducts/${ids}`;
 export const getProductsUrlByName = (name) => `/api/product/GetProducts/${name}`;
 
 export const getProductsUrlByQuery = (category, subCategory, priceFrom, priceTo, query) => `/api/product/GetProducts/${category}/${subCategory}/${priceFrom}/${priceTo}/${query}`;
+
+export const sendFeedbackUrl = '/api/product/SendFeedback';
+
+export const getProductFeedbackById = (productId) => `/api/product/GetProductFeedback/${productId}`;
