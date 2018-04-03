@@ -9,27 +9,47 @@ import NavigationProducts from '../NavigationProducts/NavigationProducts';
 import ExpandedNavigationProducts from "../NavigationProducts/ExpandedNavigationProducts";
 import {getProductsUrlByQuery} from "../../services/urls/productUrls";
 import {Spinner} from "../Spinner/Spinner";
-
+import Pagination from 'react-js-pagination';
+import {priceRange} from "../../utils/productsUtils";
 
 const getCategory = (props) => props.match.params.category;
 const getSubCategory = (props) => props.match.params.subCategory;
 
+//todo need cary out max-min price to const
 class ProductPlace extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			products: [],
+			activePage: 1,
+			totalProductCount: 0,
+			priceRange: priceRange,
+			isProductsLoading: false,
+			isProductsLoaded: false
 		}
 	}
 
 	componentDidMount() {
-		const prodUrl = getProductUrlByCatSubCat(getCategory(this.props), getSubCategory(this.props));
+		const category = getCategory(this.props);
+		const subCategory = getSubCategory(this.props);
+		if (!category && !subCategory) {
+			return;
+		}
+		const prodUrl = getProductUrlByCatSubCat(category, subCategory);
+		this.setState({isProductsLoading: true});
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
 				// todo hz is this need
-				addObjectQueryToProducts(resp.data);
-				this.setState({products: resp.data});
+				console.log(resp.data);
+				addObjectQueryToProducts(resp.data.data);
+				this.setState({
+					products: resp.data.data,
+					activePage: resp.data.pageNumber,
+					totalProductCount: resp.data.totalCount,
+					isProductsLoading: false,
+					isProductsLoaded: true
+				});
 				// console.log('respDm', resp.data);
 			})
 			.catch(err => {
@@ -39,11 +59,19 @@ class ProductPlace extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		const prodUrl = getProductUrlByCatSubCat(getCategory(nextProps), getSubCategory(nextProps));
+		this.setState({isProductsLoading: true});
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
-				addObjectQueryToProducts(resp.data);
-				this.setState({products: resp.data});
+				console.log(resp.data);
+				addObjectQueryToProducts(resp.data.data);
+				this.setState({
+					products: resp.data.data,
+					activePage: resp.data.pageNumber,
+					totalProductCount: resp.data.totalCount,
+					isProductsLoading: false,
+					isProductsLoaded: true
+				});
 			})
 			.catch(err => {
 				console.log(err.response);
@@ -64,11 +92,75 @@ class ProductPlace extends React.Component {
 	};
 
 	onPriceRangeChangeValue = (val) => {
+		const newPriceRange = this.state.priceRange;
+		newPriceRange.minPrice = val[0];
+		newPriceRange.maxPrice = val[1];
+		this.setState({
+			priceRange: newPriceRange
+		});
+	};
+
+	onPaginationChange = (pageNumber) => {
+		this.setState({isProductsLoading: true});
+		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
+			getSubCategory(this.props),
+			this.state.priceRange.minPrice,
+			this.state.priceRange.maxPrice, ' ', pageNumber);
 		apiWithoutRedirect()
-			.get(getProductsUrlByQuery(getCategory(this.props), getSubCategory(this.props), val[0], val[1], ''))
+			.get(prodUrl)
 			.then(resp => {
-				this.setState({products: resp.data});
+				// todo hz is this need
+				console.log(resp.data);
+				addObjectQueryToProducts(resp.data.data);
+				this.setState({
+					products: resp.data.data,
+					activePage: resp.data.pageNumber,
+					totalProductCount: resp.data.totalCount,
+					isProductsLoading: false,
+					isProductsLoaded: true
+				});
+				// console.log('respDm', resp.data);
 			})
+			.catch(err => {
+				console.log(err.response);
+			});
+	};
+
+	renderSwitchContent = () => {
+		// console.log('loading:', this.state.isProductsLoading, 'loaded:', this.state.isProductsLoaded);
+		if (!this.state.isProductsLoading && this.state.isProductsLoaded) {
+			return (<div className="container-fluid container-products">
+				<div className="row container-products__row">
+					{this.state.products.map(item => {
+						return (
+							<div
+								className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 container-products__row__item">
+								<ProductCard
+									product={item}
+									key={item.id}
+									onLikeButClick={this.onLikeButClick}
+									onProductCardButClick={this.onProductCardButClick}/>
+							</div>
+						)
+					})}
+				</div>
+				<div className="pagination-box">
+					<Pagination totalItemsCount={this.state.totalProductCount}
+								itemsCountPerPage={16}
+								onChange={this.onPaginationChange}
+								activePage={this.state.activePage}
+								itemClass="page-item"
+								linkClass="page-link"
+								innerClass="pagination-box__pagination pagination"/>
+				</div>
+			</div>);
+		}
+		if (this.state.isProductsLoading && !this.state.isProductsLoaded) {
+			return <Spinner/>
+		}
+		if (!this.state.isProductsLoading && !this.state.isProductsLoaded) {
+			return <div>Def content</div>
+		}
 	};
 
 	// todo need fix if products > 0. Closing expanded nav products and can't continue filtration
@@ -84,26 +176,7 @@ class ProductPlace extends React.Component {
 					}
 				</div>
 				<div className="col-xl-9 col-lg-8">
-					<div>
-						{
-							this.state.products.length > 0 ? <div className="container-fluid container-products">
-								<div className="row container-products__row">
-									{this.state.products.map(item => {
-										return (
-											<div
-												className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 container-products__row__item">
-												<ProductCard
-													product={item}
-													key={item.id}
-													onLikeButClick={this.onLikeButClick}
-													onProductCardButClick={this.onProductCardButClick}/>
-											</div>
-										)
-									})}
-								</div>
-							</div> : <Spinner/>
-						}
-					</div>
+					{this.renderSwitchContent()}
 				</div>
 			</div>
 		);

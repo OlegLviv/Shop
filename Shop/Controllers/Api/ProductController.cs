@@ -60,29 +60,48 @@ namespace Shop.Controllers.Api
             return this.JsonResult(product);
         }
 
-        [HttpGet("GetProducts/{category}/{subCategory}")]
-        public IActionResult GetProducts(string category, string subCategory)
+        [HttpGet("GetProducts/{category}/{subCategory}/{size:int?}")]
+        public IActionResult GetProducts(string category, string subCategory, int size = 16)
         {
             var products = _productsRepository
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
-            return this.JsonResult(products);
+            return this.JsonResult(new Paginator<Product>
+            {
+                Data = products.Take(size),
+                PageNumber = 1,
+                PageSize = size,
+                TotalCount = products.Count()
+            });
         }
+
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
-        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}")]
-        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query)
+        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}")]
+        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16)
         {
             var products = _productsRepository
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase) &&
                             x.Price >= priceFrom && x.Price <= priceTo);
+            var paginator = new Paginator<Product>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = products.Page(pageNumber, pageSize),
+                TotalCount = products.Count()
+            };
             if (string.IsNullOrEmpty(query))
-                return this.JsonResult(products);
-            var result = _productManager.SelectProducts(query, products);
+                return this.JsonResult(paginator);
+            var result = _productManager
+                .SelectProducts(query, products)
+                .Page(pageNumber, pageSize);
+            paginator.Data = result;
+            paginator.TotalCount = result.Count();
             //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
-            return this.JsonResult(result);
+
+            return this.JsonResult(paginator);
         }
 
         [HttpGet("GetProducts/{productIds}")]

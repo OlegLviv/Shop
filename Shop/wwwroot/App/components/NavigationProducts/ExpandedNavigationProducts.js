@@ -5,9 +5,10 @@ import 'rc-slider/assets/index.css';
 import {Icon} from 'react-fa';
 import {objectToArrayKeys} from "../../utils/utils";
 import {productColors} from "../../utils/productsUtils";
+import {priceRange} from "../../utils/productsUtils";
 
-const maxPrice = 1000;
-const minPrice = 0;
+const {maxPrice} = priceRange;
+const {minPrice} = priceRange;
 
 const getProductArrayQueryWithMaxProps = (products) => {
 	let maxObjArr = objectToArrayKeys(products[0].objectQuery);
