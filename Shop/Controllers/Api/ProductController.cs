@@ -104,8 +104,8 @@ namespace Shop.Controllers.Api
             return this.JsonResult(paginator);
         }
 
-        [HttpGet("GetProducts/{productIds}")]
-        public IActionResult GetProducts(string[] productIds)
+        [HttpGet("GetProductsByIds/{productIds}")]
+        public IActionResult GetProductsByIds(string[] productIds)
         {
             var products = _productManager
                 .Select(_productsRepository.Table,

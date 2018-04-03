@@ -2,7 +2,7 @@ export const getProductUrlByCatSubCat = (category, subCategory) => `/api/product
 
 export const getProductUrlById = (productId) => `/api/product/GetProduct/${productId}`;
 
-export const getProductsUrlByIds = (ids) => `/api/product/GetProducts/${ids}`;
+export const getProductsUrlByIds = (ids) => `/api/product/GetProductsByIds/${ids}`;
 
 export const getProductsUrlByName = (name) => `/api/product/GetProducts/${name}`;
 
