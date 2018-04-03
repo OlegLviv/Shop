@@ -4,6 +4,7 @@ import {customStyles} from "../modalStyles";
 import './RegisterModal.scss';
 import {registerUser} from "../../../services/authService";
 import SuccessRegisterModal from './SuccessRegisterModal';
+import './Modal.scss';
 
 class RegisterModal extends React.Component {
 	constructor(props) {
@@ -144,6 +145,7 @@ class RegisterModal extends React.Component {
 						</div>
 						<div className="form-container__footer">
 							<button type="submit" className="btn btn-primary"
+									disabled
 									onClick={this.registerUser}>Зареєструватись
 							</button>
 							<button className="btn btn-danger" onClick={this.closeModal}>Закрити</button>
