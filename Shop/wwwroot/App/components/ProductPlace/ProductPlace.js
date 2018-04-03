@@ -36,6 +36,9 @@ class ProductPlace extends React.Component {
 			return;
 		}
 		const prodUrl = getProductUrlByCatSubCat(category, subCategory);
+		if (this.state.isProductsLoaded) {
+			this.setState({isProductsLoaded: false})
+		}
 		this.setState({isProductsLoading: true});
 		apiWithoutRedirect()
 			.get(prodUrl)
@@ -59,6 +62,9 @@ class ProductPlace extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		const prodUrl = getProductUrlByCatSubCat(getCategory(nextProps), getSubCategory(nextProps));
+		if (this.state.isProductsLoaded) {
+			this.setState({isProductsLoaded: false})
+		}
 		this.setState({isProductsLoading: true});
 		apiWithoutRedirect()
 			.get(prodUrl)
@@ -102,6 +108,9 @@ class ProductPlace extends React.Component {
 
 	onPaginationChange = (pageNumber) => {
 		this.setState({isProductsLoading: true});
+		if (this.state.isProductsLoaded) {
+			this.setState({isProductsLoaded: false})
+		}
 		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
 			getSubCategory(this.props),
 			this.state.priceRange.minPrice,
