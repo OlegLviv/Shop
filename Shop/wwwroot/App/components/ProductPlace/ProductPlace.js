@@ -61,6 +61,11 @@ class ProductPlace extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		const category = getCategory(nextProps);
+		const subCategory = getSubCategory(nextProps);
+		if (!category && !subCategory) {
+			return;
+		}
 		const prodUrl = getProductUrlByCatSubCat(getCategory(nextProps), getSubCategory(nextProps));
 		if (this.state.isProductsLoaded) {
 			this.setState({isProductsLoaded: false})

@@ -31,13 +31,14 @@ class LogInModal extends React.Component {
 		this.setState({password: event.target.value});
 	};
 
-	onKeyDownPassword = (event) => {
+	onPasswordKeyPress = (event) => {
 		const {key} = event;
 		if (key === 'Enter') {
 			this.onLogin();
 		}
 	};
 
+	// todo need fix onEnter click
 	onLogin = () => {
 		if (!isValidWhiteSpace(this.state.userName)) {
 			this.setState({
@@ -82,6 +83,12 @@ class LogInModal extends React.Component {
 		}
 	};
 
+	onUserNameKeyPress = (e) => {
+		if (e.key === 'Enter') {
+			this.onLogin();
+		}
+	};
+
 	onPasswordBlur = () => {
 		if (!isValidWhiteSpace(this.state.password)) {
 			this.setState({
@@ -104,9 +111,8 @@ class LogInModal extends React.Component {
 				   shouldCloseOnEsc={true}
 				   style={customStyles}>
 				<div className="form-container">
-					<h3>Вхід</h3>
+					<h3 className="text-center">Вхід</h3>
 					<hr/>
-					{}
 					<div className="form-group">
 						<label htmlFor="inputEmail">Email або логін</label>
 						<input type="text"
@@ -115,7 +121,8 @@ class LogInModal extends React.Component {
 							   aria-describedby="emailHelp"
 							   placeholder="Введіть email або логін"
 							   onChange={this.onChangeUserName}
-							   onBlur={this.onUserNameBlur}/>
+							   onBlur={this.onUserNameBlur}
+							   onKeyPress={this.onUserNameKeyPress}/>
 						{!this.state.isValidUserName && this.renderError(this.state.userNameError)}
 					</div>
 					<div className="form-group">
@@ -125,7 +132,7 @@ class LogInModal extends React.Component {
 							   id="inputPassword"
 							   placeholder="Введіть пароль..."
 							   onChange={this.onChangePassword}
-							   onKeyDown={this.onKeyDownPassword}
+							   onKeyPress={this.onPasswordKeyPress}
 							   onBlur={this.onPasswordBlur}/>
 						{!this.state.isValidPassword && this.renderError(this.state.passwordError)}
 					</div>
