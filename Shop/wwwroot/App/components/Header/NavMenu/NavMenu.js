@@ -86,9 +86,6 @@ class NavMenu extends React.Component {
 					<div className="collapse navbar-collapse menu-container__navbar-right" id="navbarSupportedContent">
 						<div/>
 						<div className="form-inline my-2">
-							{/*<input className="form-control mr-sm-2 menu-container__navbar-right__search" type="search"*/}
-							{/*placeholder="Search"*/}
-							{/*aria-label="Search"/>*/}
 							<Autocomplete
 								inputProps={({
 									class: 'form-control mr-sm-2 menu-container__navbar-right__search',
@@ -110,14 +107,15 @@ class NavMenu extends React.Component {
 							<li className="nav-item">
 								<Link to="/productsCard"><Icon size="2x"
 															   name="shopping-cart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-shoping"/></Link>
-								{productCardItemsCount === 0 ? null : <div
+								{productCardItemsCount !== 0 && <div
 									className="menu-container__navbar__card__shoping-card">{productCardItemsCount}</div>}
 							</li>
 							<li className="nav-item">
 								<Link to="/likedProducts"><Icon size="2x"
 																name="heart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-like"/></Link>
-								{likeProdCount === 0 ? null :
-									<div className="menu-container__navbar__card__like">{likeProdCount}</div>}
+								{likeProdCount !== 0 && <div
+									className="menu-container__navbar__card__like">{likeProdCount}</div>
+								}
 							</li>
 						</ul>
 					</div>
