@@ -36,10 +36,7 @@ export const logInToken = (userName, password) => {
 						}
 					});
 			}
-		})
-		.catch(err => {
-			console.error(err);
-		})
+		});
 };
 
 export const singOutToken = (action) => {

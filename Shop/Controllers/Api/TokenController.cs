@@ -48,10 +48,10 @@ namespace Shop.Controllers.Api
             if (user == null)
                 user = await _userManager.FindByNameAsync(model.UserName);
             if (user == null)
-                return Unauthorized();
+                return BadRequest("Incorrect user name or email");
             var singInRes = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (!singInRes.Succeeded)
-                return Unauthorized();
+                return BadRequest("Incorrect password");
             string roleName = null;
             var roles = _roleManager.Roles.ToList();
             foreach (var role in roles)
