@@ -13,8 +13,7 @@ class MainInfo extends React.Component {
 		this.state = {
 			isLoginModalOpen: false,
 			isRegisterModalOpen: false,
-			userName: '',
-			//isLogIn: false
+			userName: ''
 		}
 	}
 
@@ -78,11 +77,11 @@ class MainInfo extends React.Component {
 					</div>
 					<div className="info_container__right__menu-item">
 						{!userName ? <div>
-							<a href="#" onClick={this.openLoginModal}>Вхід</a>
-							<a href="#" onClick={this.openRegisterModal}>Реєстрація</a>
+							<a onClick={this.openLoginModal}>Вхід</a>
+							<a onClick={this.openRegisterModal}>Реєстрація</a>
 						</div> : <div className="info_container__right__menu-item__sub">
 							<div>{userName}</div>
-							<a href="#" onClick={this.singOut}>Вийти</a>
+							<a onClick={this.singOut}>Вийти</a>
 						</div>}
 						<LogInModal
 							isModalOpen={this.state.isLoginModalOpen}
