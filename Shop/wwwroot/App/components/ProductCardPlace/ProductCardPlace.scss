@@ -2,17 +2,18 @@
   padding: 2rem 5rem 0 5rem;
 
   &__footer {
-    display: flex;
-    justify-content: space-between;
-    background: #f3f3f3;
-    padding: 3rem 2rem 3rem 2rem;
-    border: 1px #d3d3d3;
-    &__total-info {
+	display: flex;
+	justify-content: space-between;
+	background: #f3f3f3;
+	padding: 3rem 2rem 3rem 2rem;
+	border: 1px #d3d3d3 solid;
+	border-radius: 5px;
+	&__total-info {
 
-    }
-    &__btn-continue {
-      max-height: 2.3rem;
-    }
+	}
+	&__btn-continue {
+	  max-height: 2.3rem;
+	}
   }
 }
 
@@ -28,4 +29,24 @@
   -moz-transform: scale(1.1);
   -ms-transform: scale(1.1);
   -o-transform: scale(1.1);
+}
+
+@media screen and (max-width: 620px) {
+  .container-p-card-place {
+	&__header {
+	  display: flex;
+	  flex-direction: column;
+	}
+	&__header button {
+	  margin: 1rem 2rem 1rem 2rem;
+	}
+	&__footer {
+	  flex-direction: column;
+	  &__total-info {
+		display: flex;
+		padding-top: 1rem;
+		flex-direction: column;
+	  }
+	}
+  }
 }
