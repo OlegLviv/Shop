@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
 import {Spinner} from "../Spinner/Spinner";
+import MakeOrderModal from '../Modal/MakeOrderModal/MakeOrderModal';
 
 const renderNoProducts = () => {
 	return (
@@ -27,7 +28,8 @@ class ProductCardPlace extends React.Component {
 			productsCounts: [],
 			isProductsLoading: false,
 			isProductsLoaded: false,
-			isNotProducts: false
+			isNotProducts: false,
+			isMakeOrderModalOpen: false
 		}
 	}
 
@@ -90,6 +92,16 @@ class ProductCardPlace extends React.Component {
 		setCookie('productsCard', null, 0);
 		this.setState({products: [], isNotProducts: true});
 	};
+
+	onMakeOrder = () => this.setState({isMakeOrderModalOpen: true});
+
+	onCloseMakeOrderModal = () => this.setState({isMakeOrderModalOpen: false});
+
+	// todo maybe need create page for this, not modal
+	renderMakeOrderModal = () => <MakeOrderModal
+		isModalOpen={this.state.isMakeOrderModalOpen}
+		onCloseModal={this.onCloseMakeOrderModal}
+	/>;
 
 	renderSwitchContent = () => {
 		console.log('switch');
@@ -157,7 +169,8 @@ class ProductCardPlace extends React.Component {
 						<div className="container-p-card-place__footer__total-info">
 							<h3>{`Разом: ${this.getTotalPrice()} грн`}</h3>
 							<button
-								className="btn btn-primary btn-shadow-s btn container-p-card-place__footer__total-info__btn-post">Оформити
+								className="btn btn-primary btn-shadow-s btn container-p-card-place__footer__total-info__btn-post"
+								onClick={this.onMakeOrder}>Оформити
 								замовлення
 							</button>
 						</div>
@@ -177,6 +190,7 @@ class ProductCardPlace extends React.Component {
 		return (
 			<div className="container-p-card-place">
 				{this.renderSwitchContent()}
+				{this.renderMakeOrderModal()}
 			</div>
 		);
 	}
