@@ -23,10 +23,17 @@ class ProductPlace extends React.Component {
 			products: [],
 			activePage: 1,
 			totalProductCount: 0,
-			priceRange: priceRange,
+			priceRange: {
+				minPrice: priceRange.minPrice,
+				maxPrice: priceRange.maxPrice
+			},
 			isProductsLoading: false,
 			isProductsLoaded: false,
-			sortingType: 0
+			sortingType: 0,
+			priceRangeForPagination: {
+				minPrice: priceRange.minPrice,
+				maxPrice: priceRange.maxPrice
+			}
 		}
 	}
 
@@ -54,7 +61,6 @@ class ProductPlace extends React.Component {
 					isProductsLoading: false,
 					isProductsLoaded: true
 				});
-				// console.log('respDm', resp.data);
 			})
 			.catch(err => {
 				console.log(err.response);
@@ -111,10 +117,11 @@ class ProductPlace extends React.Component {
 
 	onPaginationChange = (pageNumber) => {
 		this.renderLoadingSpinner();
+		console.log(this.state.priceRangeForPagination);
 		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
 			getSubCategory(this.props),
-			this.state.priceRange.minPrice,
-			this.state.priceRange.maxPrice, ' ', pageNumber);
+			this.state.priceRangeForPagination.minPrice,
+			this.state.priceRangeForPagination.maxPrice, ' ', pageNumber);
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
@@ -144,12 +151,16 @@ class ProductPlace extends React.Component {
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
+				const priceRange = this.state.priceRangeForPagination;
+				priceRange.minPrice = priceFrom;
+				priceRange.maxPrice = priceTo;
 				this.setState({
 					products: resp.data.data,
 					activePage: resp.data.pageNumber,
 					totalProductCount: resp.data.totalCount,
 					isProductsLoading: false,
-					isProductsLoaded: true
+					isProductsLoaded: true,
+					priceRangeForPagination: priceRange
 				});
 			})
 			.catch(err => {
