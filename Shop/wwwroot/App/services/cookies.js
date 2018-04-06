@@ -51,7 +51,7 @@ export const getCookie = (cname) => {
 			return c.substring(name.length, c.length);
 		}
 	}
-	return "";
+		return '';
 };
 
 export const getCookies = (cname) => {

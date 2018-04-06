@@ -7,6 +7,8 @@ import {getProductsUrlByIds} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
+import {Spinner} from "../Spinner/Spinner";
+import MakeOrderModal from '../Modal/MakeOrderModal/MakeOrderModal';
 
 const renderNoProducts = () => {
 	return (
@@ -23,22 +25,34 @@ class ProductCardPlace extends React.Component {
 		super(props);
 		this.state = {
 			products: [],
-			productsCounts: []
+			productsCounts: [],
+			isProductsLoading: false,
+			isProductsLoaded: false,
+			isNotProducts: false,
+			isMakeOrderModalOpen: false
 		}
 	}
 
 	componentDidMount() {
 		const productIds = getCookie('productsCard');
+		if (!productIds) {
+			this.setState({isNotProducts: true});
+			return;
+		}
+		if (this.state.isProductsLoaded) {
+			this.setState({isProductsLoaded: false});
+		}
+		this.setState({isProductsLoading: true});
 		apiWithoutRedirect()
 			.get(getProductsUrlByIds(productIds))
 			.then(resp => {
-				console.log('got prods:', resp);
-				if (productIds) {
-					addObjectQueryToProducts(resp.data);
-					console.log('new prods:', resp.data);
-					this.setState({products: resp.data});
-					this.initProductsCounts(resp.data);
-				}
+				addObjectQueryToProducts(resp.data);
+				this.initProductsCounts(resp.data);
+				this.setState({
+					products: resp.data,
+					isProductsLoading: false,
+					isProductsLoaded: true
+				});
 			})
 	}
 
@@ -75,15 +89,26 @@ class ProductCardPlace extends React.Component {
 	}
 
 	onCleanProductsCard = () => {
-		this.setState({products: []});
 		setCookie('productsCard', null, 0);
+		this.setState({products: [], isNotProducts: true});
 	};
 
-	// todo need to carry out to <tr>
-	render() {
-		return (
-			<div className="container-p-card-place">
-				{this.state.products.length > 0 ? <div>
+	onMakeOrder = () => this.setState({isMakeOrderModalOpen: true});
+
+	onCloseMakeOrderModal = () => this.setState({isMakeOrderModalOpen: false});
+
+	// todo maybe need create page for this, not modal
+	renderMakeOrderModal = () => <MakeOrderModal
+		isModalOpen={this.state.isMakeOrderModalOpen}
+		onCloseModal={this.onCloseMakeOrderModal}
+	/>;
+
+	renderSwitchContent = () => {
+		console.log('switch');
+		const {isProductsLoading, isProductsLoaded, isNotProducts} = this.state;
+		if (isProductsLoaded && !isProductsLoading && !isNotProducts) {
+			return (
+				<div>
 					<div className="container-p-card-place__header">
 						<button className="btn btn-outline-danger" onClick={this.onCleanProductsCard}>Очистити кошик
 							<Icon name="trash ml-1"/>
@@ -144,12 +169,28 @@ class ProductCardPlace extends React.Component {
 						<div className="container-p-card-place__footer__total-info">
 							<h3>{`Разом: ${this.getTotalPrice()} грн`}</h3>
 							<button
-								className="btn btn-primary btn-shadow-s btn container-p-card-place__footer__total-info__btn-post">Оформити
+								className="btn btn-primary btn-shadow-s btn container-p-card-place__footer__total-info__btn-post"
+								onClick={this.onMakeOrder}>Оформити
 								замовлення
 							</button>
 						</div>
 					</div>
-				</div> : renderNoProducts()}
+				</div>
+			)
+		}
+		if (isProductsLoading && !isProductsLoaded) {
+			return <Spinner/>
+		}
+		if (isNotProducts) {
+			return renderNoProducts();
+		}
+	};
+
+	render() {
+		return (
+			<div className="container-p-card-place">
+				{this.renderSwitchContent()}
+				{this.renderMakeOrderModal()}
 			</div>
 		);
 	}

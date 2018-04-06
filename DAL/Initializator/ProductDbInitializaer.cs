@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Models.DomainModels;
 
@@ -6,10 +7,12 @@ namespace DAL.Initializator
 {
     public class ProductDbInitializaer
     {
+        private static Random _random;
+
         public static void Initialize(AppDbContext context)
         {
+            _random = new Random();
             context.Database.EnsureCreated();
-
             // Look for any users.
             if (context.Products.Any())
             {
@@ -84,6 +87,25 @@ namespace DAL.Initializator
                 Price = 54,
                 Name = "Simple cb"
             };
+
+            for (var i = 0; i < 300; i++)
+            {
+                var randColors = new string[]
+                {
+                    "black",
+                    "red",
+                    "green",
+                    "white"
+                };
+                products.Add(new Product
+                {
+                    Category = "Stationery",
+                    SubCategory = "copyBooks",
+                    Query = $"typ={_random.Next(0, 5)};color={randColors[_random.Next(0, 3)]}",
+                    Price = _random.Next(1, 10000),
+                    Name = "Simple cb"
+                });
+            }
 
             products.Add(product1);
             products.Add(product2);

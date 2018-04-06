@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Core.Models.DTO
+{
+    public class FeedbackDto
+    {
+        public string UserName { get; set; }
+        public string UserLastName { get; set; }
+        public string Body { get; set; }
+        public long Date { get; set; }
+    }
+}

@@ -45,6 +45,14 @@ namespace Shop.Controllers.Api
             return Ok(new { user.Id, user.UserName });
         }
 
+        [AllowAnonymous]
+        [HttpGet("IfUserExist/{userNameOrEmail}")]
+        public async Task<IActionResult> IfUserExist(string userNameOrEmail)
+        {
+            var user = await _userManager.FindByEmailAsync(userNameOrEmail) ?? await _userManager.FindByNameAsync(userNameOrEmail);
+            return Ok(user != null);
+        }
+
         [HttpGet("role")]
         public async Task<IActionResult> GetUserRole()
         {
@@ -70,7 +78,7 @@ namespace Shop.Controllers.Api
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
-            if (userId == null || code == null)
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
             {
                 return BadRequest("Can't confirm email. Userid or code is null");
             }

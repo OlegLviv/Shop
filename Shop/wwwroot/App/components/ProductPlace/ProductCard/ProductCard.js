@@ -13,9 +13,9 @@ class ProductCard extends React.Component {
 
     onProductCardButClick = (e) => {
         // todo need fix 'if user can revert product'
-        if (this.state.inProductCardTextBut !== 'Добавлено') {
+        if (this.state.inProductCardTextBut !== 'Додано') {
             this.setState((prev) => ({
-                inProductCardTextBut: 'Добавлено',
+                inProductCardTextBut: 'Додано',
                 isEnableInProductCardBut: !prev.isEnableInProductCardBut
             }));
         }

@@ -1,7 +1,15 @@
 .container-products {
   &__row {
-    &__item {
-      padding: 0 .2rem .2rem .2rem;
-    }
+	&__item {
+	  padding: 0 .2rem .2rem .2rem;
+	}
+  }
+}
+
+.pagination-box {
+  display: flex;
+  justify-content: center;
+  &__pagination {
+	padding-top: 2rem;
   }
 }

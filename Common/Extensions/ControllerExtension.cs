@@ -10,7 +10,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Common.Extensions
 {
-    public static class ControllerExtensions
+    public static class ControllerExtension
     {
         public static async Task<TIdentityUser> GetUserByIdentityAsync<TIdentityUser>(this ControllerBase controller, UserManager<TIdentityUser> userManager) where TIdentityUser : IdentityUser
         {

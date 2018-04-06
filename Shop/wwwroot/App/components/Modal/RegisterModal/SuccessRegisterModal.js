@@ -8,7 +8,7 @@ class SuccessRegisterModal extends React.Component {
 	}
 
 	closeModal = () => {
-		this.props.closeModal();
+		this.props.onCloseModal();
 	};
 
 	render() {

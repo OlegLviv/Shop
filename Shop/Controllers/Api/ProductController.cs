@@ -11,13 +11,13 @@ using Newtonsoft.Json;
 using Common.Extensions;
 using Microsoft.AspNetCore.Http.Extensions;
 using Core.Interfaces;
-using Core.Models.ViewModels.RequestViewModels;
 using BLL.Filters.ActionFilters;
 using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
 using System.Dynamic;
 using AutoMapper;
 using Core.Models.DTO;
+using Core.Models.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -46,6 +46,8 @@ namespace Shop.Controllers.Api
             _mapper = mapper;
         }
 
+        #region GET
+
         [HttpGet("GetProduct/{productId}")]
         public async Task<IActionResult> GetProduct(string productId)
         {
@@ -58,39 +60,102 @@ namespace Shop.Controllers.Api
             return this.JsonResult(product);
         }
 
-        [HttpGet("GetProducts/{category}/{subCategory}")]
-        public IActionResult GetProducts(string category, string subCategory)
+        [HttpGet("GetProducts/{category}/{subCategory}/{size:int?}")]
+        public IActionResult GetProducts(string category, string subCategory, int size = 16)
         {
             var products = _productsRepository
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
-            return this.JsonResult(products);
+            return this.JsonResult(new Paginator<Product>
+            {
+                Data = products.Take(size),
+                PageNumber = 1,
+                PageSize = size,
+                TotalCount = products.Count()
+            });
         }
 
-        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}")]
-        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query)
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
+        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}")]
+        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16)
         {
             var products = _productsRepository
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase) &&
                             x.Price >= priceFrom && x.Price <= priceTo);
+            var paginator = new Paginator<Product>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = products.Page(pageNumber, pageSize),
+                TotalCount = products.Count()
+            };
             if (string.IsNullOrEmpty(query))
-                return this.JsonResult(products);
-            var result = _productManager.SelectProducts(query, products);
+                return this.JsonResult(paginator);
+            var result = _productManager
+                .SelectProducts(query, products)
+                .Page(pageNumber, pageSize);
+            paginator.Data = result;
+            paginator.TotalCount = result.Count();
             //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
-            return this.JsonResult(result);
+
+            return this.JsonResult(paginator);
         }
 
-        [HttpGet("GetProducts/{productIds}")]
-        public IActionResult GetProducts(string[] productIds)
+        [HttpGet("GetProductsByIds/{productIds}")]
+        public IActionResult GetProductsByIds(string[] productIds)
         {
             var products = _productManager
                 .Select(_productsRepository.Table,
                     this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
         }
+
+        [HttpGet("GetProducts/{name}")]
+        public IActionResult GetProducts(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return BadRequest("Incorrect name");
+            var products = _productsRepository
+                .Table
+                .Where(x => x.Name.ToLower().Contains(name.ToLower()));
+            return this.JsonResult(products);
+        }
+
+        [HttpGet("GetProductFeedback/{productId}")]
+        public async Task<IActionResult> GetProductFeedback(string productId)
+        {
+            if (string.IsNullOrEmpty(productId))
+                return BadRequest("Incorrent id");
+            var product = _productsRepository
+                .Table
+                .Include(x => x.Feedbacks)
+                .FirstOrDefault(x => x.Id == productId);
+
+            if (product == null)
+                return BadRequest("Product don't exist");
+
+            var productFeedbacks = product.Feedbacks;
+            var feedbacks = new List<FeedbackDto>(productFeedbacks.Count);
+            foreach (var productFeedback in productFeedbacks)
+            {
+                var user = await _userManager.FindByIdAsync(productFeedback.UserId);
+                if (user == null)
+                    return BadRequest("Incorrent user id");
+                feedbacks.Add(new FeedbackDto
+                {
+                    UserName = user.Name,
+                    UserLastName = user.LastName,
+                    Body = productFeedback.Body,
+                    Date = ((DateTimeOffset)productFeedback.Date).ToUnixTimeSeconds()
+                });
+            }
+            return this.JsonResult(feedbacks.OrderBy(x => x.Date));
+        }
+
+        #endregion
 
         #region POST
 
@@ -112,6 +177,49 @@ namespace Shop.Controllers.Api
             if (!result.Succeeded)
                 return BadRequest("Can't update user");
             return Ok(user.ShopingCard);
+        }
+
+        #endregion
+
+        #region PUT
+
+        [HttpPut("SendFeedback")]
+        public async Task<IActionResult> SendFeeback([FromBody] SendFeedbackViewModel model)
+        {
+            var product = await _productsRepository
+                .GetByIdAsync(model.ProductId);
+            if (product == null)
+                return BadRequest("Product don't exist");
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
+                return BadRequest("User with this id don't exist");
+            var feedback = new Feedback
+            {
+                Product = product,
+                ProductId = product.Id,
+                Body = model.Body,
+                Date = DateTime.Now,
+                UserId = model.UserId
+            };
+            if (product.Feedbacks == null)
+                product.Feedbacks = new List<Feedback>
+                {
+                    feedback
+                };
+            product
+                .Feedbacks
+                .Add(feedback);
+            var updateResult = await _productsRepository
+                .UpdateAsync(product);
+            if (updateResult <= 0)
+                throw new Exception("Can't update product");
+            return this.JsonResult(new FeedbackDto
+            {
+                UserName = user.Name,
+                UserLastName = user.LastName,
+                Date = ((DateTimeOffset)feedback.Date).ToUnixTimeSeconds(),
+                Body = feedback.Body
+            });
         }
 
         #endregion

@@ -1,7 +1,7 @@
 import React from 'react';
 import './Header.scss';
 import MainInfo from "./MainInfo/MainInfo";
-import {NavMenu} from "./NavMenu/NavMenu";
+import NavMenu from "./NavMenu/NavMenu";
 
 class Header extends React.Component {
     constructor(props) {

@@ -39,7 +39,7 @@ namespace Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(option =>
-             option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+             option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"]) ? "DefaultConnection" : "ProdConnection")));
             services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
