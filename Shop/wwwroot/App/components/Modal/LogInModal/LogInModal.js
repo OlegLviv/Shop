@@ -20,7 +20,7 @@ class LogInModal extends React.Component {
 	}
 
 	closeModal = () => {
-		this.props.closeModal();
+		this.props.onCloseModal();
 	};
 
 	onChangeUserName = (event) => {

@@ -23,7 +23,9 @@ class RegisterModal extends React.Component {
 			isValidName: true,
 			isValidLastName: true,
 			isValidEmail: true,
+			isValidEmailOnExist: true,
 			isValidUserName: true,
+			isValidUserNameOnExist: true,
 			isValidPassword: true,
 			isValidConfirmPassword: true,
 			nameError: '',
@@ -43,12 +45,15 @@ class RegisterModal extends React.Component {
 				.then(resp => {
 					if (resp.data === true) {
 						this.setState({
-							isValidEmail: false,
+							isValidEmailOnExist: false,
 							emailError: 'Користувач з таким email вже існує'
 						});
 					}
-					if (resp.data === false && !this.state.isValidEmail) {
-						this.setState({isValidEmail: true});
+					if (resp.data === false && !this.state.isValidEmailOnExist) {
+						this.setState({
+							isValidEmailOnExist: true,
+							isValidEmail: true
+						});
 					}
 				})
 		}
@@ -58,47 +63,69 @@ class RegisterModal extends React.Component {
 				.then(resp => {
 					if (resp.data === true) {
 						this.setState({
-							isValidUserName: false,
+							isValidUserNameOnExist: false,
 							userNameError: 'Користувач з таким логіном вже існує'
 						});
 					}
-					if (resp.data === false && !this.state.isValidUserName) {
-						this.setState({isValidUserName: true});
+					if (resp.data === false && !this.state.isValidUserNameOnExist) {
+						this.setState({
+							isValidUserNameOnExist: true,
+							isValidUserName: true
+						});
 					}
 				})
 		}
 	}
 
-	closeModal = () => {
-		this.props.closeModal();
+	isAllFieldsHaveNotWhiteSpace = () => {
+		return isValidWhiteSpace(this.state.name) &&
+			isValidWhiteSpace(this.state.lastName) &&
+			isValidWhiteSpace(this.state.email) &&
+			isValidWhiteSpace(this.state.userName) &&
+			isValidWhiteSpace(this.state.password) &&
+			isValidWhiteSpace(this.state.confirmPassword);
+	};
+
+	onCloseModal = () => {
+		this.props.onCloseModal();
 	};
 
 	onRegisterUser = () => {
 		// TODO need normal validate
-		const registerModel = {
-			name: this.state.name,
-			lastName: this.state.lastName,
-			email: this.state.email,
-			userName: this.state.userName,
-			password: this.state.password,
-			confirmPassword: this.state.confirmPassword
-		};
-		registerUser(registerModel)
-			.then(resp => {
-				const {isSuccess} = resp.data;
-				if (isSuccess) {
-					this.setState({isShowSuccessModal: true});
-					this.closeModal();
-				}
-			})
-			.catch(err => {
-				if (err.response.status === 400) {
-					// TODO need to add normal alert if invalid model
-					alert('Invalid model');
-					console.log(err.response);
-				}
-			});
-		console.log('register model--', registerModel);
+		if (this.state.isValidName &&
+			this.state.isValidLastName &&
+			this.state.isValidEmail &&
+			this.state.isValidUserName &&
+			this.state.isValidPassword &&
+			this.state.isValidConfirmPassword &&
+			this.state.isValidEmailOnExist &&
+			this.state.isValidUserNameOnExist &&
+			this.isAllFieldsHaveNotWhiteSpace()) {
+
+			const registerModel = {
+				name: this.state.name,
+				lastName: this.state.lastName,
+				email: this.state.email,
+				userName: this.state.userName,
+				password: this.state.password,
+				confirmPassword: this.state.confirmPassword
+			};
+			registerUser(registerModel)
+				.then(resp => {
+					const {isSuccess} = resp.data;
+					if (isSuccess) {
+						this.setState({isShowSuccessModal: true});
+						window.location.replace('/userPanel');
+					}
+				})
+				.catch(err => {
+					if (err.response.status === 400) {
+						// TODO need to add normal alert if invalid model
+						alert(err.response.data);
+						console.log(err.response);
+					}
+				});
+		}
 	};
 
 	closeSuccessRegisterModal = () => {
@@ -209,7 +236,7 @@ class RegisterModal extends React.Component {
 		return (
 			<div>
 				{!isShowSuccessModal ? <Modal isOpen={this.props.isModalOpen}
-											  onRequestClose={this.closeModal}
+											  onRequestClose={this.onCloseModal}
 											  style={customStyles}
 											  shouldCloseOnEsc={true}>
 					<div className="text-center">
@@ -240,24 +267,24 @@ class RegisterModal extends React.Component {
 						<div className="form-group">
 							<label htmlFor="inputEmail">Email</label>
 							<input type="email"
-								   className={`form-control ${this.state.isValidEmail ? '' : 'invalid-input'}`}
+								   className={`form-control ${(this.state.isValidEmail && this.state.isValidEmailOnExist) ? '' : 'invalid-input'}`}
 								   id="inputEmail"
 								   aria-describedby="emailHelp"
 								   placeholder="Введіть email"
 								   onChange={this.onChangeEmail}
 								   onBlur={this.onBlurEmail}/>
-							{!this.state.isValidEmail && this.renderError(this.state.emailError)}
+							{(!this.state.isValidEmail || !this.state.isValidEmailOnExist) && this.renderError(this.state.emailError)}
 						</div>
 						<div className="form-group">
 							<label htmlFor="inputUserName">Логін</label>
 							<input type="text"
-								   className={`form-control ${this.state.isValidUserName ? '' : 'invalid-input'}`}
+								   className={`form-control ${(this.state.isValidUserName && this.state.isValidUserNameOnExist) ? '' : 'invalid-input'}`}
 								   id="inputUserName"
 								   aria-describedby="emailHelp"
 								   placeholder="Введіть логін"
 								   onChange={this.onChangeUserName}
 								   onBlur={this.onBlurUserName}/>
-							{!this.state.isValidUserName && this.renderError(this.state.userNameError)}
+							{(!this.state.isValidUserName || !this.state.isValidUserNameOnExist) && this.renderError(this.state.userNameError)}
 						</div>
 						<div className="form-group">
 							<label htmlFor="inputPassword">Пароль</label>
@@ -281,13 +308,12 @@ class RegisterModal extends React.Component {
 						</div>
 						<div className="form-container__footer">
 							<button type="submit" className="btn btn-primary"
-									disabled
 									onClick={this.onRegisterUser}>Зареєструватись
 							</button>
-							<button className="btn btn-danger" onClick={this.closeModal}>Закрити</button>
+							<button className="btn btn-danger" onClick={this.onCloseModal}>Закрити</button>
 						</div>
 					</div>
-				</Modal> : <SuccessRegisterModal closeModal={this.closeSuccessRegisterModal}/>}
+				</Modal> : <SuccessRegisterModal onCloseModal={this.closeSuccessRegisterModal}/>}
 			</div>
 		);
 	}
