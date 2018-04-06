@@ -6,6 +6,8 @@ import {registerUser} from "../../../services/authService";
 import SuccessRegisterModal from './SuccessRegisterModal';
 import './Modal.scss';
 import {isValidPassword, isValidWhiteSpace, isValidEmail, isValidNameAndLastName} from "../../../utils/validationUtils";
+import {apiWithoutRedirect} from "../../../services/api";
+import {getIsExistUserUrl} from "../../../services/urls/userUrls";
 
 class RegisterModal extends React.Component {
 	constructor(props) {
@@ -30,6 +32,40 @@ class RegisterModal extends React.Component {
 			userNameError: '',
 			passwordError: '',
 			confirmPasswordError: ''
+		}
+	}
+
+	// todo add normal catch
+	componentDidUpdate(prevProps, prevState) {
+		if (this.state.email && (this.state.email !== prevState.email)) {
+			apiWithoutRedirect()
+				.get(getIsExistUserUrl(this.state.email))
+				.then(resp => {
+					if (resp.data === true) {
+						this.setState({
+							isValidEmail: false,
+							emailError: 'Користувач з таким email вже існує'
+						});
+					}
+					if (resp.data === false && !this.state.isValidEmail) {
+						this.setState({isValidEmail: true});
+					}
+				})
+		}
+		if (this.state.userName && (this.state.userName !== prevState.userName)) {
+			apiWithoutRedirect()
+				.get(getIsExistUserUrl(this.state.userName))
+				.then(resp => {
+					if (resp.data === true) {
+						this.setState({
+							isValidUserName: false,
+							userNameError: 'Користувач з таким логіном вже існує'
+						});
+					}
+					if (resp.data === false && !this.state.isValidUserName) {
+						this.setState({isValidUserName: true});
+					}
+				})
 		}
 	}
 

@@ -50,7 +50,7 @@ namespace Shop.Controllers.Api
         public async Task<IActionResult> IfUserExist(string userNameOrEmail)
         {
             var user = await _userManager.FindByEmailAsync(userNameOrEmail) ?? await _userManager.FindByNameAsync(userNameOrEmail);
-            return Ok(user == null);
+            return Ok(user != null);
         }
 
         [HttpGet("role")]
