@@ -31,28 +31,21 @@ class LogInModal extends React.Component {
 		this.setState({password: event.target.value});
 	};
 
-	onPasswordKeyPress = (event) => {
-		const {key} = event;
-		if (key === 'Enter') {
-			this.onLogin();
+	onPasswordKeyPress = (e) => {
+		if (e.key === 'Enter') {
+			this.onLogin(e.key);
 		}
 	};
 
 	// todo need fix onEnter click
-	onLogin = () => {
-		if (!isValidWhiteSpace(this.state.userName)) {
-			this.setState({
-				isValidUserName: false,
-				userNameError: 'Поле не може бути пустим або містити пробіли'
-			})
+	onLogin = (key) => {
+
+		if (key === 'Enter') {
+			this.onUserNameBlur();
+			this.onPasswordBlur();
 		}
-		if (!isValidWhiteSpace(this.state.password)) {
-			this.setState({
-				isValidPassword: false,
-				passwordError: 'Поле не може бути пустим або містити пробіли'
-			})
-		}
-		if (this.state.isValidUserName && this.state.isValidPassword && isValidWhiteSpace(this.state.userName) && isValidWhiteSpace(this.state.password)) {
+
+		if (isValidWhiteSpace(this.state.userName) && isValidWhiteSpace(this.state.password)) {
 			logInToken(this.state.userName, this.state.password)
 				.catch(error => {
 					normalizeLogInResponse(error.response, userName => {
@@ -85,7 +78,7 @@ class LogInModal extends React.Component {
 
 	onUserNameKeyPress = (e) => {
 		if (e.key === 'Enter') {
-			this.onLogin();
+			this.onLogin(e.key);
 		}
 	};
 

@@ -5,6 +5,7 @@ import './RegisterModal.scss';
 import {registerUser} from "../../../services/authService";
 import SuccessRegisterModal from './SuccessRegisterModal';
 import './Modal.scss';
+import {isValidPassword, isValidWhiteSpace, isValidEmail, isValidNameAndLastName} from "../../../utils/validationUtils";
 
 class RegisterModal extends React.Component {
 	constructor(props) {
@@ -16,7 +17,19 @@ class RegisterModal extends React.Component {
 			userName: '',
 			password: '',
 			confirmPassword: '',
-			isShowSuccessModal: false
+			isShowSuccessModal: false,
+			isValidName: true,
+			isValidLastName: true,
+			isValidEmail: true,
+			isValidUserName: true,
+			isValidPassword: true,
+			isValidConfirmPassword: true,
+			nameError: '',
+			lastNameError: '',
+			emailError: '',
+			userNameError: '',
+			passwordError: '',
+			confirmPasswordError: ''
 		}
 	}
 
@@ -24,7 +37,7 @@ class RegisterModal extends React.Component {
 		this.props.closeModal();
 	};
 
-	registerUser = () => {
+	onRegisterUser = () => {
 		// TODO need normal validate
 		const registerModel = {
 			name: this.state.name,
@@ -80,6 +93,81 @@ class RegisterModal extends React.Component {
 		this.setState({confirmPassword: e.target.value});
 	};
 
+	onBlurName = () => {
+		if (!isValidNameAndLastName(this.state.name)) {
+			this.setState({
+				nameError: 'Поле не може містити пробіли або бути пустим. Довжина не більше 20 символів',
+				isValidName: false
+			})
+		}
+		if (isValidNameAndLastName(this.state.name)) {
+			this.setState({isValidName: true});
+		}
+	};
+
+	onBlurLastName = () => {
+		if (!isValidNameAndLastName(this.state.lastName)) {
+			this.setState({
+				lastNameError: 'Поле не може містити пробіли або бути пустим. Довжина не більше 20 символів',
+				isValidLastName: false
+			});
+		}
+		if (isValidNameAndLastName(this.state.lastName)) {
+			this.setState({isValidLastName: true});
+		}
+	};
+
+	onBlurEmail = () => {
+		if (!isValidEmail(this.state.email)) {
+			this.setState({
+				emailError: 'Некоректний email',
+				isValidEmail: false
+			});
+		}
+		if (isValidEmail(this.state.email)) {
+			this.setState({isValidEmail: true});
+		}
+	};
+
+	onBlurUserName = () => {
+		if (!isValidWhiteSpace(this.state.userName)) {
+			this.setState({
+				userNameError: 'Поле не може містити пробіли або бути пустим.',
+				isValidUserName: false
+			});
+		}
+		if (isValidWhiteSpace(this.state.userName)) {
+			this.setState({isValidUserName: true});
+		}
+	};
+
+	onBlurPassword = () => {
+		if (!isValidPassword(this.state.password)) {
+			this.setState({
+				passwordError: 'Некоректний пароль. Пароль повинен містити хоча б один символ верхнього регістру і довжина від 6 до 20 символів',
+				isValidPassword: false
+			});
+		}
+		if (isValidPassword(this.state.password)) {
+			this.setState({isValidPassword: true});
+		}
+	};
+
+	onBlurConfirmPassword = () => {
+		if (this.state.password !== this.state.confirmPassword) {
+			this.setState({
+				confirmPasswordError: 'Паролі не співпадають',
+				isValidConfirmPassword: false
+			});
+		}
+		if (this.state.password === this.state.confirmPassword) {
+			this.setState({isValidConfirmPassword: true});
+		}
+	};
+
+	renderError = (text) => <small id="emailHelp"
+								   className="form-text text-muted invalid-small">{text}</small>;
+
 	render() {
 		const {isShowSuccessModal} = this.state;
 		return (
@@ -96,57 +184,69 @@ class RegisterModal extends React.Component {
 						<div className="form-group">
 							<label htmlFor="inputName">Ім'я</label>
 							<input type="text"
-								   className="form-control"
+								   className={`form-control ${this.state.isValidName ? '' : 'invalid-input'}`}
 								   id="inputName"
 								   placeholder="Введіть своє ім'я"
-								   onChange={this.onChangeName}/>
+								   onChange={this.onChangeName}
+								   onBlur={this.onBlurName}/>
+							{!this.state.isValidName && this.renderError(this.state.nameError)}
 						</div>
 						<div className="form-group">
 							<label htmlFor="inputLastName">Прізвище</label>
 							<input type="text"
-								   className="form-control"
+								   className={`form-control ${this.state.isValidLastName ? '' : 'invalid-input'}`}
 								   id="inputLastName"
-								   placeholder="Введіть свою фамілію"
-								   onChange={this.onChangeLastName}/>
+								   placeholder="Введіть своє прізвище"
+								   onChange={this.onChangeLastName}
+								   onBlur={this.onBlurLastName}/>
+							{!this.state.isValidLastName && this.renderError(this.state.lastNameError)}
 						</div>
 						<div className="form-group">
 							<label htmlFor="inputEmail">Email</label>
 							<input type="email"
-								   className="form-control"
+								   className={`form-control ${this.state.isValidEmail ? '' : 'invalid-input'}`}
 								   id="inputEmail"
 								   aria-describedby="emailHelp"
 								   placeholder="Введіть email"
-								   onChange={this.onChangeEmail}/>
+								   onChange={this.onChangeEmail}
+								   onBlur={this.onBlurEmail}/>
+							{!this.state.isValidEmail && this.renderError(this.state.emailError)}
 						</div>
 						<div className="form-group">
 							<label htmlFor="inputUserName">Логін</label>
 							<input type="text"
-								   className="form-control"
+								   className={`form-control ${this.state.isValidUserName ? '' : 'invalid-input'}`}
 								   id="inputUserName"
 								   aria-describedby="emailHelp"
 								   placeholder="Введіть логін"
-								   onChange={this.onChangeUserName}/>
+								   onChange={this.onChangeUserName}
+								   onBlur={this.onBlurUserName}/>
+							{!this.state.isValidUserName && this.renderError(this.state.userNameError)}
 						</div>
 						<div className="form-group">
 							<label htmlFor="inputPassword">Пароль</label>
 							<input type="password"
-								   className="form-control"
+								   className={`form-control ${this.state.isValidPassword ? '' : 'invalid-input'}`}
 								   id="inputPassword"
 								   placeholder="Введіть пароль..."
-								   onChange={this.onChangePassword}/>
+								   onChange={this.onChangePassword}
+								   onBlur={this.onBlurPassword}/>
+							{!this.state.isValidPassword && this.renderError(this.state.passwordError)}
 						</div>
 						<div className="form-group">
 							<label htmlFor="inputConfirmPassword">Повторіть пароль</label>
 							<input type="password"
-								   className="form-control"
+								   className={`form-control ${this.state.isValidConfirmPassword ? '' : 'invalid-input'}`}
 								   id="inputConfirmPassword"
 								   placeholder="Введіть пароль ще раз..."
-								   onChange={this.onChangeConfirmPassword}/>
+								   onChange={this.onChangeConfirmPassword}
+								   onBlur={this.onBlurConfirmPassword}/>
+							{!this.state.isValidConfirmPassword && this.renderError(this.state.confirmPasswordError)}
 						</div>
 						<div className="form-container__footer">
 							<button type="submit" className="btn btn-primary"
 									disabled
-									onClick={this.registerUser}>Зареєструватись
+									onClick={this.onRegisterUser}>Зареєструватись
 							</button>
 							<button className="btn btn-danger" onClick={this.closeModal}>Закрити</button>
 						</div>

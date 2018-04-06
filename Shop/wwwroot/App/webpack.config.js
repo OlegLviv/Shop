@@ -1,11 +1,18 @@
-﻿module.exports = {
+﻿const webpack = require('webpack');
+module.exports = {
 	context: __dirname,
 	entry: './index.js',
 	output: {
 		path: __dirname + '/dist',
 		filename: "bundle.js"
 	},
+	devtool: "source-map",
 	watch: true,
+	plugins: [
+		new webpack.LoaderOptionsPlugin({
+			debug: true
+		})
+	],
 	module: {
 		rules: [
 			{
@@ -30,7 +37,7 @@
 					options: {
 						presets: ['babel-preset-env', 'babel-preset-react', 'es2015', 'es2017', 'stage-0'],
 						cacheDirectory: true,
-						plugins: ['react-hot-loader/babel','transform-decorators-legacy']
+						plugins: ['react-hot-loader/babel', 'transform-decorators-legacy']
 					}
 				}
 			},
