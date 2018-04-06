@@ -1,5 +1,33 @@
 .container-products {
+  padding-right: 0;
+  padding-left: 0;
+  &__how-to-show {
+	margin-bottom: 2rem;
+	display: flex;
+	justify-content: flex-end;
+	background: #252525;
+	padding: .75rem;
+	border-radius: 5px;
+	box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.125);
+	&__sort {
+	}
+  }
+  &__how-to-show select {
+	max-width: 10rem;
+	font-size: 11px;
+	margin-right: 1rem;
+	box-shadow: 1px 1px 10px 5px #eeeeee44;
+	border: none;
+	cursor: pointer;
+	font-weight: 600;
+	height: 2rem !important;
+  }
+  &__how-to-show select option {
+	cursor: pointer;
+  }
   &__row {
+	margin-right: 0;
+	margin-left: 0;
 	&__item {
 	  padding: 0 .2rem .2rem .2rem;
 	}

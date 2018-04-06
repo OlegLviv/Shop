@@ -77,14 +77,31 @@ namespace Shop.Controllers.Api
         }
 
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
-        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}")]
-        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16)
+        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}/{sortingType:int?}")]
+        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16, SortingType sortingType = SortingType.NoSort)
         {
             var products = _productsRepository
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase) &&
                             x.Price >= priceFrom && x.Price <= priceTo);
+            switch (sortingType)
+            {
+                case SortingType.MosteExpensive:
+                    products = products
+                        .OrderBy(x => x.Price)
+                        .Reverse();
+                    break;
+                case SortingType.Cheapest:
+                    products = products
+                        .OrderBy(x => x.Price);
+                    break;
+                case SortingType.Name:
+                    products = products
+                        .OrderBy(x => x.Name);
+                    break;
+            }
+
             var paginator = new Paginator<Product>
             {
                 PageNumber = pageNumber,
@@ -92,6 +109,7 @@ namespace Shop.Controllers.Api
                 Data = products.Page(pageNumber, pageSize),
                 TotalCount = products.Count()
             };
+       
             if (string.IsNullOrEmpty(query))
                 return this.JsonResult(paginator);
             var result = _productManager

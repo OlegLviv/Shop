@@ -25,7 +25,8 @@ class ProductPlace extends React.Component {
 			totalProductCount: 0,
 			priceRange: priceRange,
 			isProductsLoading: false,
-			isProductsLoaded: false
+			isProductsLoaded: false,
+			sortingType: 0
 		}
 	}
 
@@ -67,10 +68,7 @@ class ProductPlace extends React.Component {
 			return;
 		}
 		const prodUrl = getProductUrlByCatSubCat(getCategory(nextProps), getSubCategory(nextProps));
-		if (this.state.isProductsLoaded) {
-			this.setState({isProductsLoaded: false})
-		}
-		this.setState({isProductsLoading: true});
+		this.renderLoadingSpinner();
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
@@ -112,10 +110,7 @@ class ProductPlace extends React.Component {
 	};
 
 	onPaginationChange = (pageNumber) => {
-		this.setState({isProductsLoading: true});
-		if (this.state.isProductsLoaded) {
-			this.setState({isProductsLoaded: false})
-		}
+		this.renderLoadingSpinner();
 		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
 			getSubCategory(this.props),
 			this.state.priceRange.minPrice,
@@ -123,8 +118,6 @@ class ProductPlace extends React.Component {
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
-				// todo hz is this need
-				console.log(resp.data);
 				addObjectQueryToProducts(resp.data.data);
 				this.setState({
 					products: resp.data.data,
@@ -140,10 +133,53 @@ class ProductPlace extends React.Component {
 			});
 	};
 
+	onSearchByFilter = (priceFrom, priceTo) => {
+		this.renderLoadingSpinner();
+		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
+			getSubCategory(this.props),
+			priceFrom,
+			priceTo,
+			' ', 1, 16, this.state.sortingType
+		);
+		apiWithoutRedirect()
+			.get(prodUrl)
+			.then(resp => {
+				this.setState({
+					products: resp.data.data,
+					activePage: resp.data.pageNumber,
+					totalProductCount: resp.data.totalCount,
+					isProductsLoading: false,
+					isProductsLoaded: true
+				});
+			})
+			.catch(err => {
+				console.log(err);
+			})
+	};
+
+	renderLoadingSpinner = () => {
+		this.setState({isProductsLoading: true});
+		if (this.state.isProductsLoaded) {
+			this.setState({isProductsLoaded: false})
+		}
+	};
+
+
 	renderSwitchContent = () => {
-		// console.log('loading:', this.state.isProductsLoading, 'loaded:', this.state.isProductsLoaded);
 		if (!this.state.isProductsLoading && this.state.isProductsLoaded) {
 			return (<div className="container-fluid container-products">
+				<div className="container-products__how-to-show">
+					<select className="form-control container-products__how-to-show__sort">
+						<option>Позиція</option>
+						<option>Назва товару</option>
+						<option>Найдорожчі спочатку</option>
+						<option>Найдешевші спочатку</option>
+					</select>
+					<select className="form-control container-products__how-to-show__per-page">
+						<option>16</option>
+						<option>32</option>
+					</select>
+				</div>
 				<div className="row container-products__row">
 					{this.state.products.map(item => {
 						return (
@@ -177,7 +213,7 @@ class ProductPlace extends React.Component {
 		}
 	};
 
-	// todo need fix if products > 0. Closing expanded nav products and can't continue filtration
+// todo need fix if products > 0. Closing expanded nav products and can't continue filtration
 	render() {
 		return (
 			<div className="row">
@@ -185,7 +221,8 @@ class ProductPlace extends React.Component {
 					{
 						this.state.products.length > 0 ? <ExpandedNavigationProducts
 								products={this.state.products}
-								onPriceRangeChangeValue={this.onPriceRangeChangeValue}/> :
+								onPriceRangeChangeValue={this.onPriceRangeChangeValue}
+								onSearchByFilter={this.onSearchByFilter}/> :
 							<NavigationProducts/>
 					}
 				</div>

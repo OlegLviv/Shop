@@ -1,6 +1,6 @@
 import React from 'react';
 import './ExpandedNavigationProducts.scss';
-import Slider, {Range} from 'rc-slider';
+import {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import {Icon} from 'react-fa';
 import {objectToArrayKeys} from "../../utils/utils";
@@ -105,7 +105,7 @@ class ExpandedNavigationProducts extends React.Component {
 	};
 
 	onSearchByFilter = () => {
-
+		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo);
 	};
 
 	// todo need fix chevron expanded
@@ -139,7 +139,9 @@ class ExpandedNavigationProducts extends React.Component {
 								onChange={this.onRangeChangeValue}/>
 						</div>}
 					</div>
-					<button className="btn btn-primary" onClick={this.onSearchByFilter}>Знайти</button>
+					<button className="btn btn-primary expanded-nav__body__search-but"
+							onClick={this.onSearchByFilter}>Знайти
+					</button>
 					{/*{this.renderFiltersByQuery()}*/}
 				</div>
 			</div>
