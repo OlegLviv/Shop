@@ -110,6 +110,7 @@ class FullInfoProductPlace extends React.Component {
 
 	//todo need add feedback logic
 	renderFeedback = () => {
+		const {user} = this.props;
 		if (!this.state.productFeedback) {
 			return <Spinner/>
 		}
@@ -122,7 +123,8 @@ class FullInfoProductPlace extends React.Component {
 								<div className="container-c-b__card-body-content__comment"
 									 style={{
 										 'margin-left': `${getRandomArbitrary(-3, 3)}rem`,
-										 'transform': `rotate(${getRandomArbitrary(-3, 3)}deg)`
+										 'transform': `rotate(${getRandomArbitrary(-3, 3)}deg)`,
+										 'box-shadow': `${user && (this.props.user.id === item.userId && '1px 1px 10px 3px #17a2b899')}`
 									 }}>
 									<div
 										className="container-c-b__card-body-content__comment__userName">{`${item.userName} ${item.userLastName}`}
@@ -136,14 +138,15 @@ class FullInfoProductPlace extends React.Component {
 						)
 					})
 				}
-				<div className="container-c-b__submit-box">
+				{this.props.isLogin && this.props.user ? <div className="container-c-b__submit-box">
 					<textarea className="form-control"
 							  placeholder="Введіть свій коментар"
 							  onChange={(e) => this.setState({feedbackValue: e.target.value})}
 							  onKeyPress={this.onSendFeedbackKeyPress}/>
 					<button className="btn btn-dark" onClick={this.onSendFeedback}>Відправити
 					</button>
-				</div>
+				</div> : <div className="container-c-b__submit-box">Для того щоб залишити повідомлення увійдіть в
+					систему</div>}
 			</div>
 		);
 	};

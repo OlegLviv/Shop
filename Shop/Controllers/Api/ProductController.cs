@@ -148,6 +148,7 @@ namespace Shop.Controllers.Api
                 {
                     UserName = user.Name,
                     UserLastName = user.LastName,
+                    UserId = user.Id,
                     Body = productFeedback.Body,
                     Date = ((DateTimeOffset)productFeedback.Date).ToUnixTimeSeconds()
                 });
@@ -217,6 +218,7 @@ namespace Shop.Controllers.Api
             {
                 UserName = user.Name,
                 UserLastName = user.LastName,
+                UserId = user.Id,
                 Date = ((DateTimeOffset)feedback.Date).ToUnixTimeSeconds(),
                 Body = feedback.Body
             });
