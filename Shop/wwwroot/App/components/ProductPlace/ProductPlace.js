@@ -15,12 +15,11 @@ import {priceRange} from "../../utils/productsUtils";
 const getCategory = (props) => props.match.params.category;
 const getSubCategory = (props) => props.match.params.subCategory;
 
-//todo need cary out max-min price to const
 class ProductPlace extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			products: [],
+			products: null,
 			activePage: 1,
 			totalProductCount: 0,
 			priceRange: {
@@ -93,7 +92,6 @@ class ProductPlace extends React.Component {
 			});
 	}
 
-	// TODO need add functional with loginned users
 	onProductCardButClick = (e, id) => {
 		if (!this.props.isLogIn) {
 			addCookies('productsCard', id, 1);
@@ -177,7 +175,7 @@ class ProductPlace extends React.Component {
 
 
 	renderSwitchContent = () => {
-		if (!this.state.isProductsLoading && this.state.isProductsLoaded) {
+		if (!this.state.isProductsLoading && this.state.isProductsLoaded && (this.state.products ? this.state.products.length > 0 : false)) {
 			return (<div className="container-fluid container-products">
 				<div className="container-products__how-to-show">
 					<select className="form-control container-products__how-to-show__sort">
@@ -216,6 +214,11 @@ class ProductPlace extends React.Component {
 				</div>
 			</div>);
 		}
+		if (this.state.isProductsLoaded && !this.state.isProductsLoading && (this.state.products ? this.state.products.length === 0 : false)) {
+			return <div className="text-center">
+				<h3>Нічого не знайдено</h3>
+			</div>;
+		}
 		if (this.state.isProductsLoading && !this.state.isProductsLoaded) {
 			return <Spinner/>
 		}
@@ -230,7 +233,7 @@ class ProductPlace extends React.Component {
 			<div className="row">
 				<div className="col-xl-3 col-lg-4">
 					{
-						this.state.products.length > 0 ? <ExpandedNavigationProducts
+						this.state.products ? <ExpandedNavigationProducts
 								products={this.state.products}
 								onPriceRangeChangeValue={this.onPriceRangeChangeValue}
 								onSearchByFilter={this.onSearchByFilter}/> :
