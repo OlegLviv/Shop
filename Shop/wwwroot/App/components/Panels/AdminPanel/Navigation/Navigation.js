@@ -10,7 +10,7 @@ export const Navigation = () => {
                 <Link to="/">Navbar</Link>
             </div>
             <div className="nav-container__items">
-                <Link className="nav-container__items__item" to="/adminPanel/products">
+                <Link className="nav-container__items__item" to="/adminPanel/action-on-products">
                     <Icon className="nav-container__items__item__icon" name="shopping-basket"/>
                     <div className="nav-container__items__item__text">Продукти</div>
                 </Link>
