@@ -13,6 +13,7 @@ export const AdminPanel = () => {
             <div className="col-10">
                 <Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
                 <Route path="/adminPanel/action-on-products/add-new" render={()=><div>add new</div>}/>
+                <Route path="/adminPanel/action-on-products/edit" render={()=><div>edit</div>}/>
                 <Route path="/adminPanel/users" render={() => <div>users</div>}/>
                 <Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>
                 <Route path="/adminPanel/owner-settings" render={() => <div>owner settings</div>}/>

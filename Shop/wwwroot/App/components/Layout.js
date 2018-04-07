@@ -46,6 +46,7 @@ class Layout extends React.Component {
                     <Route path='/products' render={props => <Home user={user} isLogIn={isLogIn} {...props}/>}/>
                     <Route path='/productsCard' render={props => <ProductCardPlace {...props}/>}/>
                     <Route path='/likedProducts' render={props => <div>{'prod'}</div>}/>
+                    <Route render={() => <div>Not fount 404</div>}/>
                 </div>
             </Router>
         );
