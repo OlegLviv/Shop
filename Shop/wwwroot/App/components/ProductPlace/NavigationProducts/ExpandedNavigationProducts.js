@@ -3,9 +3,9 @@ import './ExpandedNavigationProducts.scss';
 import {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import {Icon} from 'react-fa';
-import {objectToArrayKeys} from "../../utils/utils";
-import {productColors} from "../../utils/productsUtils";
-import {priceRange} from "../../utils/productsUtils";
+import {objectToArrayKeys} from "../../../utils/utils";
+import {productColors} from "../../../utils/productsUtils";
+import {priceRange} from "../../../utils/productsUtils";
 
 const {maxPrice} = priceRange;
 const {minPrice} = priceRange;

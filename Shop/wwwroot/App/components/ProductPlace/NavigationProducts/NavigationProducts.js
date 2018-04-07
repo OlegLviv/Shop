@@ -1,7 +1,7 @@
 import React from 'react';
 import './NavigationProducts.scss';
 import {Link} from 'react-router-dom';
-import {guid, normalizeNavCategoryToRoute} from "../../utils/utils";
+import {guid, normalizeNavCategoryToRoute} from "../../../utils/utils";
 
 const stationeries = [
 	'Папки шкільні',

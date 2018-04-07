@@ -5,8 +5,8 @@ import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addCookies} from "../../services/cookies";
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
-import NavigationProducts from '../NavigationProducts/NavigationProducts';
-import ExpandedNavigationProducts from "../NavigationProducts/ExpandedNavigationProducts";
+import NavigationProducts from './NavigationProducts/NavigationProducts';
+import ExpandedNavigationProducts from "./NavigationProducts/ExpandedNavigationProducts";
 import {getProductsUrlByQuery} from "../../services/urls/productUrls";
 import {Spinner} from "../Spinner/Spinner";
 import Pagination from 'react-js-pagination';
@@ -178,13 +178,13 @@ class ProductPlace extends React.Component {
 		if (!this.state.isProductsLoading && this.state.isProductsLoaded && (this.state.products ? this.state.products.length > 0 : false)) {
 			return (<div className="container-fluid container-products">
 				<div className="container-products__how-to-show">
-					<select className="form-control container-products__how-to-show__sort">
+					<select className="container-products__how-to-show__sort">
 						<option>Позиція</option>
 						<option>Назва товару</option>
 						<option>Найдорожчі спочатку</option>
 						<option>Найдешевші спочатку</option>
 					</select>
-					<select className="form-control container-products__how-to-show__per-page">
+					<select className="container-products__how-to-show__per-page">
 						<option>16</option>
 						<option>32</option>
 					</select>
