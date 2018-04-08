@@ -3,6 +3,7 @@ import {Route, Switch} from 'react-router-dom';
 import {Navigation} from "./Navigation/Navigation";
 import './AdminPanel.scss';
 import {ActionOnProducts} from "./ActionOnProducts/ActionOnProducts";
+import {NotFound} from "../../NotFound/NotFound";
 
 export const AdminPanel = () => {
     return (
@@ -11,12 +12,15 @@ export const AdminPanel = () => {
                 <Navigation/>
             </div>
             <div className="col-10">
-                <Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
-                <Route path="/adminPanel/action-on-products/add-new" render={()=><div>add new</div>}/>
-                <Route path="/adminPanel/action-on-products/edit" render={()=><div>edit</div>}/>
-                <Route path="/adminPanel/users" render={() => <div>users</div>}/>
-                <Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>
-                <Route path="/adminPanel/owner-settings" render={() => <div>owner settings</div>}/>
+                <Switch>
+                    <Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
+                    <Route path="/adminPanel/action-on-products/add-new" render={() => <div>add new</div>}/>
+                    <Route path="/adminPanel/action-on-products/edit" render={() => <div>edit</div>}/>
+                    <Route path="/adminPanel/users" render={() => <div>users</div>}/>
+                    <Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>
+                    <Route path="/adminPanel/owner-settings" render={() => <div>owner settings</div>}/>
+                    <Route component={NotFound}/>
+                </Switch>
             </div>
         </div>
     )

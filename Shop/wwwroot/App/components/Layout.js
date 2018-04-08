@@ -11,6 +11,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {UserPanel} from "./Panels/UserPanel/UserPanel";
 import ProductCardPlace from './ProductCardPlace/ProductCardPlace';
 import FullInfoProductPlace from './FullInfoProductPlace/FullInfoProductPlace';
+import {NotFound} from "./NotFound/NotFound";
 
 class Layout extends React.Component {
     constructor(props) {
@@ -34,19 +35,21 @@ class Layout extends React.Component {
             <Router>
                 <div className="layout-container">
                     <Header onLogIn={this.onLogIn}/>
-                    <Route exact path='/' render={(props) => <Home user={user} isLogIn={isLogIn} {...props}/>}/>
-                    <Route path='/contacts' component={Contacts}/>
-                    <Route path='/deliveryAndPay' component={DeliveryAndPay}/>
-                    <Route path='/aboutCompany' component={AboutCompany}/>
-                    <Route path='/userPanel' component={UserPanel}/>
-                    <Route path='/adminPanel' component={AdminPanel}/>
-                    <Route path='/logIn' component={LogIn}/>
-                    <Route path='/product/:productId'
-                           render={props => <FullInfoProductPlace user={user} isLogin={isLogIn} {...props}/>}/>
-                    <Route path='/products' render={props => <Home user={user} isLogIn={isLogIn} {...props}/>}/>
-                    <Route path='/productsCard' render={props => <ProductCardPlace {...props}/>}/>
-                    <Route path='/likedProducts' render={props => <div>{'prod'}</div>}/>
-                    <Route render={() => <div>Not fount 404</div>}/>
+                    <Switch>
+                        <Route exact path='/' render={(props) => <Home user={user} isLogIn={isLogIn} {...props}/>}/>
+                        <Route path='/products' render={props => <Home user={user} isLogIn={isLogIn} {...props}/>}/>
+                        <Route path='/contacts' component={Contacts}/>
+                        <Route path='/deliveryAndPay' component={DeliveryAndPay}/>
+                        <Route path='/aboutCompany' component={AboutCompany}/>
+                        <Route path='/userPanel' component={UserPanel}/>
+                        <Route path='/adminPanel' component={AdminPanel}/>
+                        <Route path='/logIn' component={LogIn}/>
+                        <Route path='/product/:productId'
+                               render={props => <FullInfoProductPlace user={user} isLogin={isLogIn} {...props}/>}/>
+                        <Route path='/productsCard' render={props => <ProductCardPlace {...props}/>}/>
+                        <Route path='/likedProducts' render={props => <div>{'prod'}</div>}/>
+                        <Route component={NotFound}/>
+                    </Switch>
                 </div>
             </Router>
         );
