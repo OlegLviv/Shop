@@ -109,7 +109,7 @@ namespace Shop.Controllers.Api
                 Data = products.Page(pageNumber, pageSize),
                 TotalCount = products.Count()
             };
-       
+
             if (string.IsNullOrEmpty(query))
                 return this.JsonResult(paginator);
             var result = _productManager
@@ -172,6 +172,40 @@ namespace Shop.Controllers.Api
                 });
             }
             return this.JsonResult(feedbacks.OrderBy(x => x.Date));
+        }
+
+        [HttpGet("GetProductProperties/{subCategory}")]
+        public async Task<IActionResult> GetProductProperties(string subCategory)
+        {
+            var properties = await _context
+                .ProductProperties
+                .FirstOrDefaultAsync(x => x.SubCategory.Equals(subCategory, StringComparison.OrdinalIgnoreCase));
+
+            if (properties == null)
+                return BadRequest("Icorrect sub category or properties not found");
+
+            var propsArr = properties.Properties.Split(';');
+
+            var posibleProductProperties = new List<dynamic>(propsArr.Length);
+
+            foreach (var prop in propsArr)
+            {
+                if (string.IsNullOrEmpty(prop))
+                {
+                    continue;
+                }
+                posibleProductProperties.Add(new
+                {
+                    PropValue = prop,
+                    PossiblePropsValues = (await _context
+                    .PossibleProductProperties
+                    .FirstOrDefaultAsync(x => x.SubCategory == subCategory && x.PropertyName.Equals(prop, StringComparison.OrdinalIgnoreCase)))
+                    .Values
+                    .Split(';')
+
+                });
+            }
+            return this.JsonResult(posibleProductProperties);
         }
 
         #endregion

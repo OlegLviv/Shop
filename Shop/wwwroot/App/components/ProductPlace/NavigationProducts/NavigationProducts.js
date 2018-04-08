@@ -2,7 +2,7 @@ import React from 'react';
 import './NavigationProducts.scss';
 import {Link} from 'react-router-dom';
 import {guid} from "../../../utils/utils";
-import {normalizeNavSubCategoryToRoute} from "../../../utils/productsUtils";
+import {normalizeSubCategoryToRoute} from "../../../utils/productsUtils";
 import {NAVIGATION_SUB_CATEGORIES} from "../../../utils/productsUtils";
 
 class NavigationProducts extends React.Component {
@@ -37,7 +37,7 @@ class NavigationProducts extends React.Component {
                                 NAVIGATION_SUB_CATEGORIES.stationeries.map(item => <Link
                                     key={guid()}
                                     className="dropdown-item"
-                                    to={`/products/stationery/${normalizeNavSubCategoryToRoute(item)}`}>{item}</Link>)
+                                    to={`/products/stationery/${normalizeSubCategoryToRoute(item)}`}>{item}</Link>)
                             }
                         </div>
                     </div>
@@ -53,7 +53,7 @@ class NavigationProducts extends React.Component {
                                 NAVIGATION_SUB_CATEGORIES.gifts.map(item => <Link
                                     key={guid()}
                                     className="dropdown-item"
-                                    to={`/products/gift/${normalizeNavSubCategoryToRoute(item)}`}>{item}</Link>)
+                                    to={`/products/gift/${normalizeSubCategoryToRoute(item)}`}>{item}</Link>)
                             }
                         </div>
                     </div>

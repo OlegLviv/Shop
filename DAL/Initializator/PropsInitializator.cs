@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Initializator
 {
     public static class PropsInitializator
     {
-        public static async Task Initialize(AppDbContext context)
+        public static async Task InitializeAsync(AppDbContext context)
         {
             context.Database.EnsureCreated();
 
-            if (context.Products.Any())
+            if (await context.ProductProperties.AnyAsync() || await context.PossibleProductProperties.AnyAsync())
             {
                 return; // DB has been seeded
             }
@@ -64,7 +65,7 @@ namespace DAL.Initializator
                 new ProductProperty
                 {
                     SubCategory = "pencils",
-                    Properties = "Вид;Тип;Твердість грифиля;Виробник;Діаметр грифиля;Виробник"
+                    Properties = "Вид;Твердість грифиля;Виробник;Діаметр грифиля;Виробник"
                 },
                 new ProductProperty
                 {
@@ -167,7 +168,7 @@ namespace DAL.Initializator
                 },
                 new PossibleProductProperty
                 {
-                    SubCategory = "schoolFolders",
+                    SubCategory = "copyBooks",
                     PropertyName = "Лініювання",
                     Values = "Клітинка;Лінія;Коса лінія",
                 },
@@ -185,7 +186,7 @@ namespace DAL.Initializator
                 },
                 new PossibleProductProperty
                 {
-                    SubCategory = "schoolFolders",
+                    SubCategory = "notebooks",
                     PropertyName = "Виробник",
                     Values = "1 Вересня;Тетрада",
                 },

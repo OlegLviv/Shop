@@ -34,4 +34,33 @@
       border-left: 1px #252525 solid;
     }
   }
+  &__props {
+    display: flex;
+    width: 100%;
+    &__item--inverse {
+      &__text {
+        display: flex;
+        align-items: center;
+      }
+    }
+    &__item--inverse {
+      display: flex;
+      justify-content: center;
+    }
+    &__item--inverse select {
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      height: 3rem;
+    }
+    &__item--inverse[border-right="true"] {
+      border-right: 1px #252525 solid;
+    }
+    &__item--inverse[border-bottom="true"] {
+      border-bottom: 1px #252525 solid;
+    }
+    &__item--inverse[border-left="true"] {
+      border-left: 1px #252525 solid;
+    }
+  }
 }

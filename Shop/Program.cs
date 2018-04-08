@@ -33,6 +33,7 @@ namespace Shop
                     var dbInitializerLogger = services.GetRequiredService<ILogger<UsersDbInitializer>>();
                     UsersDbInitializer.Initialize(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
                     ProductDbInitializaer.Initialize(context);
+                    PropsInitializator.InitializeAsync(context).Wait();
                 }
                 catch (Exception ex)
                 {

@@ -10,4 +10,6 @@ export const getProductsUrlByQuery = (category, subCategory, priceFrom, priceTo,
 
 export const sendFeedbackUrl = '/api/product/SendFeedback';
 
-export const getProductFeedbackById = (productId) => `/api/product/GetProductFeedback/${productId}`;
+export const getProductFeedbackUrlById = (productId) => `/api/product/GetProductFeedback/${productId}`;
+
+export const getProductPropsUrl = (subCategory) => `/api/product/GetProductProperties/${subCategory}`;

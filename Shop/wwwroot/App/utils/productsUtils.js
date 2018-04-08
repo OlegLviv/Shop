@@ -30,7 +30,7 @@ export const priceRange = {
     maxPrice: 10000
 };
 
-export const normalizeNavSubCategoryToRoute = (subCategory) => {
+export const normalizeSubCategoryToRoute = (subCategory) => {
     switch (subCategory) {
         case 'Папки шкільні':
             return 'schoolFolders';
@@ -68,7 +68,8 @@ export const normalizeNavSubCategoryToRoute = (subCategory) => {
     }
 };
 
-export const normalizeCategory = (category) => {
+
+export const getSubCategories = (category) => {
     switch (category) {
         case 'Рюкзаки. Сумочки':
             return NAVIGATION_SUB_CATEGORIES.backs;
@@ -78,43 +79,6 @@ export const normalizeCategory = (category) => {
             return NAVIGATION_SUB_CATEGORIES.gifts;
         case 'Книги':
             return NAVIGATION_SUB_CATEGORIES.books;
-    }
-};
-
-export const formatePropsBySubCat = (subCat) => {
-    switch (subCat) {
-        case 'Папки шкільні':
-            return [
-                'Назва',
-                'Колір',
-                'Призначення',
-                'Виробник',
-                'Ціна'
-            ];
-        case 'Папки офісні':
-            return [
-                'Назва',
-                'Колір',
-                'Тип папки',
-                'Виробник',
-                'Ціна'
-            ];
-        case 'Зошити':
-            return [
-                'Назва',
-                'Колір',
-                'Форм фактор',
-                'К-сть листів',
-                'Ціна'
-            ];
-        case 'Блокноти':
-            return [
-                'Назва',
-                'Колір',
-                'К-сть листів',
-                'Ціна',
-                'Тип ручки',
-            ];
     }
 };
 

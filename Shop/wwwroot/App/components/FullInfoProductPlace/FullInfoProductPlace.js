@@ -1,6 +1,6 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductUrlById, getProductFeedbackById} from "../../services/urls/productUrls";
+import {getProductUrlById, getProductFeedbackUrlById} from "../../services/urls/productUrls";
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
 import {sendFeedbackUrl} from "../../services/urls/productUrls";
@@ -182,7 +182,7 @@ class FullInfoProductPlace extends React.Component {
 							onClick={() => {
 								this.setState({aboutProductNacCase: 'feedback'});
 								apiWithoutRedirect()
-									.get(getProductFeedbackById(this.state.product.id))
+									.get(getProductFeedbackUrlById(this.state.product.id))
 									.then(resp => {
 										this.setState({productFeedback: resp.data})
 									})
