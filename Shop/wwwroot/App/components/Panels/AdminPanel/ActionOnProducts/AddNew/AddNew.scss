@@ -63,4 +63,13 @@
       border-left: 1px #252525 solid;
     }
   }
+  &__action-box {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+
+  }
+  &__action-box button {
+    margin: 1rem;
+  }
 }

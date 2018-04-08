@@ -10,11 +10,24 @@ class AddNew extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            category: 'Рюкзаки. Сумочки',
-            subCategory: '',
+            category: NAVIGATION_CATEGORIES[1],
+            subCategory: getSubCategories(NAVIGATION_CATEGORIES[1])[0],
             subCategoryProps: [],
             price: 0
         }
+    }
+
+    componentDidMount() {
+        console.log(this.state.subCategory);
+        apiWithoutRedirect()
+            .get(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+            .then(resp => {
+                console.log(resp.data);
+                this.setState({subCategoryProps: resp.data});
+            })
+            .catch(err => {
+                console.log(err.response);
+            });
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -27,7 +40,7 @@ class AddNew extends React.Component {
                 })
                 .catch(err => {
                     console.log(err.response);
-                })
+                });
         }
     }
 
@@ -50,6 +63,14 @@ class AddNew extends React.Component {
         }
     };
 
+    onSave = () => {
+
+    };
+
+    onClear = () => {
+
+    };
+
     render() {
         return (
             <div className="container-add-new">
@@ -62,7 +83,7 @@ class AddNew extends React.Component {
                     </div>
                     <div className="col-6 container-add-new__row__item--inverse" border-right="true"
                          border-bottom="true" border-left="true">
-                        <select onChange={this.onChangeOptionCategory}>
+                        <select onChange={this.onChangeOptionCategory} defaultValue={this.state.category}>
                             {
                                 NAVIGATION_CATEGORIES.map(item => <option
                                     value={item}>{item}
@@ -128,6 +149,14 @@ class AddNew extends React.Component {
                             <input className="form-control" value={this.state.price} onChange={this.onChangePrice}/>
                         </div>
                     </div>
+                </div>
+                <div className="container-add-new__action-box">
+                    <button className="btn btn-info container-add-new__action-box__save" onClick={this.onSave}>Зберегти
+                        товар
+                    </button>
+                    <button className="btn btn-danger container-add-new__action-box__clear"
+                            onClick={this.onClear}>Очистити
+                    </button>
                 </div>
             </div>
         )
