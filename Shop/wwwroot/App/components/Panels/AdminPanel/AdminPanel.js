@@ -4,6 +4,7 @@ import {Navigation} from "./Navigation/Navigation";
 import './AdminPanel.scss';
 import {ActionOnProducts} from "./ActionOnProducts/ActionOnProducts";
 import {NotFound} from "../../NotFound/NotFound";
+import AddNew from './ActionOnProducts/AddNew/AddNew';
 
 export const AdminPanel = () => {
     return (
@@ -14,7 +15,7 @@ export const AdminPanel = () => {
             <div className="col-10">
                 <Switch>
                     <Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
-                    <Route path="/adminPanel/action-on-products/add-new" render={() => <div>add new</div>}/>
+                    <Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
                     <Route path="/adminPanel/action-on-products/edit" render={() => <div>edit</div>}/>
                     <Route path="/adminPanel/users" render={() => <div>users</div>}/>
                     <Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>

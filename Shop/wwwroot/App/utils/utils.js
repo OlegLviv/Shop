@@ -8,38 +8,6 @@ export const guid = () => {
 	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 };
 
-export const normalizeNavCategoryToRoute = (subCategory) => {
-	switch (subCategory) {
-		case 'Папки шкільні':
-			return 'schoolFolders';
-		case 'Папки офісні':
-			return 'officeFolders';
-		case 'Зошити':
-			return 'copyBooks';
-		case 'Блокноти':
-			return 'notebooks';
-		case 'Стікери':
-			return 'stickers';
-		case 'Словники':
-			return 'dictionaries';
-		case 'Письмове приладдя':
-			return 'writingSupplies';
-		case 'Шкільне приладдя':
-			return 'schoolSupplies';
-		case 'Офісне приладдя':
-			return 'officeSupplies';
-		case 'ЗНО':
-			return 'zno';
-
-		case 'Шкатулки':
-			return 'casket';
-		case 'Декоративні коробочки':
-			return 'decorativeBoxes';
-		case 'Статуетки':
-			return 'figures';
-	}
-};
-
 export const objectToArrayKeys = (obj) => {
 	if (!obj)
 		return;
