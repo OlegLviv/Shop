@@ -44,8 +44,14 @@ export const normalizeNavSubCategoryToRoute = (subCategory) => {
             return 'stickers';
         case 'Словники':
             return 'dictionaries';
-        case 'Письмове приладдя':
-            return 'writingSupplies';
+        case 'Ручки':
+            return 'pens';
+        case 'Олівці':
+            return 'pencils';
+        case 'Маркери':
+            return 'markers';
+        case 'Коректори':
+            return 'proofreaders';
         case 'Шкільне приладдя':
             return 'schoolSupplies';
         case 'Офісне приладдя':
@@ -128,7 +134,10 @@ export const NAVIGATION_SUB_CATEGORIES = {
         'Блокноти',
         'Стікери',
         'Словники',
-        'Письмове приладдя',
+        'Ручки',
+        'Олівці',
+        'Маркери',
+        'Коректори',
         'Шкільне приладдя',
         'Офісне приладдя',
         'ЗНО'

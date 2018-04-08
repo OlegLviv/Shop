@@ -18,6 +18,8 @@ namespace DAL
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductProperty> ProductProperties { get; set; }
+        public DbSet<PossibleProductProperty> PossibleProductProperties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
