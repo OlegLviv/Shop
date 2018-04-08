@@ -5,6 +5,7 @@ import {getSubCategories} from "../../../../../utils/productsUtils";
 import {apiWithoutRedirect} from "../../../../../services/api";
 import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
+import {clearObjectProps} from "../../../../../utils/utils";
 
 class AddNew extends React.Component {
     constructor(props) {
@@ -13,36 +14,42 @@ class AddNew extends React.Component {
             category: NAVIGATION_CATEGORIES[1],
             subCategory: getSubCategories(NAVIGATION_CATEGORIES[1])[0],
             subCategoryProps: [],
-            price: 0
+            price: 0,
+            product: {}
         }
     }
 
     componentDidMount() {
         console.log(this.state.subCategory);
-        apiWithoutRedirect()
-            .get(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
-            .then(resp => {
-                console.log(resp.data);
-                this.setState({subCategoryProps: resp.data});
-            })
-            .catch(err => {
-                console.log(err.response);
-            });
+        this.setSubCategoryState();
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.subCategory !== this.state.subCategory) {
-            apiWithoutRedirect()
-                .get(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
-                .then(resp => {
-                    console.log(resp.data);
-                    this.setState({subCategoryProps: resp.data});
-                })
-                .catch(err => {
-                    console.log(err.response);
-                });
+            this.setSubCategoryState();
         }
     }
+
+    setSubCategoryState = () => {
+        apiWithoutRedirect()
+            .get(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+            .then(resp => {
+                console.log(resp.data);
+                const {product} = this.state;
+                clearObjectProps(product);
+                for (let i in resp.data) {
+                    product[resp.data[i].propValue] = resp.data[i].possiblePropsValues[0];
+                }
+                console.log('prod', product);
+                this.setState({
+                    subCategoryProps: resp.data,
+                    product: product
+                });
+            })
+            .catch(err => {
+                console.log(err.response);
+            });
+    };
 
     onChangeOptionCategory = (e) => {
         this.setState({category: e.target.value})
@@ -61,6 +68,13 @@ class AddNew extends React.Component {
         if (!isNaN(numValue)) {
             this.setState({price: numValue});
         }
+    };
+
+    onChangePropsValue = (propName, e) => {
+        const {product} = this.state;
+        product[propName] = e.target.value;
+        console.log(product);
+        this.setState({product: product});
     };
 
     onSave = () => {
@@ -128,7 +142,7 @@ class AddNew extends React.Component {
                                     </div>
                                     <div className="col-6 container-add-new__props__item--inverse" border-right="true"
                                          border-bottom="true">
-                                        <select>
+                                        <select onChange={(e) => this.onChangePropsValue(item.propValue, e)}>
                                             {
                                                 item.possiblePropsValues.map(itemPP =>
                                                     <option>{itemPP}</option>)
