@@ -75,6 +75,43 @@ export const normalizeCategory = (category) => {
     }
 };
 
+export const formatePropsBySubCat = (subCat) => {
+    switch (subCat) {
+        case 'Папки шкільні':
+            return [
+                'Назва',
+                'Колір',
+                'Призначення',
+                'Виробник',
+                'Ціна'
+            ];
+        case 'Папки офісні':
+            return [
+                'Назва',
+                'Колір',
+                'Тип папки',
+                'Виробник',
+                'Ціна'
+            ];
+        case 'Зошити':
+            return [
+                'Назва',
+                'Колір',
+                'Форм фактор',
+                'К-сть листів',
+                'Ціна'
+            ];
+        case 'Блокноти':
+            return [
+                'Назва',
+                'Колір',
+                'К-сть листів',
+                'Ціна',
+                'Тип ручки',
+            ];
+    }
+};
+
 export const NAVIGATION_CATEGORIES = [
     'Рюкзаки. Сумочки',
     'Канцтовари',

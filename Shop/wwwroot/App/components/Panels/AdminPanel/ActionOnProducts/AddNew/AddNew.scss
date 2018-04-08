@@ -1,6 +1,6 @@
 .container-add-new {
   padding: 3rem 6rem 3rem 6rem;
-  &__row-choose-cat {
+  &__row {
     &__item {
       background: #252525;
       color: #f3f3f3;
@@ -10,6 +10,9 @@
     }
     &__item[border-right="true"] {
       border-right: 1px white solid;
+    }
+    &__item[margin-top="true"] {
+      margin-top: 2rem;
     }
     &__item--inverse {
       display: flex;

@@ -18,14 +18,14 @@ class AddNew extends React.Component {
     render() {
         return (
             <div className="container-add-new">
-                <div className="row container-add-new__row-choose-cat">
-                    <div className="col-6 container-add-new__row-choose-cat__item" border-right="true">
+                <div className="row container-add-new__row">
+                    <div className="col-6 container-add-new__row__item" border-right="true">
                         <div>Оберіть карегорію</div>
                     </div>
-                    <div className="col-6 container-add-new__row-choose-cat__item">
+                    <div className="col-6 container-add-new__row__item">
                         <div>Оберіть підкарегорію</div>
                     </div>
-                    <div className="col-6 container-add-new__row-choose-cat__item--inverse" border-right="true"
+                    <div className="col-6 container-add-new__row__item--inverse" border-right="true"
                          border-bottom="true" border-left="true">
                         <select onChange={this.onChangeOptionCategory}>
                             {
@@ -35,7 +35,7 @@ class AddNew extends React.Component {
                             }
                         </select>
                     </div>
-                    <div className="col-6 container-add-new__row-choose-cat__item--inverse" border-right="true"
+                    <div className="col-6 container-add-new__row__item--inverse" border-right="true"
                          border-bottom="true">
                         <select>
                             {
@@ -43,9 +43,12 @@ class AddNew extends React.Component {
                             }
                         </select>
                     </div>
-                </div>
-                <div className="row container-add-new__product-edit">
-                    
+                    <div className="col-6 container-add-new__row__item" border-right="true" margin-top="true">
+                        <div>Властивість товару</div>
+                    </div>
+                    <div className="col-6 container-add-new__row__item" margin-top="true">
+                        <div>Значення властивості</div>
+                    </div>
                 </div>
             </div>
         )
