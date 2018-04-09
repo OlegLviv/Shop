@@ -130,7 +130,9 @@ class AddNew extends React.Component {
         apiWithoutRedirect()
             .post(ADD_PRODUCT_URL, form)
             .then(resp => {
-                console.log(resp)
+                if (resp.data >= 1) {
+                    alert('Success save');
+                }
             })
             .catch(err => {
                 console.log(err.response);
