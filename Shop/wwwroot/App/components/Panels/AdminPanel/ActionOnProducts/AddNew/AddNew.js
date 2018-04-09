@@ -6,6 +6,8 @@ import {apiWithoutRedirect} from "../../../../../services/api";
 import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
 import {clearObjectProps} from "../../../../../utils/utils";
+import {createProductQueryByObject} from "../../../../../utils/utils";
+import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 
 class AddNew extends React.Component {
     constructor(props) {
@@ -14,6 +16,7 @@ class AddNew extends React.Component {
             category: NAVIGATION_CATEGORIES[1],
             subCategory: getSubCategories(NAVIGATION_CATEGORIES[1])[0],
             subCategoryProps: [],
+            productName: '',
             price: 0,
             product: {}
         }
@@ -59,6 +62,10 @@ class AddNew extends React.Component {
         this.setState({subCategory: e.target.value})
     };
 
+    onChangeProductName = (e) => {
+        this.setState({productName: e.target.value});
+    };
+
     onChangePrice = (e) => {
         const numValue = Number(e.target.value);
         if (this.state.price > 10000) {
@@ -78,7 +85,24 @@ class AddNew extends React.Component {
     };
 
     onSave = () => {
-
+        const query = createProductQueryByObject(this.state.product);
+        if (this.state.productName.length === 0 || this.state.price === 0)
+            return;
+        const product = {
+            category: this.state.category,
+            subCategory: this.state.subCategory,
+            name: this.state.productName,
+            price: this.state.price,
+            query: query
+        };
+        apiWithoutRedirect()
+            .post(ADD_PRODUCT_URL, product)
+            .then(resp => {
+                console.log(resp)
+            })
+            .catch(err => {
+                console.log(err.response);
+            })
     };
 
     onClear = () => {
@@ -127,7 +151,7 @@ class AddNew extends React.Component {
                         </div>
                         <div className="col-6 container-add-new__props__item--inverse" border-right="true"
                              border-bottom="true">
-                            <input className="form-control"/>
+                            <input className="form-control" onChange={this.onChangeProductName}/>
                         </div>
                     </div>
 

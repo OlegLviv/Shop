@@ -3,7 +3,7 @@ import {apiWithoutRedirect} from "../../services/api";
 import {getProductUrlById, getProductFeedbackUrlById} from "../../services/urls/productUrls";
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
-import {sendFeedbackUrl} from "../../services/urls/productUrls";
+import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
 import {getRandomArbitrary} from "../../utils/utils";
 
 const getProductId = (props) => props.match.params.productId;
@@ -51,7 +51,7 @@ class FullInfoProductPlace extends React.Component {
 				body: this.state.feedbackValue
 			};
 			apiWithoutRedirect()
-				.put(sendFeedbackUrl, sendCommentObj)
+				.put(SEND_FEEDBACK_URL, sendCommentObj)
 				.then(resp => {
 					if (resp.status === 200) {
 						const newFeedback = this.state.productFeedback;

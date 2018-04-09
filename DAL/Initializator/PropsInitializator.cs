@@ -65,7 +65,7 @@ namespace DAL.Initializator
                 new ProductProperty
                 {
                     SubCategory = "pencils",
-                    Properties = "Вид;Твердість грифиля;Виробник;Діаметр грифиля;Виробник"
+                    Properties = "Вид;Твердість грифиля;Виробник;Діаметр грифиля"
                 },
                 new ProductProperty
                 {

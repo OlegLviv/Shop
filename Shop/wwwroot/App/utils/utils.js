@@ -22,3 +22,9 @@ export const clearObjectProps = (obj) => {
     Object.keys(obj).map(i => delete obj[i]);
 };
 
+export const createProductQueryByObject = (obj) => {
+    if (!obj)
+        return;
+    return Object.keys(obj).map(i => i.concat(`=${obj[i]}`)).join(';');
+};
+

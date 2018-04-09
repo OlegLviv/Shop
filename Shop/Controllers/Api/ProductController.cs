@@ -212,6 +212,21 @@ namespace Shop.Controllers.Api
 
         #region POST
 
+        [HttpPost("AddProduct")]
+        public async Task<IActionResult> AddProduct([FromBody] AddProductViewModel model)
+        {
+            var insertRes = await _productsRepository.InsertAsync(new Product
+            {
+                Category = model.Category,
+                SubCategory = model.SubCategory,
+                Name = model.Name,
+                Price = model.Price,
+                Description = model.Description,
+                Query = model.Query
+            });
+            return Ok(insertRes);
+        }
+
         // todo maybe it's no need
         [HttpPost("AddProductToShopingCard")]
         public async Task<IActionResult> AddProductToShopingCard([FromBody] UserAddProductToShopingCard model)
