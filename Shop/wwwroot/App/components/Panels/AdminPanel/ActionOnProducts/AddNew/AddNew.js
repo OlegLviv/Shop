@@ -8,6 +8,7 @@ import {normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {createProductQueryByObject} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
+import FileUploadProgress from 'react-fileupload-progress';
 
 class AddNew extends React.Component {
     constructor(props) {
@@ -18,7 +19,8 @@ class AddNew extends React.Component {
             subCategoryProps: [],
             productName: '',
             price: 0,
-            product: {}
+            product: {},
+            files: []
         }
     }
 
@@ -77,6 +79,20 @@ class AddNew extends React.Component {
         }
     };
 
+    onChangeFile = (e) => {
+        const {files} = e.target;
+        const newFiles = [];
+        console.log('new files', files);
+        for (let i in files) {
+            if (files[i].size > 3000000) {
+                alert('only 3mb');
+                return;
+            }
+            newFiles.push(files[i]);
+        }
+        this.setState({files: files});
+    };
+
     onChangePropsValue = (propName, e) => {
         const {product} = this.state;
         product[propName] = e.target.value;
@@ -84,19 +100,32 @@ class AddNew extends React.Component {
         this.setState({product: product});
     };
 
+    // todo to will add normal validation
     onSave = () => {
         const query = createProductQueryByObject(this.state.product);
-        if (this.state.productName.length === 0 || this.state.price === 0)
+        if (this.state.productName.length === 0 || this.state.price === 0) {
+            alert('please add product name');
             return;
-        const product = {
-            category: this.state.category,
-            subCategory: this.state.subCategory,
-            name: this.state.productName,
-            price: this.state.price,
-            query: query
-        };
+        }
+
+        // const product = {
+        //     category: this.state.category,
+        //     subCategory: this.state.subCategory,
+        //     name: this.state.productName,
+        //     price: this.state.price,
+        //     query: query
+        // };
+
+        const form = new FormData();
+        form.append('category', this.state.category);
+        form.append('subCategory', this.state.subCategory);
+        form.append('name', this.state.productName);
+        form.append('price', this.state.price);
+        form.append('query', query);
+        form.append('images', this.state.files);
+        console.log('form', form.get('images'));
         apiWithoutRedirect()
-            .post(ADD_PRODUCT_URL, product)
+            .post(ADD_PRODUCT_URL, form)
             .then(resp => {
                 console.log(resp)
             })
@@ -188,6 +217,7 @@ class AddNew extends React.Component {
                         </div>
                     </div>
                 </div>
+                <input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
                 <div className="container-add-new__action-box">
                     <button className="btn btn-info container-add-new__action-box__save" onClick={this.onSave}>Зберегти
                         товар

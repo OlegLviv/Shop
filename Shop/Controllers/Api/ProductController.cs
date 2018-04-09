@@ -213,9 +213,9 @@ namespace Shop.Controllers.Api
         #region POST
 
         [HttpPost("AddProduct")]
-        public async Task<IActionResult> AddProduct([FromBody] AddProductViewModel model)
+        public async Task<IActionResult> AddProduct([FromForm] AddProductViewModel model)
         {
-            var insertRes = await _productsRepository.InsertAsync(new Product
+            var product = new Product
             {
                 Category = model.Category,
                 SubCategory = model.SubCategory,
@@ -223,7 +223,32 @@ namespace Shop.Controllers.Api
                 Price = model.Price,
                 Description = model.Description,
                 Query = model.Query
-            });
+            };
+
+            var productImages = new List<ProductImage>();
+
+            foreach (var im in model.Images)
+            {
+                if (im.Length > 3000000)
+                    return BadRequest("Еhe image can't be larger than 3MB");
+
+                using (var stream = im.OpenReadStream())
+                {
+                    var imgBuff = new byte[(int)stream.Length];
+                    await stream.ReadAsync(imgBuff, 0, (int)stream.Length);
+                    productImages.Add(new ProductImage
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        Image = imgBuff
+                    });
+                }
+            }
+
+            if (productImages.Count != 0)
+                product.ProductImages = productImages;
+
+            var insertRes = await _productsRepository.InsertAsync(product);
             return Ok(insertRes);
         }
 

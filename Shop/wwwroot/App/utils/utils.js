@@ -27,4 +27,3 @@ export const createProductQueryByObject = (obj) => {
         return;
     return Object.keys(obj).map(i => i.concat(`=${obj[i]}`)).join(';');
 };
-

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace Core.Models.ViewModels
 {
@@ -19,5 +20,6 @@ namespace Core.Models.ViewModels
         [Required]
         public double Price { get; set; }
         public string Description { get; set; }
+        public IFormFile[] Images { get; set; }
     }
 }

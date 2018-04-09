@@ -18,5 +18,6 @@ namespace Core.Models.DomainModels
         public double Price { get; set; }
         public string Description { get; set; }
         public List<Feedback> Feedbacks { get; set; }
+        public List<ProductImage> ProductImages { get; set; }
     }
 }
