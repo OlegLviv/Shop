@@ -33,6 +33,14 @@
     &__item--inverse[border-left="true"] {
       border-left: 1px #252525 solid;
     }
+    &__file-box {
+      display: flex;
+      justify-content: center;
+      padding-top: 2rem;
+    }
+    &__file-box input {
+      cursor: pointer;
+    }
   }
   &__props {
     display: flex;

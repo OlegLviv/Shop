@@ -68,6 +68,19 @@ export const normalizeSubCategoryToRoute = (subCategory) => {
     }
 };
 
+export const normalizecategoryToRoute = (category) => {
+    switch (category) {
+        case 'Рюкзаки. Сумочки':
+            return 'Backpacks Handbags';
+        case 'Канцтовари':
+            return 'Stationery';
+        case 'Подарунки':
+            return 'Gifts';
+        case 'Книги':
+            return 'Books';
+    }
+};
+
 
 export const getSubCategories = (category) => {
     switch (category) {

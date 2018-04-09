@@ -248,8 +248,8 @@ namespace Shop.Controllers.Api
             if (productImages.Count != 0)
                 product.ProductImages = productImages;
 
-            var insertRes = await _productsRepository.InsertAsync(product);
-            return Ok(insertRes);
+            //var insertRes = await _productsRepository.InsertAsync(product);
+            return Ok(1);
         }
 
         // todo maybe it's no need

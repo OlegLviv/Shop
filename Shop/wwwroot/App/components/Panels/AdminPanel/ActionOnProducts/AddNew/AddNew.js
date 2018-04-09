@@ -8,7 +8,8 @@ import {normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {createProductQueryByObject} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
-import FileUploadProgress from 'react-fileupload-progress';
+import {normalizecategoryToRoute} from "../../../../../utils/productsUtils";
+import {Spinner} from "../../../../Spinner/Spinner";
 
 class AddNew extends React.Component {
     constructor(props) {
@@ -20,7 +21,9 @@ class AddNew extends React.Component {
             productName: '',
             price: 0,
             product: {},
-            files: []
+            files: [],
+            isLoading: false,
+            isLoaded: false
         }
     }
 
@@ -36,6 +39,10 @@ class AddNew extends React.Component {
     }
 
     setSubCategoryState = () => {
+        if (this.state.isLoaded)
+            this.setState({isLoaded: false});
+
+        this.setState({isLoading: true});
         apiWithoutRedirect()
             .get(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
             .then(resp => {
@@ -48,7 +55,9 @@ class AddNew extends React.Component {
                 console.log('prod', product);
                 this.setState({
                     subCategoryProps: resp.data,
-                    product: product
+                    product: product,
+                    isLoaded: true,
+                    isLoading: false
                 });
             })
             .catch(err => {
@@ -108,21 +117,15 @@ class AddNew extends React.Component {
             return;
         }
 
-        // const product = {
-        //     category: this.state.category,
-        //     subCategory: this.state.subCategory,
-        //     name: this.state.productName,
-        //     price: this.state.price,
-        //     query: query
-        // };
-
         const form = new FormData();
-        form.append('category', this.state.category);
-        form.append('subCategory', this.state.subCategory);
+        form.append('category', normalizecategoryToRoute(this.state.category));
+        form.append('subCategory', normalizeSubCategoryToRoute(this.state.subCategory));
         form.append('name', this.state.productName);
         form.append('price', this.state.price);
         form.append('query', query);
-        form.append('images', this.state.files);
+        for (let i in this.state.files) {
+            form.append('images', this.state.files[i]);
+        }
         console.log('form', form.get('images'));
         apiWithoutRedirect()
             .post(ADD_PRODUCT_URL, form)
@@ -140,92 +143,99 @@ class AddNew extends React.Component {
 
     render() {
         return (
-            <div className="container-add-new">
-                <div className="row container-add-new__row">
-                    <div className="col-6 container-add-new__row__item" border-right="true">
-                        <div>Оберіть карегорію</div>
-                    </div>
-                    <div className="col-6 container-add-new__row__item">
-                        <div>Оберіть підкарегорію</div>
-                    </div>
-                    <div className="col-6 container-add-new__row__item--inverse" border-right="true"
-                         border-bottom="true" border-left="true">
-                        <select onChange={this.onChangeOptionCategory} defaultValue={this.state.category}>
-                            {
-                                NAVIGATION_CATEGORIES.map(item => <option
-                                    value={item}>{item}
-                                </option>)
-                            }
-                        </select>
-                    </div>
-                    <div className="col-6 container-add-new__row__item--inverse" border-right="true"
-                         border-bottom="true">
-                        <select onChange={this.onChangeOptionSubCategory}>
-                            {
-                                getSubCategories(this.state.category).map(item => <option>{item}</option>)
-                            }
-                        </select>
-                    </div>
-                    <div className="col-6 container-add-new__row__item" border-right="true" margin-top="true">
-                        <div>Властивість товару</div>
-                    </div>
-                    <div className="col-6 container-add-new__row__item" margin-top="true">
-                        <div>Значення властивості</div>
-                    </div>
-
-                    <div className="container-add-new__props">
-                        <div className="col-6 container-add-new__props__item--inverse" border-right="true"
+            <div>
+                {this.state.isLoaded ? <div className="container-add-new">
+                    <div className="row container-add-new__row">
+                        <div className="col-6 container-add-new__row__item" border-right="true">
+                            <div>Оберіть карегорію</div>
+                        </div>
+                        <div className="col-6 container-add-new__row__item">
+                            <div>Оберіть підкарегорію</div>
+                        </div>
+                        <div className="col-6 container-add-new__row__item--inverse" border-right="true"
                              border-bottom="true" border-left="true">
-                            <div className="container-add-new__props__item--inverse__text">Назва</div>
+                            <select onChange={this.onChangeOptionCategory} defaultValue={this.state.category}>
+                                {
+                                    NAVIGATION_CATEGORIES.map(item => <option
+                                        value={item}>{item}
+                                    </option>)
+                                }
+                            </select>
                         </div>
-                        <div className="col-6 container-add-new__props__item--inverse" border-right="true"
+                        <div className="col-6 container-add-new__row__item--inverse" border-right="true"
                              border-bottom="true">
-                            <input className="form-control" onChange={this.onChangeProductName}/>
+                            <select onChange={this.onChangeOptionSubCategory}>
+                                {
+                                    getSubCategories(this.state.category).map(item => <option>{item}</option>)
+                                }
+                            </select>
                         </div>
-                    </div>
+                        <div className="col-6 container-add-new__row__item" border-right="true" margin-top="true">
+                            <div>Властивість товару</div>
+                        </div>
+                        <div className="col-6 container-add-new__row__item" margin-top="true">
+                            <div>Значення властивості</div>
+                        </div>
 
-                    {
-                        this.state.subCategoryProps.map(item => {
-                            return (
-                                <div className="container-add-new__props">
-                                    <div className="col-6 container-add-new__props__item--inverse" border-right="true"
-                                         border-bottom="true" border-left="true">
-                                        <div
-                                            className="container-add-new__props__item--inverse__text">{item.propValue}</div>
-                                    </div>
-                                    <div className="col-6 container-add-new__props__item--inverse" border-right="true"
-                                         border-bottom="true">
-                                        <select onChange={(e) => this.onChangePropsValue(item.propValue, e)}>
-                                            {
-                                                item.possiblePropsValues.map(itemPP =>
-                                                    <option>{itemPP}</option>)
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
-                    <div className="container-add-new__props">
-                        <div className="col-6 container-add-new__props__item--inverse" border-right="true"
-                             border-bottom="true" border-left="true">
-                            <div className="container-add-new__props__item--inverse__text">Ціна</div>
+                        <div className="container-add-new__props">
+                            <div className="col-6 container-add-new__props__item--inverse" border-right="true"
+                                 border-bottom="true" border-left="true">
+                                <div className="container-add-new__props__item--inverse__text">Назва</div>
+                            </div>
+                            <div className="col-6 container-add-new__props__item--inverse" border-right="true"
+                                 border-bottom="true">
+                                <input className="form-control" onChange={this.onChangeProductName}/>
+                            </div>
                         </div>
-                        <div className="col-6 container-add-new__props__item--inverse" border-right="true"
-                             border-bottom="true">
-                            <input className="form-control" value={this.state.price} onChange={this.onChangePrice}/>
+
+                        {
+                            this.state.subCategoryProps.map(item => {
+                                return (
+                                    <div className="container-add-new__props">
+                                        <div className="col-6 container-add-new__props__item--inverse"
+                                             border-right="true"
+                                             border-bottom="true" border-left="true">
+                                            <div
+                                                className="container-add-new__props__item--inverse__text">{item.propValue}</div>
+                                        </div>
+                                        <div className="col-6 container-add-new__props__item--inverse"
+                                             border-right="true"
+                                             border-bottom="true">
+                                            <select onChange={(e) => this.onChangePropsValue(item.propValue, e)}>
+                                                {
+                                                    item.possiblePropsValues.map(itemPP =>
+                                                        <option>{itemPP}</option>)
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                        <div className="container-add-new__props">
+                            <div className="col-6 container-add-new__props__item--inverse" border-right="true"
+                                 border-bottom="true" border-left="true">
+                                <div className="container-add-new__props__item--inverse__text">Ціна</div>
+                            </div>
+                            <div className="col-6 container-add-new__props__item--inverse" border-right="true"
+                                 border-bottom="true">
+                                <input className="form-control" value={this.state.price} onChange={this.onChangePrice}/>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
-                <div className="container-add-new__action-box">
-                    <button className="btn btn-info container-add-new__action-box__save" onClick={this.onSave}>Зберегти
-                        товар
-                    </button>
-                    <button className="btn btn-danger container-add-new__action-box__clear"
-                            onClick={this.onClear}>Очистити
-                    </button>
-                </div>
+                    <div className="container-add-new__row__file-box">
+                        <input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
+                    </div>
+                    <div className="container-add-new__action-box">
+                        <button className="btn btn-info container-add-new__action-box__save"
+                                onClick={this.onSave}>Зберегти
+                            товар
+                        </button>
+                        <button className="btn btn-danger container-add-new__action-box__clear"
+                                onClick={this.onClear}>Очистити
+                        </button>
+                    </div>
+                </div> : <Spinner/>}
             </div>
         )
     }
