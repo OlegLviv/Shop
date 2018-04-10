@@ -15,5 +15,6 @@ namespace Core.Models.DTO
         public double Price { get; set; }
         [Required]
         public string Name { get; set; }
+        public int ProductCount { get; set; }
     }
 }

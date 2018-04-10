@@ -15,6 +15,7 @@ using BLL.Filters.ActionFilters;
 using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
 using System.Dynamic;
+using System.IO;
 using AutoMapper;
 using Core.Models.DTO;
 using Core.Models.ViewModels;
@@ -126,7 +127,7 @@ namespace Shop.Controllers.Api
         public IActionResult GetProductsByIds(string[] productIds)
         {
             var products = _productManager
-                .Select(_productsRepository.Table,
+                .Select(_productsRepository.Table.Include(x=>x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
         }
@@ -208,6 +209,24 @@ namespace Shop.Controllers.Api
             return this.JsonResult(posibleProductProperties);
         }
 
+        [HttpGet("GetProductImage/{productId}/{number:int}")]
+        public async Task<IActionResult> GetProductImage(string productId, int number)
+        {
+            var product = await _productsRepository
+                .Table
+                .Include(x => x.ProductImages)
+                .FirstOrDefaultAsync(x => x.Id == productId);
+            if (product == null)
+                return BadRequest("Product don't exist. Or Incorrect product id");
+            var prodImages = product
+                .ProductImages;
+
+            if (number > prodImages.Count - 1)
+                return BadRequest("Image don't exist. Or incorrect number");
+
+            return File(prodImages[number].Image, prodImages[number].ContentType);
+        }
+
         #endregion
 
         #region POST
@@ -240,7 +259,8 @@ namespace Shop.Controllers.Api
                     {
                         Product = product,
                         ProductId = product.Id,
-                        Image = imgBuff
+                        Image = imgBuff,
+                        ContentType = im.ContentType
                     });
                 }
             }
@@ -248,8 +268,8 @@ namespace Shop.Controllers.Api
             if (productImages.Count != 0)
                 product.ProductImages = productImages;
 
-            //var insertRes = await _productsRepository.InsertAsync(product);
-            return Ok(1);
+            var insertRes = await _productsRepository.InsertAsync(product);
+            return Ok(insertRes);
         }
 
         // todo maybe it's no need

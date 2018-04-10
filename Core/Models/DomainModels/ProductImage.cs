@@ -9,6 +9,9 @@ namespace Core.Models.DomainModels
     {
         public string ProductId { get; set; }
         public Product Product { get; set; }
+        [Required]
         public byte[] Image { get; set; }
+        [Required]
+        public string ContentType { get; set; }
     }
 }
