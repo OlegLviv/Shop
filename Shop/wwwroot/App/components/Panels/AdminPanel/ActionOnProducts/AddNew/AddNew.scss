@@ -1,83 +1,86 @@
 .container-add-new {
   padding: 3rem 6rem 3rem 6rem;
   &__row {
-    &__item {
-      background: #252525;
-      color: #f3f3f3;
-      padding: 1rem;
-      display: flex;
-      justify-content: center;
-    }
-    &__item[border-right="true"] {
-      border-right: 1px white solid;
-    }
-    &__item[margin-top="true"] {
-      margin-top: 2rem;
-    }
-    &__item--inverse {
-      display: flex;
-      justify-content: center;
-    }
-    &__item--inverse select {
-      border: none;
-      width: 100%;
-      cursor: pointer;
-      height: 3rem;
-    }
-    &__item--inverse[border-right="true"] {
-      border-right: 1px #252525 solid;
-    }
-    &__item--inverse[border-bottom="true"] {
-      border-bottom: 1px #252525 solid;
-    }
-    &__item--inverse[border-left="true"] {
-      border-left: 1px #252525 solid;
-    }
-    &__file-box {
-      display: flex;
-      justify-content: center;
-      padding-top: 2rem;
-    }
-    &__file-box input {
-      cursor: pointer;
-    }
+	&__item {
+	  background: #252525;
+	  color: #f3f3f3;
+	  padding: 1rem;
+	  display: flex;
+	  justify-content: center;
+	}
+	&__item[border-right="true"] {
+	  border-right: 1px white solid;
+	}
+	&__item[margin-top="true"] {
+	  margin-top: 2rem;
+	}
+	&__item--inverse {
+	  display: flex;
+	  justify-content: center;
+	}
+	&__item--inverse select {
+	  border: none;
+	  width: 100%;
+	  cursor: pointer;
+	  height: 3rem;
+	}
+	&__item--inverse[border-right="true"] {
+	  border-right: 1px #252525 solid;
+	}
+	&__item--inverse[border-bottom="true"] {
+	  border-bottom: 1px #252525 solid;
+	}
+	&__item--inverse[border-left="true"] {
+	  border-left: 1px #252525 solid;
+	}
+	&__file-box {
+	  display: flex;
+	  justify-content: center;
+	  padding-top: 2rem;
+	}
+	&__file-box input {
+	  cursor: pointer;
+	}
+	&__add-new-prop-box {
+	  padding: 1rem;
+	}
   }
   &__props {
-    display: flex;
-    width: 100%;
-    &__item--inverse {
-      &__text {
-        display: flex;
-        align-items: center;
-      }
-    }
-    &__item--inverse {
-      display: flex;
-      justify-content: center;
-    }
-    &__item--inverse select {
-      border: none;
-      width: 100%;
-      cursor: pointer;
-      height: 3rem;
-    }
-    &__item--inverse[border-right="true"] {
-      border-right: 1px #252525 solid;
-    }
-    &__item--inverse[border-bottom="true"] {
-      border-bottom: 1px #252525 solid;
-    }
-    &__item--inverse[border-left="true"] {
-      border-left: 1px #252525 solid;
-    }
+	display: flex;
+	width: 100%;
+	&__item--inverse {
+	  &__text {
+		display: flex;
+		align-items: center;
+	  }
+	}
+	&__item--inverse {
+	  display: flex;
+	  justify-content: center;
+	}
+	&__item--inverse select {
+	  border: none;
+	  width: 100%;
+	  cursor: pointer;
+	  height: 3rem;
+	}
+	&__item--inverse[border-right="true"] {
+	  border-right: 1px #252525 solid;
+	}
+	&__item--inverse[border-bottom="true"] {
+	  border-bottom: 1px #252525 solid;
+	}
+	&__item--inverse[border-left="true"] {
+	  border-left: 1px #252525 solid;
+	}
   }
   &__action-box {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
+	display: flex;
+	justify-content: center;
+	padding: 1rem;
 
   }
   &__action-box button {
-    margin: 1rem;
+	margin: 1rem;
   }
 }

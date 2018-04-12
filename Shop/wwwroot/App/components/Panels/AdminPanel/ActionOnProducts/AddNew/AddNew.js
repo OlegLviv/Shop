@@ -11,6 +11,7 @@ import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 import {normalizecategoryToRoute} from "../../../../../utils/productsUtils";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {Alert} from "../../../../common/Alert/Alert";
+import {Icon} from 'react-fa';
 
 class AddNew extends React.Component {
 	constructor(props) {
@@ -265,13 +266,18 @@ class AddNew extends React.Component {
 							</div>
 						</div>
 					</div>
+					<div className="container-add-new__row__add-new-prop-box">
+						<button className="btn btn-primary">
+							<div>Додати нову властивість</div>
+							<Icon name="plus"/>
+						</button>
+					</div>
 					<div className="container-add-new__row__file-box">
 						<input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
 					</div>
 					<div className="container-add-new__action-box">
 						<button className="btn btn-info container-add-new__action-box__save"
-								onClick={this.onSave}>Зберегти
-							товар
+								onClick={this.onSave}>Зберегти товар
 						</button>
 						<button className="btn btn-danger container-add-new__action-box__clear"
 								onClick={this.onClear}>Очистити

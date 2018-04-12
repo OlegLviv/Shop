@@ -3,24 +3,10 @@ import './ExpandedNavigationProducts.scss';
 import {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import {Icon} from 'react-fa';
-import {objectToArrayKeys} from "../../../utils/utils";
-import {productColors} from "../../../utils/productsUtils";
 import {priceRange} from "../../../utils/productsUtils";
 
 const {maxPrice} = priceRange;
 const {minPrice} = priceRange;
-
-const getProductArrayQueryWithMaxProps = (products) => {
-	let maxObjArr = objectToArrayKeys(products[0].objectQuery);
-	let max = maxObjArr.length;
-	for (let i in products) {
-		if (objectToArrayKeys(products[i].objectQuery).length > max) {
-			maxObjArr = objectToArrayKeys(products[i].objectQuery);
-			max = maxObjArr.length;
-		}
-	}
-	return maxObjArr;
-};
 
 class ExpandedNavigationProducts extends React.Component {
 	constructor(props) {
@@ -35,23 +21,6 @@ class ExpandedNavigationProducts extends React.Component {
 	componentDidMount() {
 		// console.log('products: ', this.props.products);
 	}
-
-	renderExpandedNavColor = (name) => {
-		return (
-			<div className="expanded-nav__body__filter-name">
-				<div className="expanded-nav__body__filter-name__header">
-					<Icon name="chevron-up mr-2 chevron"/>
-					<h6>{name}</h6>
-				</div>
-				<div className="expanded-nav__body__filter-name__colors">
-					{
-						productColors().map(color => <div className="color-div"
-														  style={{background: color}}/>)
-					}
-				</div>
-			</div>
-		)
-	};
 
 	renderExpandedNavMulty = (name, listSuggest) => {
 		return (
@@ -77,19 +46,7 @@ class ExpandedNavigationProducts extends React.Component {
 	};
 
 	renderFiltersByQuery = () => {
-		const {products} = this.props;
-		if (products.length === 0)
-			return;
-		const arrayQueryWithMaxProps = getProductArrayQueryWithMaxProps(products);
-		// console.log('max: ', arrayQueryWithMaxProps);
-		return arrayQueryWithMaxProps.map(item => {
-			switch (item) {
-				case 'color':
-					return this.renderExpandedNavColor('color');
-				case 'maker':
-					return this.renderExpandedNavMulty('maker', ['china', 'us', 'uk']);
-			}
-		});
+
 	};
 
 	onRangeChangeValue = (val) => {
