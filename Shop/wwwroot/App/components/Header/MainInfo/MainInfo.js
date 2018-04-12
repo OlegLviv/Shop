@@ -85,10 +85,10 @@ class MainInfo extends React.Component {
 						</div>}
 						<LogInModal
 							isModalOpen={this.state.isLoginModalOpen}
-							closeModal={this.closeLoginModal}/>
+							onCloseModal={this.closeLoginModal}/>
 						<RegisterModal
 							isModalOpen={this.state.isRegisterModalOpen}
-							closeModal={this.closeRegisterModal}/>
+							onCloseModal={this.closeRegisterModal}/>
 					</div>
 				</div>
 			</div>

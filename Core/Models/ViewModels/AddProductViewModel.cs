@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using Microsoft.AspNetCore.Http;
 
-namespace Core.Models.DomainModels
+namespace Core.Models.ViewModels
 {
-    public class Product : BaseEntity, IProduct
+    public class AddProductViewModel
     {
         [Required]
         [MaxLength(128)]
@@ -17,7 +20,6 @@ namespace Core.Models.DomainModels
         [Required]
         public double Price { get; set; }
         public string Description { get; set; }
-        public List<Feedback> Feedbacks { get; set; }
-        public List<ProductImage> ProductImages { get; set; }
+        public IFormFile[] Images { get; set; }
     }
 }

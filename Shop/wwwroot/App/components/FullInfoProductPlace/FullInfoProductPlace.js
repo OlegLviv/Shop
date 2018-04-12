@@ -1,9 +1,9 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductUrlById, getProductFeedbackById} from "../../services/urls/productUrls";
+import {getProductUrlById, getProductFeedbackUrlById} from "../../services/urls/productUrls";
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
-import {sendFeedbackUrl} from "../../services/urls/productUrls";
+import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
 import {getRandomArbitrary} from "../../utils/utils";
 
 const getProductId = (props) => props.match.params.productId;
@@ -51,7 +51,7 @@ class FullInfoProductPlace extends React.Component {
 				body: this.state.feedbackValue
 			};
 			apiWithoutRedirect()
-				.put(sendFeedbackUrl, sendCommentObj)
+				.put(SEND_FEEDBACK_URL, sendCommentObj)
 				.then(resp => {
 					if (resp.status === 200) {
 						const newFeedback = this.state.productFeedback;
@@ -110,6 +110,7 @@ class FullInfoProductPlace extends React.Component {
 
 	//todo need add feedback logic
 	renderFeedback = () => {
+		const {user} = this.props;
 		if (!this.state.productFeedback) {
 			return <Spinner/>
 		}
@@ -122,7 +123,8 @@ class FullInfoProductPlace extends React.Component {
 								<div className="container-c-b__card-body-content__comment"
 									 style={{
 										 'margin-left': `${getRandomArbitrary(-3, 3)}rem`,
-										 'transform': `rotate(${getRandomArbitrary(-3, 3)}deg)`
+										 'transform': `rotate(${getRandomArbitrary(-3, 3)}deg)`,
+										 'box-shadow': `${user && (this.props.user.id === item.userId && '1px 1px 10px 3px #17a2b899')}`
 									 }}>
 									<div
 										className="container-c-b__card-body-content__comment__userName">{`${item.userName} ${item.userLastName}`}
@@ -136,14 +138,15 @@ class FullInfoProductPlace extends React.Component {
 						)
 					})
 				}
-				<div className="container-c-b__submit-box">
+				{this.props.isLogin && this.props.user ? <div className="container-c-b__submit-box">
 					<textarea className="form-control"
 							  placeholder="Введіть свій коментар"
 							  onChange={(e) => this.setState({feedbackValue: e.target.value})}
 							  onKeyPress={this.onSendFeedbackKeyPress}/>
 					<button className="btn btn-dark" onClick={this.onSendFeedback}>Відправити
 					</button>
-				</div>
+				</div> : <div className="container-c-b__submit-box">Для того щоб залишити повідомлення увійдіть в
+					систему</div>}
 			</div>
 		);
 	};
@@ -179,7 +182,7 @@ class FullInfoProductPlace extends React.Component {
 							onClick={() => {
 								this.setState({aboutProductNacCase: 'feedback'});
 								apiWithoutRedirect()
-									.get(getProductFeedbackById(this.state.product.id))
+									.get(getProductFeedbackUrlById(this.state.product.id))
 									.then(resp => {
 										this.setState({productFeedback: resp.data})
 									})

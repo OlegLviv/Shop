@@ -20,7 +20,7 @@ const autocompleteMenuStyle = {
 	position: 'fixed',
 	overflow: 'auto',
 	maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
-	'z-index': '10',
+	'z-index': '11',
 	'min-width': '20rem'
 };
 
@@ -85,7 +85,7 @@ class NavMenu extends React.Component {
 					</button>
 					<div className="collapse navbar-collapse menu-container__navbar-right" id="navbarSupportedContent">
 						<div/>
-						<div className="form-inline my-2">
+						<div className="form-inline my-2 search-box">
 							<Autocomplete
 								inputProps={({
 									class: 'form-control mr-sm-2 menu-container__navbar-right__search',

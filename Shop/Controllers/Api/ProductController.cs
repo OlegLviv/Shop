@@ -15,6 +15,7 @@ using BLL.Filters.ActionFilters;
 using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
 using System.Dynamic;
+using System.IO;
 using AutoMapper;
 using Core.Models.DTO;
 using Core.Models.ViewModels;
@@ -56,8 +57,8 @@ namespace Shop.Controllers.Api
             var product = await _productsRepository
                 .GetByIdAsync(productId);
             if (product == null)
-                NotFound("Product with this id not found");
-            return this.JsonResult(product);
+                return NotFound("Product with this id not found");
+            return this.JsonResult(_mapper.Map<ProductDto>(product));
         }
 
         [HttpGet("GetProducts/{category}/{subCategory}/{size:int?}")]
@@ -77,14 +78,31 @@ namespace Shop.Controllers.Api
         }
 
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
-        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}")]
-        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16)
+        [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}/{sortingType:int?}")]
+        public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16, SortingType sortingType = SortingType.NoSort)
         {
             var products = _productsRepository
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase) &&
                             x.Price >= priceFrom && x.Price <= priceTo);
+            switch (sortingType)
+            {
+                case SortingType.MosteExpensive:
+                    products = products
+                        .OrderBy(x => x.Price)
+                        .Reverse();
+                    break;
+                case SortingType.Cheapest:
+                    products = products
+                        .OrderBy(x => x.Price);
+                    break;
+                case SortingType.Name:
+                    products = products
+                        .OrderBy(x => x.Name);
+                    break;
+            }
+
             var paginator = new Paginator<Product>
             {
                 PageNumber = pageNumber,
@@ -92,6 +110,7 @@ namespace Shop.Controllers.Api
                 Data = products.Page(pageNumber, pageSize),
                 TotalCount = products.Count()
             };
+
             if (string.IsNullOrEmpty(query))
                 return this.JsonResult(paginator);
             var result = _productManager
@@ -108,7 +127,7 @@ namespace Shop.Controllers.Api
         public IActionResult GetProductsByIds(string[] productIds)
         {
             var products = _productManager
-                .Select(_productsRepository.Table,
+                .Select(_productsRepository.Table.Include(x=>x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
         }
@@ -148,6 +167,7 @@ namespace Shop.Controllers.Api
                 {
                     UserName = user.Name,
                     UserLastName = user.LastName,
+                    UserId = user.Id,
                     Body = productFeedback.Body,
                     Date = ((DateTimeOffset)productFeedback.Date).ToUnixTimeSeconds()
                 });
@@ -155,9 +175,102 @@ namespace Shop.Controllers.Api
             return this.JsonResult(feedbacks.OrderBy(x => x.Date));
         }
 
+        [HttpGet("GetProductProperties/{subCategory}")]
+        public async Task<IActionResult> GetProductProperties(string subCategory)
+        {
+            var properties = await _context
+                .ProductProperties
+                .FirstOrDefaultAsync(x => x.SubCategory.Equals(subCategory, StringComparison.OrdinalIgnoreCase));
+
+            if (properties == null)
+                return BadRequest("Icorrect sub category or properties not found");
+
+            var propsArr = properties.Properties.Split(';');
+
+            var posibleProductProperties = new List<dynamic>(propsArr.Length);
+
+            foreach (var prop in propsArr)
+            {
+                if (string.IsNullOrEmpty(prop))
+                {
+                    continue;
+                }
+                posibleProductProperties.Add(new
+                {
+                    PropValue = prop,
+                    PossiblePropsValues = (await _context
+                    .PossibleProductProperties
+                    .FirstOrDefaultAsync(x => x.SubCategory == subCategory && x.PropertyName.Equals(prop, StringComparison.OrdinalIgnoreCase)))
+                    .Values
+                    .Split(';')
+
+                });
+            }
+            return this.JsonResult(posibleProductProperties);
+        }
+
+        [HttpGet("GetProductImage/{productId}/{number:int}")]
+        public async Task<IActionResult> GetProductImage(string productId, int number)
+        {
+            var product = await _productsRepository
+                .Table
+                .Include(x => x.ProductImages)
+                .FirstOrDefaultAsync(x => x.Id == productId);
+            if (product == null)
+                return BadRequest("Product don't exist. Or Incorrect product id");
+            var prodImages = product
+                .ProductImages;
+
+            if (number > prodImages.Count - 1)
+                return BadRequest("Image don't exist. Or incorrect number");
+
+            return File(prodImages[number].Image, prodImages[number].ContentType);
+        }
+
         #endregion
 
         #region POST
+
+        [HttpPost("AddProduct")]
+        public async Task<IActionResult> AddProduct([FromForm] AddProductViewModel model)
+        {
+            var product = new Product
+            {
+                Category = model.Category,
+                SubCategory = model.SubCategory,
+                Name = model.Name,
+                Price = model.Price,
+                Description = model.Description,
+                Query = model.Query
+            };
+
+            var productImages = new List<ProductImage>();
+
+            foreach (var im in model.Images)
+            {
+                if (im.Length > 3000000)
+                    return BadRequest("Еhe image can't be larger than 3MB");
+
+                using (var stream = im.OpenReadStream())
+                {
+                    var imgBuff = new byte[(int)stream.Length];
+                    await stream.ReadAsync(imgBuff, 0, (int)stream.Length);
+                    productImages.Add(new ProductImage
+                    {
+                        Product = product,
+                        ProductId = product.Id,
+                        Image = imgBuff,
+                        ContentType = im.ContentType
+                    });
+                }
+            }
+
+            if (productImages.Count != 0)
+                product.ProductImages = productImages;
+
+            var insertRes = await _productsRepository.InsertAsync(product);
+            return Ok(insertRes);
+        }
 
         // todo maybe it's no need
         [HttpPost("AddProductToShopingCard")]
@@ -217,6 +330,7 @@ namespace Shop.Controllers.Api
             {
                 UserName = user.Name,
                 UserLastName = user.LastName,
+                UserId = user.Id,
                 Date = ((DateTimeOffset)feedback.Date).ToUnixTimeSeconds(),
                 Body = feedback.Body
             });

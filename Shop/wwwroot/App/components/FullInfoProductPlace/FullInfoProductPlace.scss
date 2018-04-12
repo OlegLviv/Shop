@@ -10,6 +10,8 @@
 		max-height: 25rem;
 		max-width: 20rem;
 		min-width: 15rem;
+		border-radius: 5px;
+		box-shadow: 1px 1px 10px 5px rgba(0, 0, 0, 0.125);
 	  }
 	  &__sm-img {
 		display: flex;
@@ -24,7 +26,7 @@
 		margin: .5rem;
 		cursor: pointer;
 		box-shadow: 1px 5px 10px 5px rgba(0, 0, 0, 0.125);
-		border: 1px #d3d3d3 solid;
+		border-radius: 5px;
 	  }
 	  &__sm-img img:hover {
 		-webkit-transform: scale(1.1);
