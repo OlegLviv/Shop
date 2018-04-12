@@ -4,6 +4,8 @@ import {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import {Icon} from 'react-fa';
 import {priceRange} from "../../../utils/productsUtils";
+import {apiWithoutRedirect} from "../../../services/api";
+import {getProductPropsUrl} from "../../../services/urls/productUrls";
 
 const {maxPrice} = priceRange;
 const {minPrice} = priceRange;
@@ -14,12 +16,13 @@ class ExpandedNavigationProducts extends React.Component {
 		this.state = {
 			priceFrom: minPrice,
 			priceTo: maxPrice,
-			isPriceExpanded: true
+			isPriceExpanded: true,
+			filters: []
 		}
 	}
 
 	componentDidMount() {
-		// console.log('products: ', this.props.products);
+		this.getFiltersByQuery();
 	}
 
 	renderExpandedNavMulty = (name, listSuggest) => {
@@ -45,8 +48,16 @@ class ExpandedNavigationProducts extends React.Component {
 		)
 	};
 
-	renderFiltersByQuery = () => {
-
+	getFiltersByQuery = () => {
+		if (!this.props.products || this.props.products.length === 0)
+			return;
+		apiWithoutRedirect()
+			.get(getProductPropsUrl(this.props.products[0].subCategory))
+			.then(resp => {
+				console.log(resp.data);
+				this.setState({filters: resp.data});
+			})
+			.catch(err => console.error(err.response.data));
 	};
 
 	onRangeChangeValue = (val) => {
@@ -75,10 +86,7 @@ class ExpandedNavigationProducts extends React.Component {
 					<div className="expanded-nav__body__price">
 						<div className="expanded-nav__body__price__header"
 							 onClick={this.onPriceToggle}>
-							{
-								isPriceExpanded ? <Icon name="chevron-up mr-2 chevron"/> :
-									<Icon name="chevron-down mr-2 chevron"/>
-							}
+							<Icon name={`chevron-${isPriceExpanded ? 'up' : 'down'} mr-2 chevron`}/>
 							<h6>Ціна</h6>
 						</div>
 						{isPriceExpanded && <div>
@@ -99,7 +107,7 @@ class ExpandedNavigationProducts extends React.Component {
 					<button className="btn btn-primary expanded-nav__body__search-but"
 							onClick={this.onSearchByFilter}>Знайти
 					</button>
-					{/*{this.renderFiltersByQuery()}*/}
+					{this.state.filters.map(item => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues))}
 				</div>
 			</div>
 		)
