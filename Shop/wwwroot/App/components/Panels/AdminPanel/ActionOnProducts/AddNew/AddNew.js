@@ -10,6 +10,7 @@ import {createProductQueryByObject} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 import {normalizecategoryToRoute} from "../../../../../utils/productsUtils";
 import {Spinner} from "../../../../Spinner/Spinner";
+import {Alert} from "../../../../common/Alert/Alert";
 
 class AddNew extends React.Component {
 	constructor(props) {
@@ -23,7 +24,13 @@ class AddNew extends React.Component {
 			product: {},
 			files: [],
 			isLoading: false,
-			isLoaded: false
+			isLoaded: false,
+			alert: {
+				isShow: false,
+				subject: '',
+				body: '',
+				type: ''
+			}
 		}
 	}
 
@@ -65,6 +72,34 @@ class AddNew extends React.Component {
 			});
 	};
 
+	createFormData = () => {
+		const query = createProductQueryByObject(this.state.product);
+		const form = new FormData();
+		form.append('category', normalizecategoryToRoute(this.state.category));
+		form.append('subCategory', normalizeSubCategoryToRoute(this.state.subCategory));
+		form.append('name', this.state.productName);
+		form.append('price', this.state.price);
+		form.append('query', query);
+	};
+
+	showAlert = (subject, body, type) => {
+		const alert = {
+			isShow: true,
+			subject: subject,
+			body: body,
+			type: type
+		};
+		this.setState({alert: alert});
+	};
+
+	tryHideAlert = () => {
+		const {alert} = this.state;
+		if (!alert.isShow) {
+			alert.isShow = false;
+			this.setState({alert: alert});
+		}
+	};
+
 	onChangeOptionCategory = (e) => {
 		this.setState({category: e.target.value})
 	};
@@ -89,12 +124,13 @@ class AddNew extends React.Component {
 	};
 
 	onChangeFile = (e) => {
+		this.tryHideAlert();
 		const {files} = e.target;
 		const newFiles = [];
-		console.log('new files', files);
 		for (let i in files) {
 			if (files[i].size > 3000000) {
-				alert('only 3mb');
+				this.showAlert('Помилка', 'Розмір файлу не повинен перевищувати 3 MB');
+				e.target.value = null;
 				return;
 			}
 			newFiles.push(files[i]);
@@ -111,18 +147,18 @@ class AddNew extends React.Component {
 
 	// todo to will add normal validation
 	onSave = () => {
-		const query = createProductQueryByObject(this.state.product);
-		if (this.state.productName.length === 0 || this.state.price === 0) {
-			alert('please add product name');
+		this.tryHideAlert();
+		if (this.state.productName.length === 0 || this.state.price <= 0) {
+			console.log(this.state.alert.type);
+			this.showAlert('Помилка', 'Будь ласка введіть назву продукту або ціна нежча ніж 0', 'warning');
+			return;
+		}
+		if (this.state.files.length === 0) {
+			this.showAlert('Помилка', 'Будь ласка додайте фотографію продукту', 'warning');
 			return;
 		}
 
-		const form = new FormData();
-		form.append('category', normalizecategoryToRoute(this.state.category));
-		form.append('subCategory', normalizeSubCategoryToRoute(this.state.subCategory));
-		form.append('name', this.state.productName);
-		form.append('price', this.state.price);
-		form.append('query', query);
+		const form = this.createFormData();
 		for (let i in this.state.files) {
 			form.append('images', this.state.files[i]);
 		}
@@ -131,7 +167,7 @@ class AddNew extends React.Component {
 			.post(ADD_PRODUCT_URL, form)
 			.then(resp => {
 				if (resp.data >= 1) {
-					alert('Success save');
+					this.showAlert('Успішно', 'Продукт успішно збережено', 'success');
 				}
 			})
 			.catch(err => {
@@ -139,6 +175,7 @@ class AddNew extends React.Component {
 			})
 	};
 
+	// todo need implement in future
 	onClear = () => {
 
 	};
@@ -147,6 +184,9 @@ class AddNew extends React.Component {
 		return (
 			<div>
 				{this.state.isLoaded ? <div className="container-add-new">
+					{this.state.alert.isShow && <Alert subject={this.state.alert.subject}
+													   body={this.state.alert.body}
+													   alertType={this.state.alert.type}/>}
 					<div className="row container-add-new__row">
 						<div className="col-6 container-add-new__row__item" border-right="true">
 							<div>Оберіть карегорію</div>

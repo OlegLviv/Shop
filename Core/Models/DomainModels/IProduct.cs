@@ -2,6 +2,7 @@
 {
     public interface IProduct
     {
+        string Id { get; set; }
         string Category { get; set; }
         string SubCategory { get; set; }
         string Query { get; set; }

@@ -57,8 +57,8 @@ namespace Shop.Controllers.Api
             var product = await _productsRepository
                 .GetByIdAsync(productId);
             if (product == null)
-                NotFound("Product with this id not found");
-            return this.JsonResult(product);
+                return NotFound("Product with this id not found");
+            return this.JsonResult(_mapper.Map<ProductDto>(product));
         }
 
         [HttpGet("GetProducts/{category}/{subCategory}/{size:int?}")]

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using AutoMapper;
 using BLL.Managers;
 using BLL.Services;
@@ -19,8 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -86,7 +79,7 @@ namespace Shop
 
             services.AddTransient<ProductManager>();
 
-            services.AddAutoMapper(typeof(MappingsProfile).GetTypeInfo().Assembly);
+            services.AddAutoMapper(x=>x.AddProfile(new MappingsProfile()));
 
             services.AddMvc();
 

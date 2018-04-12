@@ -19,7 +19,7 @@ class LogInModal extends React.Component {
 		};
 	}
 
-	closeModal = () => {
+	onCloseModal = () => {
 		this.props.onCloseModal();
 	};
 
@@ -39,7 +39,6 @@ class LogInModal extends React.Component {
 
 	// todo need fix onEnter click
 	onLogin = (key) => {
-
 		if (key === 'Enter') {
 			this.onUserNameBlur();
 			this.onPasswordBlur();
@@ -100,7 +99,7 @@ class LogInModal extends React.Component {
 	render() {
 		return (
 			<Modal isOpen={this.props.isModalOpen}
-				   onRequestClose={this.closeModal}
+				   onRequestClose={this.onCloseModal}
 				   shouldCloseOnEsc={true}
 				   style={customStyles}>
 				<div className="form-container">
@@ -138,7 +137,7 @@ class LogInModal extends React.Component {
 							className="btn btn-primary"
 							onClick={this.onLogin}>Увійти
 						</button>
-						<button className="btn btn-danger" onClick={this.closeModal}>Закрити</button>
+						<button className="btn btn-danger" onClick={this.onCloseModal}>Закрити</button>
 					</div>
 				</div>
 			</Modal>
