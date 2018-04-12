@@ -38,7 +38,7 @@ class ExpandedNavigationProducts extends React.Component {
 							return (
 								<div className="expanded-nav__body__filter-name__suggest-cont__item">
 									<div>{item}</div>
-									<input type="checkbox"/>
+									<input type="checkbox" onChange={(e) => this.onChangeFilter(e, item)}/>
 								</div>
 							)
 						})
@@ -76,6 +76,12 @@ class ExpandedNavigationProducts extends React.Component {
 		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo);
 	};
 
+	onChangeFilter = (e, item) => {
+		if (e.target.value === true) {
+			// todo need to add realization
+		}
+	};
+
 	// todo need fix chevron expanded
 	render() {
 		const {isPriceExpanded} = this.state;
@@ -104,10 +110,10 @@ class ExpandedNavigationProducts extends React.Component {
 								onChange={this.onRangeChangeValue}/>
 						</div>}
 					</div>
+					{this.state.filters.map(item => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues))}
 					<button className="btn btn-primary expanded-nav__body__search-but"
 							onClick={this.onSearchByFilter}>Знайти
-					</button>
-					{this.state.filters.map(item => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues))}
+					</button>	
 				</div>
 			</div>
 		)
