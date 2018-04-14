@@ -6,6 +6,7 @@ import {Icon} from 'react-fa';
 import {priceRange} from "../../../utils/productsUtils";
 import {apiWithoutRedirect} from "../../../services/api";
 import {getProductPropsUrl} from "../../../services/urls/productUrls";
+import {formatQuery} from "../../../utils/productsUtils";
 
 const {maxPrice} = priceRange;
 const {minPrice} = priceRange;
@@ -24,29 +25,6 @@ class ExpandedNavigationProducts extends React.Component {
 	componentDidMount() {
 		this.getFiltersByQuery();
 	}
-
-	renderExpandedNavMulty = (name, listSuggest) => {
-		return (
-			<div className="expanded-nav__body__filter-name">
-				<div className="expanded-nav__body__filter-name__header">
-					<Icon name="chevron-up mr-2 chevron"/>
-					<h6>{name}</h6>
-				</div>
-				<div className="expanded-nav__body__filter-name__suggest-cont">
-					{
-						listSuggest.map(item => {
-							return (
-								<div className="expanded-nav__body__filter-name__suggest-cont__item">
-									<div>{item}</div>
-									<input type="checkbox" onChange={(e) => this.onChangeFilter(e, item)}/>
-								</div>
-							)
-						})
-					}
-				</div>
-			</div>
-		)
-	};
 
 	getFiltersByQuery = () => {
 		if (!this.props.products || this.props.products.length === 0)
@@ -73,15 +51,41 @@ class ExpandedNavigationProducts extends React.Component {
 	};
 
 	onSearchByFilter = () => {
-		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo);
+		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo, this.query);
 	};
 
-	onChangeFilter = (e, item) => {
-		console.log(e.target.value);
-		console.log(item);
-		if (e.target.value === true) {
+	onChangeFilter = (e, name, item) => {
+		if (e.target.checked === true) {
 			// todo need to add realization
+			this.query = formatQuery(name, item, this.query);
+			console.log(this.query);
 		}
+		if (e.target.checked === false) {
+			
+		}
+	};
+
+	renderExpandedNavMulty = (name, listSuggest) => {
+		return (
+			<div className="expanded-nav__body__filter-name">
+				<div className="expanded-nav__body__filter-name__header">
+					<Icon name="chevron-up mr-2 chevron"/>
+					<h6>{name}</h6>
+				</div>
+				<div className="expanded-nav__body__filter-name__suggest-cont">
+					{
+						listSuggest.map(item => {
+							return (
+								<div className="expanded-nav__body__filter-name__suggest-cont__item">
+									<div>{item}</div>
+									<input type="checkbox" onChange={(e) => this.onChangeFilter(e, name, item)}/>
+								</div>
+							)
+						})
+					}
+				</div>
+			</div>
+		)
 	};
 
 	// todo need fix chevron expanded
