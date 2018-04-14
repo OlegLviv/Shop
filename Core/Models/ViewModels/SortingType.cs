@@ -7,7 +7,6 @@ namespace Core.Models.ViewModels
     public enum SortingType
     {
         NoSort,
-        Name,
         MosteExpensive,
         Cheapest
     }

@@ -165,7 +165,3 @@ export const formateQueryDictionaryWithRemove = (key, value, dictionary) => {
 	console.log('rem', dictionary);
 	return dictionary;
 };
-
-export const formateQueryByDictionary = dictionary => {
-
-};

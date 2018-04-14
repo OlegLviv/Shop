@@ -88,18 +88,17 @@ namespace Shop.Controllers.Api
                             x.Price >= priceFrom && x.Price <= priceTo);
             switch (sortingType)
             {
+                //  todo need remove this cast in future. Now throw exception becouse IQueryble.Reverse() is not implemented
                 case SortingType.MosteExpensive:
                     products = products
                         .OrderBy(x => x.Price)
-                        .Reverse();
+                        .AsEnumerable()
+                        .Reverse()
+                        .AsQueryable();
                     break;
                 case SortingType.Cheapest:
                     products = products
                         .OrderBy(x => x.Price);
-                    break;
-                case SortingType.Name:
-                    products = products
-                        .OrderBy(x => x.Name);
                     break;
             }
 

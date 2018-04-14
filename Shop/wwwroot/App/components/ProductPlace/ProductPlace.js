@@ -28,6 +28,7 @@ class ProductPlace extends React.Component {
 			isProductsLoading: false,
 			isProductsLoaded: false,
 			sortingType: 0,
+			howManyToShow: 16,
 			priceRangeForPagination: {
 				minPrice: priceRange.minPrice,
 				maxPrice: priceRange.maxPrice
@@ -143,7 +144,8 @@ class ProductPlace extends React.Component {
 			getSubCategory(this.props),
 			priceFrom,
 			priceTo,
-			createProductsQueryByObject(queryDictionary), 1, 16, this.state.sortingType
+			createProductsQueryByObject(queryDictionary), 1, this.state.howManyToShow,
+			this.state.sortingType
 		);
 		apiWithoutRedirect()
 			.get(prodUrl)
@@ -165,6 +167,14 @@ class ProductPlace extends React.Component {
 			})
 	};
 
+	onChangeSortingType = e => {
+		this.setState({sortingType: e.target.value});
+	};
+
+	onChangeHowManyToShow = e => {
+		this.setState({howManyToShow: e.target.value});
+	};
+
 	renderLoadingSpinner = () => {
 		this.setState({isProductsLoading: true});
 		if (this.state.isProductsLoaded) {
@@ -177,15 +187,16 @@ class ProductPlace extends React.Component {
 		if (!this.state.isProductsLoading && this.state.isProductsLoaded && (this.state.products ? this.state.products.length > 0 : false)) {
 			return (<div className="container-fluid container-products">
 				<div className="container-products__how-to-show">
-					<select className="container-products__how-to-show__sort">
-						<option>Позиція</option>
-						<option>Назва товару</option>
-						<option>Найдорожчі спочатку</option>
-						<option>Найдешевші спочатку</option>
+					<select className="container-products__how-to-show__sort" onChange={this.onChangeSortingType}
+							value={this.state.sortingType}>
+						<option value={0}>Позиція</option>
+						<option value={1}>Найдорожчі спочатку</option>
+						<option value={2}>Найдешевші спочатку</option>
 					</select>
-					<select className="container-products__how-to-show__per-page">
-						<option>16</option>
-						<option>32</option>
+					<select className="container-products__how-to-show__per-page" onChange={this.onChangeHowManyToShow}
+							value={this.state.howManyToShow}>
+						<option value={16}>16</option>
+						<option value={32}>32</option>
 					</select>
 				</div>
 				<div className="row container-products__row">
@@ -204,7 +215,7 @@ class ProductPlace extends React.Component {
 				</div>
 				<div className="pagination-box">
 					<Pagination totalItemsCount={this.state.totalProductCount}
-								itemsCountPerPage={16}
+								itemsCountPerPage={this.state.howManyToShow}
 								onChange={this.onPaginationChange}
 								activePage={this.state.activePage}
 								itemClass="page-item"
