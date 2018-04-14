@@ -77,6 +77,8 @@ class ExpandedNavigationProducts extends React.Component {
 	};
 
 	onChangeFilter = (e, item) => {
+		console.log(e.target.value);
+		console.log(item);
 		if (e.target.value === true) {
 			// todo need to add realization
 		}
@@ -113,7 +115,7 @@ class ExpandedNavigationProducts extends React.Component {
 					{this.state.filters.map(item => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues))}
 					<button className="btn btn-primary expanded-nav__body__search-but"
 							onClick={this.onSearchByFilter}>Знайти
-					</button>	
+					</button>
 				</div>
 			</div>
 		)

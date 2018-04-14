@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Core.Models.DomainModels;
+using Common.Extensions;
 
 namespace BLL.Managers
 {
@@ -14,7 +15,7 @@ namespace BLL.Managers
         }
 
         // todo need catch splic exception
-        public dynamic ParseQuery(string s)
+        public IDictionary<string, string> ParseQuery(string s)
         {
             var length = s.Split(';').Length;
             var dictionary = new Dictionary<string, string>(length);
@@ -28,6 +29,32 @@ namespace BLL.Managers
             return dictionary;
         }
 
+        public IEnumerable<Product> SelectProducts(string query, IQueryable<Product> products)
+        {
+            foreach (var product in products)
+            {
+                var isReturn = true;
+                if (IsEqualsKeys(query, product.Query, out var parsedQ, out var parsedProductQ, out var intersectKeys))
+                {
+                    foreach (var pKey in intersectKeys)
+                    {
+                        var parsedQValues = GetValuesByString(parsedQ[pKey]);
+                        if (parsedQValues.Length > 1)
+                        {
+                            if (!parsedQValues.Intersect(parsedProductQ[pKey]).Any())
+                                isReturn = false;
+                        }
+                        else if (parsedProductQ[pKey] != parsedQ[pKey])
+                            isReturn = false;
+                    }
+                }
+                else isReturn = false;
+
+                if (isReturn)
+                    yield return product;
+            }
+        }
+
         private bool IsEqualsKeys(string query, string productQuery, out IDictionary<string, string> parsedQ, out IDictionary<string, string> parsedProductQ, out IEnumerable<string> intersectKeys)
         {
             parsedQ = ParseQuery(query);
@@ -39,24 +66,9 @@ namespace BLL.Managers
             return !except.Any();
         }
 
-        public IEnumerable<Product> SelectProducts(string query, IQueryable<Product> products)
+        private string[] GetValuesByString(string value)
         {
-            foreach (var product in products)
-            {
-                var isReturn = true;
-                if (IsEqualsKeys(query, product.Query, out var parsedQ, out var parsedProductQ, out var intersectKeys))
-                {
-                    foreach (var pKey in intersectKeys)
-                    {
-                        if (parsedProductQ[pKey] != parsedQ[pKey])
-                            isReturn = false;
-                    }
-                }
-                else isReturn = false;
-
-                if (isReturn)
-                    yield return product;
-            }
+            return value.Split(',');
         }
     }
 }
