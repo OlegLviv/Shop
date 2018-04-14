@@ -65,11 +65,12 @@
 }
 
 .chevron {
-  cursor: pointer;
-}
-
-.chevron:hover {
-  color: #007bff;
+  &__arrow {
+	cursor: pointer;
+  }
+  &__arrow:hover {
+	border-color: #007bff;
+  }
 }
 
 .color-div {

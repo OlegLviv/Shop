@@ -7,6 +7,7 @@ import {priceRange} from "../../../utils/productsUtils";
 import {apiWithoutRedirect} from "../../../services/api";
 import {getProductPropsUrl} from "../../../services/urls/productUrls";
 import {formateQueryDictionary, formateQueryDictionaryWithRemove} from "../../../utils/productsUtils";
+import {Chevron} from "../../common/Chevron/Chevron";
 
 const {maxPrice} = priceRange;
 const {minPrice} = priceRange;
@@ -18,6 +19,7 @@ class ExpandedNavigationProducts extends React.Component {
 			priceFrom: minPrice,
 			priceTo: maxPrice,
 			isPriceExpanded: true,
+			isFilterPropsExpanded: [],
 			filters: []
 		}
 	}
@@ -50,6 +52,12 @@ class ExpandedNavigationProducts extends React.Component {
 		this.setState((prev) => ({isPriceExpanded: !prev.isPriceExpanded}));
 	};
 
+	onFilterPropToggle = (i) => {
+		const newValues = this.state.isFilterPropsExpanded;
+		newValues[i] = !this.state.isFilterPropsExpanded[i];
+		this.setState({isFilterPropsExpanded: newValues});
+	};
+
 	onSearchByFilter = () => {
 		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo, this.queryDictionary);
 	};
@@ -63,25 +71,28 @@ class ExpandedNavigationProducts extends React.Component {
 		}
 	};
 
-	renderExpandedNavMulty = (name, listSuggest) => {
+	renderExpandedNavMulty = (name, listSuggest, i) => {
+		const {isFilterPropsExpanded} = this.state;
 		return (
 			<div className="expanded-nav__body__filter-name">
-				<div className="expanded-nav__body__filter-name__header">
-					<Icon name="chevron-up mr-2 chevron"/>
+				<div className="expanded-nav__body__filter-name__header" onClick={() => this.onFilterPropToggle(i)}>
+					<Chevron className="mr-2" name={isFilterPropsExpanded[i] ? 'up' : 'down'}/>
 					<h6>{name}</h6>
 				</div>
-				<div className="expanded-nav__body__filter-name__suggest-cont">
-					{
-						listSuggest.map(item => {
-							return (
-								<div className="expanded-nav__body__filter-name__suggest-cont__item">
-									<div>{item}</div>
-									<input type="checkbox" onChange={(e) => this.onChangeFilter(e, name, item)}/>
-								</div>
-							)
-						})
-					}
-				</div>
+				{
+					isFilterPropsExpanded[i] && <div className="expanded-nav__body__filter-name__suggest-cont">
+						{
+							listSuggest.map(item => {
+								return (
+									<div className="expanded-nav__body__filter-name__suggest-cont__item">
+										<div>{item}</div>
+										<input type="checkbox" onChange={(e) => this.onChangeFilter(e, name, item)}/>
+									</div>
+								)
+							})
+						}
+					</div>
+				}
 			</div>
 		)
 	};
@@ -96,7 +107,7 @@ class ExpandedNavigationProducts extends React.Component {
 					<div className="expanded-nav__body__price">
 						<div className="expanded-nav__body__price__header"
 							 onClick={this.onPriceToggle}>
-							<Icon name={`chevron-${isPriceExpanded ? 'up' : 'down'} mr-2 chevron`}/>
+							<Chevron className="mr-2" name={isPriceExpanded ? 'up' : 'down'}/>
 							<h6>Ціна</h6>
 						</div>
 						{isPriceExpanded && <div>
@@ -114,7 +125,7 @@ class ExpandedNavigationProducts extends React.Component {
 								onChange={this.onRangeChangeValue}/>
 						</div>}
 					</div>
-					{this.state.filters.map(item => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues))}
+					{this.state.filters.map((item, i) => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues, i))}
 					<button className="btn btn-primary expanded-nav__body__search-but"
 							onClick={this.onSearchByFilter}>Знайти
 					</button>

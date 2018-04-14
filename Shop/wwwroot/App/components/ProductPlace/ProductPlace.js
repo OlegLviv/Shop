@@ -131,7 +131,6 @@ class ProductPlace extends React.Component {
 					isProductsLoading: false,
 					isProductsLoaded: true
 				});
-				// console.log('respDm', resp.data);
 			})
 			.catch(err => {
 				console.log(err.response);
