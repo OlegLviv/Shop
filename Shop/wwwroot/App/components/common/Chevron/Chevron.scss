@@ -1,0 +1,14 @@
+.chevron {
+  width: 1rem;
+  height: 1rem;
+  &__arrow {
+	width: .7rem;
+	height: .7rem;
+	border-top: .15rem #252525 solid;
+	border-left: .15rem #252525 solid;
+  }
+}
+
+.up {
+  margin-top: .5rem;
+}

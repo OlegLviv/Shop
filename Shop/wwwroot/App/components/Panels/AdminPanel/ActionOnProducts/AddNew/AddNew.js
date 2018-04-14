@@ -1,14 +1,16 @@
 import React from 'react';
 import './AddNew.scss';
-import {NAVIGATION_CATEGORIES} from "../../../../../utils/productsUtils";
-import {getSubCategories} from "../../../../../utils/productsUtils";
+import {
+	NAVIGATION_CATEGORIES,
+	getSubCategories,
+	normalizeSubCategoryToRoute,
+	normalizecategoryToRoute,
+	createProductQueryByObject
+} from "../../../../../utils/productsUtils";
 import {apiWithoutRedirect} from "../../../../../services/api";
 import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
-import {normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
 import {clearObjectProps} from "../../../../../utils/utils";
-import {createProductQueryByObject} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
-import {normalizecategoryToRoute} from "../../../../../utils/productsUtils";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {Alert} from "../../../../common/Alert/Alert";
 import {Icon} from 'react-fa';
