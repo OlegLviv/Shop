@@ -129,36 +129,43 @@ export const NAVIGATION_SUB_CATEGORIES = {
 	]
 };
 
-const getDictionaryByQuery = query => {
-	const splitedQ = query.split(';');
-	if (splitedQ === 1)
-		return [];
-	const keys = [];
-	const values = [];
-	for (const i in splitedQ) {
-		keys.push(splitedQ[i].split('=')[0]);
-		values.push(splitedQ[i].split('=')[1]);
-	}
-	return {
-		keys: keys,
-		values: values
-	}
+export const createProductQueryByObject = obj => {
+	if (!obj)
+		return;
+	return Object.keys(obj).map(i => i.concat(`=${obj[i]}`)).join(';');
 };
 
-export const formatQuery = (key, value, oldQ) => {
-	if (!oldQ) {
-		return `${key}=${value}`;
-	}
+export const createProductsQueryByObject = obj => {
+	if (!obj)
+		return;
+	return Object.keys(obj).map(i => i.concat(`=${obj[i].join(',')}`)).join(';');
+};
 
-	let query1, query2 = '';
-	const queryDic = getDictionaryByQuery(oldQ);
+export const formateQueryDictionary = (key, value, dictionary) => {
+	if (!dictionary)
+		dictionary = {};
 
-	for (const i in queryDic.keys) {
-		if (queryDic.keys[i] === key) {
-			query1 = oldQ.split(`${key}=`)[0];
-			query2 = oldQ.split(`${key}=`)[1];
-			return `${query1}${key}=${value},${query2}`;
-		}
+	if (dictionary[key]) {
+		dictionary[key].push(value);
 	}
-	return `${oldQ};${key}=${value}`;
+	if (!dictionary[key]) {
+		dictionary[key] = [];
+		dictionary[key].push(value);
+	}
+	console.log(dictionary);
+	return dictionary;
+};
+
+export const formateQueryDictionaryWithRemove = (key, value, dictionary) => {
+	if (!dictionary)
+		return;
+	const indexForDel = dictionary[key].indexOf(value);
+	console.log('index for rem', indexForDel);
+	dictionary[key].splice(indexForDel, indexForDel === 0 ? 1 : indexForDel);
+	console.log('rem', dictionary);
+	return dictionary;
+};
+
+export const formateQueryByDictionary = dictionary => {
+
 };

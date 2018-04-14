@@ -1,13 +1,12 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductUrlByCatSubCat} from "../../services/urls/productUrls";
+import {getProductUrlByCatSubCat, getProductsUrlByQuery} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addCookies} from "../../services/cookies";
-import {addObjectQueryToProducts} from "../../utils/productsUtils";
+import {addObjectQueryToProducts, createProductsQueryByObject} from "../../utils/productsUtils";
 import NavigationProducts from './NavigationProducts/NavigationProducts';
 import ExpandedNavigationProducts from "./NavigationProducts/ExpandedNavigationProducts";
-import {getProductsUrlByQuery} from "../../services/urls/productUrls";
 import {Spinner} from "../Spinner/Spinner";
 import Pagination from 'react-js-pagination';
 import {priceRange} from "../../utils/productsUtils";
@@ -139,13 +138,13 @@ class ProductPlace extends React.Component {
 			});
 	};
 
-	onSearchByFilter = (priceFrom, priceTo, query) => {
+	onSearchByFilter = (priceFrom, priceTo, queryDictionary) => {
 		this.renderLoadingSpinner();
 		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
 			getSubCategory(this.props),
 			priceFrom,
 			priceTo,
-			query, 1, 16, this.state.sortingType
+			createProductsQueryByObject(queryDictionary), 1, 16, this.state.sortingType
 		);
 		apiWithoutRedirect()
 			.get(prodUrl)

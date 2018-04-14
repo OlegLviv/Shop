@@ -4,11 +4,12 @@ import {
 	NAVIGATION_CATEGORIES,
 	getSubCategories,
 	normalizeSubCategoryToRoute,
-	normalizecategoryToRoute
+	normalizecategoryToRoute,
+	createProductQueryByObject
 } from "../../../../../utils/productsUtils";
 import {apiWithoutRedirect} from "../../../../../services/api";
 import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
-import {clearObjectProps, createProductQueryByObject} from "../../../../../utils/utils";
+import {clearObjectProps} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {Alert} from "../../../../common/Alert/Alert";

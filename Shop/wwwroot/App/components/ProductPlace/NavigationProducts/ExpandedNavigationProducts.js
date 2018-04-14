@@ -6,7 +6,7 @@ import {Icon} from 'react-fa';
 import {priceRange} from "../../../utils/productsUtils";
 import {apiWithoutRedirect} from "../../../services/api";
 import {getProductPropsUrl} from "../../../services/urls/productUrls";
-import {formatQuery} from "../../../utils/productsUtils";
+import {formateQueryDictionary, formateQueryDictionaryWithRemove} from "../../../utils/productsUtils";
 
 const {maxPrice} = priceRange;
 const {minPrice} = priceRange;
@@ -51,17 +51,15 @@ class ExpandedNavigationProducts extends React.Component {
 	};
 
 	onSearchByFilter = () => {
-		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo, this.query);
+		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo, this.queryDictionary);
 	};
 
 	onChangeFilter = (e, name, item) => {
 		if (e.target.checked === true) {
-			// todo need to add realization
-			this.query = formatQuery(name, item, this.query);
-			console.log(this.query);
+			this.queryDictionary = formateQueryDictionary(name, item, this.queryDictionary);
 		}
 		if (e.target.checked === false) {
-			
+			this.queryDictionary = formateQueryDictionaryWithRemove(name, item, this.queryDictionary);
 		}
 	};
 
