@@ -46,6 +46,7 @@ class ProductCardPlace extends React.Component {
 		apiWithoutRedirect()
 			.get(getProductsUrlByIds(productIds))
 			.then(resp => {
+				console.log('resp', resp.data);
 				addObjectQueryToProducts(resp.data);
 				this.initProductsCounts(resp.data);
 				this.setState({

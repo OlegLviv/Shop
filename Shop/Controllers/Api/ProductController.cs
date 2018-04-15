@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
 using DAL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Common.Extensions;
-using Microsoft.AspNetCore.Http.Extensions;
 using Core.Interfaces;
 using BLL.Filters.ActionFilters;
 using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
-using System.Dynamic;
-using System.IO;
 using AutoMapper;
 using Core.Models.DTO;
 using Core.Models.ViewModels;
@@ -31,6 +26,7 @@ namespace Shop.Controllers.Api
     {
         private readonly AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
+        private readonly IRepositoryAsync<ProductImage> _imageRepository;
         private readonly ProductManager _productManager;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
@@ -38,13 +34,15 @@ namespace Shop.Controllers.Api
         public ProductController(AppDbContext context,
             IRepositoryAsync<Product> productsRepository,
             ProductManager productManager,
-            UserManager<User> userManager, IMapper mapper)
+            UserManager<User> userManager, IMapper mapper,
+            IRepositoryAsync<ProductImage> imageRepository)
         {
             _context = context;
             _productsRepository = productsRepository;
             _productManager = productManager;
             _userManager = userManager;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
 
         #region GET
@@ -364,9 +362,15 @@ namespace Shop.Controllers.Api
         [HttpDelete("DeleteProduct/{productId}")]
         public async Task<IActionResult> DeleteProduct(string productId)
         {
-            var product = await _productsRepository.GetByIdAsync(productId);
+            var product = await _productsRepository
+                .Table
+                .Include(x => x.ProductImages)
+                .FirstOrDefaultAsync(x => x.Id == productId);
+
             if (product == null)
                 return BadRequest("Product not found or incorrent product id");
+            if (product.ProductImages.Any())
+                await _imageRepository.DeleteAsync(product.ProductImages);
             return Ok(await _productsRepository.DeleteAsync(product));
         }
 

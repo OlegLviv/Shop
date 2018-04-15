@@ -1,6 +1,6 @@
 import React from 'react';
 import './Edit.scss';
-import {apiWithoutRedirect} from "../../../../../services/api";
+import {api} from "../../../../../services/api";
 import {getProductsUrlByName, EDIT_PRODUCT_URL, getProductUrlForDelete} from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
@@ -34,7 +34,7 @@ class Edit extends React.Component {
 		}
 
 		this.setState({searchValue: e.target.value});
-		apiWithoutRedirect()
+		api()
 			.get(getProductsUrlByName(e.target.value, this.state.activePage, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
@@ -55,7 +55,7 @@ class Edit extends React.Component {
 	};
 
 	onPaginationChange = (pageNumber) => {
-		apiWithoutRedirect()
+		api()
 			.get(getProductsUrlByName(this.state.searchValue, pageNumber, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
@@ -77,15 +77,15 @@ class Edit extends React.Component {
 			name: this.state.newProductName,
 			price: this.state.newProductPrice
 		};
-		apiWithoutRedirect()
+		api()
 			.put(EDIT_PRODUCT_URL, newProduct)
 			.then(resp => {
 				console.log(resp.data);
-				alert("Дані успішно оновлено");
 				this.setState({
 					isLoading: false,
 					isLoaded: true
 				});
+				alert("Дані успішно оновлено");
 			})
 			.catch(err => {
 				console.error(err.response.data);
@@ -97,7 +97,7 @@ class Edit extends React.Component {
 			this.setState({isLoaded: false});
 		}
 		this.setState({isLoading: true});
-		apiWithoutRedirect()
+		api()
 			.delete(getProductUrlForDelete(this.state.selectedProduct.id))
 			.then(resp => {
 				console.log('resp data', resp.data);
