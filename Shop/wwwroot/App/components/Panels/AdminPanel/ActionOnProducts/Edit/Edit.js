@@ -107,15 +107,23 @@ class Edit extends React.Component {
 						isLoaded: true,
 						isDeleteConfirmed: false
 					});
-					alert('Товар видалено успішно');
 					this.onCloseEditPanel();
+					alert('Товар видалено успішно');
 				}
 			})
 			.catch(err => console.error(err.response.data));
 	};
 
 	onCloseEditPanel = () => {
-		this.setState({selectedProduct: null});
+		this.setState({
+			selectedProduct: null,
+			products: []
+		});
+		this.onChangeSearch({
+			target: {
+				value: this.state.searchValue
+			}
+		})
 	};
 
 	renderEditPanel = () => {
