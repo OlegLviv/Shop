@@ -126,20 +126,27 @@ namespace Shop.Controllers.Api
         public IActionResult GetProductsByIds(string[] productIds)
         {
             var products = _productManager
-                .Select(_productsRepository.Table.Include(x=>x.ProductImages),
+                .Select(_productsRepository.Table.Include(x => x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
         }
 
-        [HttpGet("GetProducts/{name}")]
-        public IActionResult GetProducts(string name)
+        [HttpGet("GetProducts/{name}/{pageNumber:int?}/{pageSize:int?}")]
+        public IActionResult GetProducts(string name, int pageNumber = 1, int pageSize = 16)
         {
             if (string.IsNullOrEmpty(name))
                 return BadRequest("Incorrect name");
             var products = _productsRepository
                 .Table
                 .Where(x => x.Name.ToLower().Contains(name.ToLower()));
-            return this.JsonResult(products);
+            var paginator = new Paginator<Product>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = products.Page(pageNumber, pageSize),
+                TotalCount = products.Count()
+            };
+            return this.JsonResult(paginator);
         }
 
         [HttpGet("GetProductFeedback/{productId}")]
