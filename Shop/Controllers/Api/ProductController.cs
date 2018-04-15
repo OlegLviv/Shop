@@ -358,5 +358,19 @@ namespace Shop.Controllers.Api
             });
         }
         #endregion
+
+        #region DELETE
+
+        [HttpDelete("DeleteProduct/{productId}")]
+        public async Task<IActionResult> DeleteProduct(string productId)
+        {
+            var product = await _productsRepository.GetByIdAsync(productId);
+            if (product == null)
+                return BadRequest("Product not found or incorrent product id");
+            return Ok(await _productsRepository.DeleteAsync(product));
+        }
+
+
+        #endregion
     }
 }

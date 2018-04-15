@@ -1,9 +1,9 @@
 //	GET
 export const getProductUrlByCatSubCat = (category, subCategory) => `/api/product/GetProducts/${category}/${subCategory}`;
 
-export const getProductUrlById = (productId) => `/api/product/GetProduct/${productId}`;
+export const getProductUrlById = productId => `/api/product/GetProduct/${productId}`;
 
-export const getProductsUrlByIds = (ids) => `/api/product/GetProductsByIds/${ids}`;
+export const getProductsUrlByIds = ids => `/api/product/GetProductsByIds/${ids}`;
 
 export const getProductsUrlByName = (name, pageNumber = 1, pageSize = 16) => `/api/product/GetProducts/${name}/${pageNumber}/${pageSize}`;
 
@@ -20,3 +20,6 @@ export const ADD_PRODUCT_URL = '/api/product/AddProduct';
 export const SEND_FEEDBACK_URL = '/api/product/SendFeedback';
 
 export const EDIT_PRODUCT_URL = '/api/product/EditProduct';
+
+//	DELETE
+export const getProductUrlForDelete = productId => `/api/product/DeleteProduct/${productId}`;

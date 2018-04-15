@@ -1,7 +1,7 @@
 import React from 'react';
 import './Edit.scss';
 import {apiWithoutRedirect} from "../../../../../services/api";
-import {getProductsUrlByName, EDIT_PRODUCT_URL} from "../../../../../services/urls/productUrls";
+import {getProductsUrlByName, EDIT_PRODUCT_URL, getProductUrlForDelete} from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
 
@@ -19,7 +19,8 @@ class Edit extends React.Component {
 			newProductName: '',
 			newProductPrice: 0,
 			isLoading: false,
-			isLoaded: true
+			isLoaded: true,
+			isDeleteConfirmed: false
 		}
 	}
 
@@ -80,6 +81,7 @@ class Edit extends React.Component {
 			.put(EDIT_PRODUCT_URL, newProduct)
 			.then(resp => {
 				console.log(resp.data);
+				alert("Дані успішно оновлено");
 				this.setState({
 					isLoading: false,
 					isLoaded: true
@@ -88,6 +90,28 @@ class Edit extends React.Component {
 			.catch(err => {
 				console.error(err.response.data);
 			});
+	};
+
+	onDeletePruduct = () => {
+		if (this.state.isLoaded) {
+			this.setState({isLoaded: false});
+		}
+		this.setState({isLoading: true});
+		apiWithoutRedirect()
+			.delete(getProductUrlForDelete(this.state.selectedProduct.id))
+			.then(resp => {
+				console.log('resp data', resp.data);
+				if (resp.data >= 1) {
+					this.setState({
+						isLoading: false,
+						isLoaded: true,
+						isDeleteConfirmed: false
+					});
+					alert('Товар видалено успішно');
+					this.onCloseEditPanel();
+				}
+			})
+			.catch(err => console.error(err.response.data));
 	};
 
 	onCloseEditPanel = () => {
@@ -131,6 +155,19 @@ class Edit extends React.Component {
 						</td>
 						<td>
 							<button className="btn btn-danger" onClick={this.onCloseEditPanel}>Закрити</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<button className="btn btn-warning"
+									disabled={!this.state.isDeleteConfirmed}
+									onClick={this.onDeletePruduct}>Видалити
+							</button>
+						</td>
+						<td>
+							<div>Ви впевнені що хочете видалити даний товар</div>
+							<input type="checkbox"
+								   onChange={() => this.setState(prev => ({isDeleteConfirmed: !prev.isDeleteConfirmed}))}/>
 						</td>
 					</tr>
 					</tbody>
