@@ -11,7 +11,8 @@ namespace BLL.Managers
         public IEnumerable<Product> Select(IQueryable<Product> products, string[] ids)
         {
             return ids.Select(id => products
-                .FirstOrDefault(x => x.Id == id));
+                .FirstOrDefault(x => x.Id == id))
+                .Where(product => product != null);
         }
 
         // todo need catch splic exception

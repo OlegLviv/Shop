@@ -53,7 +53,7 @@ class NavMenu extends React.Component {
 		apiWithoutRedirect()
 			.get(getProductsUrlByName(value))
 			.then(reps => {
-				this.setState({products: reps.data});
+				this.setState({products: reps.data.data});
 			});
 		this.setState({searchVal: value});
 	};

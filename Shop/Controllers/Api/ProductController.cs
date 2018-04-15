@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
 using DAL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Common.Extensions;
-using Microsoft.AspNetCore.Http.Extensions;
 using Core.Interfaces;
 using BLL.Filters.ActionFilters;
 using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
-using System.Dynamic;
-using System.IO;
 using AutoMapper;
 using Core.Models.DTO;
 using Core.Models.ViewModels;
@@ -31,6 +26,7 @@ namespace Shop.Controllers.Api
     {
         private readonly AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
+        private readonly IRepositoryAsync<ProductImage> _imageRepository;
         private readonly ProductManager _productManager;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
@@ -38,13 +34,15 @@ namespace Shop.Controllers.Api
         public ProductController(AppDbContext context,
             IRepositoryAsync<Product> productsRepository,
             ProductManager productManager,
-            UserManager<User> userManager, IMapper mapper)
+            UserManager<User> userManager, IMapper mapper,
+            IRepositoryAsync<ProductImage> imageRepository)
         {
             _context = context;
             _productsRepository = productsRepository;
             _productManager = productManager;
             _userManager = userManager;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
 
         #region GET
@@ -126,20 +124,27 @@ namespace Shop.Controllers.Api
         public IActionResult GetProductsByIds(string[] productIds)
         {
             var products = _productManager
-                .Select(_productsRepository.Table.Include(x=>x.ProductImages),
+                .Select(_productsRepository.Table.Include(x => x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
             return this.JsonResult(products);
         }
 
-        [HttpGet("GetProducts/{name}")]
-        public IActionResult GetProducts(string name)
+        [HttpGet("GetProducts/{name}/{pageNumber:int?}/{pageSize:int?}")]
+        public IActionResult GetProducts(string name, int pageNumber = 1, int pageSize = 16)
         {
             if (string.IsNullOrEmpty(name))
                 return BadRequest("Incorrect name");
             var products = _productsRepository
                 .Table
                 .Where(x => x.Name.ToLower().Contains(name.ToLower()));
-            return this.JsonResult(products);
+            var paginator = new Paginator<Product>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = products.Page(pageNumber, pageSize),
+                TotalCount = products.Count()
+            };
+            return this.JsonResult(paginator);
         }
 
         [HttpGet("GetProductFeedback/{productId}")]
@@ -334,6 +339,41 @@ namespace Shop.Controllers.Api
                 Body = feedback.Body
             });
         }
+
+        [HttpPut("EditProduct")]
+        public async Task<IActionResult> EditProduct([FromBody] EditProductViewModel model)
+        {
+            var product = await _productsRepository
+                .GetByIdAsync(model.ProductId);
+            if (product == null)
+                return BadRequest("Product not found or incorrent product id");
+            product.Price = model.Price;
+            product.Name = model.Name;
+            return this.JsonResult(new
+            {
+                product,
+                Result = await _productsRepository.UpdateAsync(product)
+            });
+        }
+        #endregion
+
+        #region DELETE
+
+        [HttpDelete("DeleteProduct/{productId}")]
+        public async Task<IActionResult> DeleteProduct(string productId)
+        {
+            var product = await _productsRepository
+                .Table
+                .Include(x => x.ProductImages)
+                .FirstOrDefaultAsync(x => x.Id == productId);
+
+            if (product == null)
+                return BadRequest("Product not found or incorrent product id");
+            if (product.ProductImages.Any())
+                await _imageRepository.DeleteAsync(product.ProductImages);
+            return Ok(await _productsRepository.DeleteAsync(product));
+        }
+
 
         #endregion
     }
