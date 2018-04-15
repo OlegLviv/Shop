@@ -120,7 +120,9 @@ class ProductPlace extends React.Component {
 		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
 			getSubCategory(this.props),
 			this.state.priceRangeForPagination.minPrice,
-			this.state.priceRangeForPagination.maxPrice, ' ', pageNumber);
+			this.state.priceRangeForPagination.maxPrice, ' ', pageNumber,
+			this.state.howManyToShow,
+			this.state.sortingType);
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {

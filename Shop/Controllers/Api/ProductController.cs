@@ -342,6 +342,21 @@ namespace Shop.Controllers.Api
             });
         }
 
+        [HttpPut("EditProduct")]
+        public async Task<IActionResult> EditProduct([FromBody] EditProductViewModel model)
+        {
+            var product = await _productsRepository
+                .GetByIdAsync(model.ProductId);
+            if (product == null)
+                return BadRequest("Product not found or incorrent product id");
+            product.Price = model.Price;
+            product.Name = model.Name;
+            return this.JsonResult(new
+            {
+                product,
+                Result = await _productsRepository.UpdateAsync(product)
+            });
+        }
         #endregion
     }
 }

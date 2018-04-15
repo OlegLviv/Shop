@@ -83,6 +83,7 @@ class AddNew extends React.Component {
 		form.append('name', this.state.productName);
 		form.append('price', this.state.price);
 		form.append('query', query);
+		return form;
 	};
 
 	showAlert = (subject, body, type) => {
