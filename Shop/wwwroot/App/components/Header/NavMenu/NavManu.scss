@@ -58,6 +58,12 @@
 		-ms-transform: scale(1.1);
 		-o-transform: scale(1.1);
 	  }
+	  &__icon-shoping {
+		filter: drop-shadow(3px 2px 2px rgba(0, 0, 0, .5));
+	  }
+	  &__icon-like {
+		filter: drop-shadow(3px 2px 2px rgba(0, 0, 0, .5));
+	  }
 	}
 	&__card a {
 	  color: #212529;
