@@ -6,6 +6,7 @@ import {ActionOnProducts} from "./ActionOnProducts/ActionOnProducts";
 import {NotFound} from "../../NotFound/NotFound";
 import AddNew from './ActionOnProducts/AddNew/AddNew';
 import Edit from './ActionOnProducts/Edit/Edit';
+import UserEdit from './UsersEdit/UsersEdit';
 
 export const AdminPanel = () => {
 	return (
@@ -18,7 +19,7 @@ export const AdminPanel = () => {
 					<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
 					<Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
 					<Route path="/adminPanel/action-on-products/edit" component={Edit}/>
-					<Route path="/adminPanel/users" render={() => <div>users</div>}/>
+					<Route path="/adminPanel/users" component={UserEdit}/>
 					<Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>
 					<Route path="/adminPanel/owner-settings" render={() => <div>owner settings</div>}/>
 					<Route component={NotFound}/>

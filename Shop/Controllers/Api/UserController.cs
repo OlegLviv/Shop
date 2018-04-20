@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BLL.Filters.ActionFilters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Common.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +14,7 @@ using Core.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using BLL.Services;
 using Common.Helpers;
+using Core.Models.DTO;
 
 namespace Shop.Controllers.Api
 {
@@ -27,13 +28,19 @@ namespace Shop.Controllers.Api
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _sender;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public UserController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IEmailSender sender)
+        public UserController(UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration,
+            IEmailSender sender,
+            IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _sender = sender;
+            _mapper = mapper;
         }
         #region GET
         [HttpGet("userInfo")]
@@ -43,6 +50,35 @@ namespace Shop.Controllers.Api
             if (user == null)
                 return BadRequest("User don't exist");
             return Ok(new { user.Id, user.UserName });
+        }
+
+        [HttpGet("GetUserById/{id}")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Incorrect user id");
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return BadRequest("Incorrent user id or user don't found");
+            return this.JsonResult(_mapper.Map<UserDto>(user));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetUserByName/{nameOrLastName}/{pageNumber:int?}/{pageSize:int?}")]
+        public IActionResult GetUserByName(string nameOrLastName, int pageNumber = 1, int pageSize = 16)
+        {
+            var user = _userManager
+                .Users
+                .Where(x => x.Name.ToLower().Contains(nameOrLastName)
+                            || x.LastName.ToLower().Contains(nameOrLastName));
+            var paginator = new Paginator<User>
+            {
+                Data = user.Page(pageNumber, pageSize),
+                TotalCount = user.Count(),
+                PageSize = pageSize,
+                PageNumber = pageNumber
+            };
+            return this.JsonResult(paginator);
         }
 
         [AllowAnonymous]

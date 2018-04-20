@@ -9,6 +9,7 @@ namespace Core.Mapper
         public MappingsProfile()
         {
             CreateMap<Product, ProductDto>();
+            CreateMap<User, UserDto>();
         }
     }
 }
