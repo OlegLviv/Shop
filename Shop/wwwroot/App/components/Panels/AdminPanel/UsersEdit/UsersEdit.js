@@ -44,7 +44,11 @@ class UsersEdit extends React.Component {
 	};
 
 	onClickUser = user => {
-		this.setState({selectedUser: user});
+		this.setState({
+			selectedUser: user,
+			name: user.name,
+			lastName: user.lastName
+		});
 		console.log('selected user', user);
 	};
 
@@ -64,6 +68,11 @@ class UsersEdit extends React.Component {
 				alert(`Error:Сталась помилка`);
 				console.error(err.response.data);
 			});
+	};
+
+	onClose = () => {
+		this.setState({selectedUser: null});
+		this.onChangeSearch({target: {value: this.state.searchValue}});
 	};
 
 	renderUserInfo = () => {
@@ -93,6 +102,7 @@ class UsersEdit extends React.Component {
 		);
 	};
 
+	//todo need to add spinner
 	renderEditPanel = () => {
 		return (
 			<div>
@@ -132,7 +142,9 @@ class UsersEdit extends React.Component {
 							</button>
 						</td>
 						<td>
-							<button className="btn btn-danger">Вийти</button>
+							<button className="btn btn-danger"
+									onClick={this.onClose}>Закрити
+							</button>
 						</td>
 					</tr>
 					</tbody>
@@ -144,20 +156,20 @@ class UsersEdit extends React.Component {
 	render() {
 		return (
 			<div className="user-edit-container">
-				<div className="user-edit-container__header">
-					Редактор користовачів
-				</div>
-				<div className="user-edit-container__search-box">
-					<h6 className="text-center">Пошук</h6>
-					<input className="form-control"
-						   type="text"
-						   value={this.state.searchValue}
-						   onChange={this.onChangeSearch}
-						   placeholder="Введіть ім'я або id користувача"/>
-				</div>
-				<div>
-					{
-						!this.state.selectedUser ? <div className="user-edit-container__product-list-box">
+				{
+					!this.state.selectedUser ? <div>
+						<div className="user-edit-container__header">
+							Редактор користовачів
+						</div>
+						<div className="user-edit-container__search-box">
+							<h6 className="text-center">Пошук</h6>
+							<input className="form-control"
+								   type="text"
+								   value={this.state.searchValue}
+								   onChange={this.onChangeSearch}
+								   placeholder="Введіть ім'я або id користувача"/>
+						</div>
+						<div className="user-edit-container__product-list-box">
 							<ul className="list-group user-edit-container__product-list-box__list-group">
 								{
 									this.state.users.map(user => <li
@@ -169,9 +181,9 @@ class UsersEdit extends React.Component {
 									</li>)
 								}
 							</ul>
-						</div> : this.renderEditPanel()
-					}
-				</div>
+						</div>
+					</div> : this.renderEditPanel()
+				}
 			</div>
 		)
 	}
