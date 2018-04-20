@@ -14,7 +14,7 @@ export const Navigation = () => {
                     <Icon className="nav-container__items__item__icon" name="shopping-basket"/>
                     <div className="nav-container__items__item__text">Продукти</div>
                 </Link>
-                <Link className="nav-container__items__item" to="/adminPanel/users">
+                <Link className="nav-container__items__item" to="/adminPanel/action-on-users">
                     <Icon className="nav-container__items__item__icon" name="users"/>
                     <div className="nav-container__items__item__text">Користувачі</div>
                 </Link>

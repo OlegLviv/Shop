@@ -49,9 +49,10 @@ namespace Shop.Controllers.Api
             var user = await this.GetUserByIdentityAsync(_userManager);
             if (user == null)
                 return BadRequest("User don't exist");
-            return Ok(new { user.Id, user.UserName });
+            return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 
+        [AllowAnonymous]
         [HttpGet("GetUserById/{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
@@ -63,7 +64,7 @@ namespace Shop.Controllers.Api
             return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
         [HttpGet("GetUserByName/{nameOrLastName}/{pageNumber:int?}/{pageSize:int?}")]
         public IActionResult GetUserByName(string nameOrLastName, int pageNumber = 1, int pageSize = 16)
         {
@@ -71,6 +72,8 @@ namespace Shop.Controllers.Api
                 .Users
                 .Where(x => x.Name.ToLower().Contains(nameOrLastName)
                             || x.LastName.ToLower().Contains(nameOrLastName));
+
+            // todo need add automapper
             var paginator = new Paginator<User>
             {
                 Data = user.Page(pageNumber, pageSize),

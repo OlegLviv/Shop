@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Core.Models.DomainModels;
 using Core.Models.DTO;
 
@@ -10,6 +11,7 @@ namespace Core.Mapper
         {
             CreateMap<Product, ProductDto>();
             CreateMap<User, UserDto>();
+            CreateMap<IEnumerable<User>, IEnumerable<UserDto>>();
         }
     }
 }

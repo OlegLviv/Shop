@@ -1,0 +1,25 @@
+.action-on-users-container {
+  &__menu {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	&__item {
+	  display: flex;
+	  flex-direction: column;
+	}
+  }
+  &__menu a {
+	display: flex;
+	justify-content: center;
+	width: 20rem;
+	background: #252525;
+	color: #d3d3d3;
+	min-height: 20rem;
+	align-items: center;
+	margin-top: 2rem;
+  }
+  &__menu a:hover {
+	background: #17a2b8;
+	text-decoration: none;
+  }
+}
