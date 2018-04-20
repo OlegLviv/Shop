@@ -14,6 +14,7 @@ using Core.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using BLL.Services;
 using Common.Helpers;
+using Core.Interfaces;
 using Core.Models.DTO;
 
 namespace Shop.Controllers.Api
@@ -29,18 +30,21 @@ namespace Shop.Controllers.Api
         private readonly IEmailSender _sender;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IRepositoryAsync<User> _userRepository;
 
         public UserController(UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
             IConfiguration configuration,
             IEmailSender sender,
-            IMapper mapper)
+            IMapper mapper,
+            IRepositoryAsync<User> userRepository)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _sender = sender;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
         #region GET
         [HttpGet("userInfo")]
@@ -153,6 +157,23 @@ namespace Shop.Controllers.Api
                 return BadRequest("Ups, we can't to send message to your email");
             return Ok(new { IsSuccess = true });
         }
+        #endregion
+
+        #region PUT
+
+        [HttpPut("EditPersonalData")]
+        public async Task<IActionResult> EditPersonalData([FromBody] EditUserPersonalDataViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+                return BadRequest("Incorrect user id or user don't found");
+
+            user.Name = model.Name;
+            user.LastName = model.LastName;
+            await _userRepository.UpdateAsync(user);
+            return this.JsonResult(user);
+        }
+
         #endregion
     }
 }

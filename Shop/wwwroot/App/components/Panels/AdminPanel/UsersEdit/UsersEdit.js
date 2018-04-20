@@ -1,7 +1,7 @@
 import React from 'react';
 import './UsersEdit.scss';
-import {apiGet} from "../../../../services/api";
-import {getUserByNameOrLastNameUrl, getUserByIdUrl} from "../../../../services/urls/userUrls";
+import {apiGet, apiPut} from "../../../../services/api";
+import {getUserByNameOrLastNameUrl, getUserByIdUrl, EDIT_USER_PERSONAL_DATA} from "../../../../services/urls/userUrls";
 
 class UsersEdit extends React.Component {
 	constructor(props) {
@@ -11,7 +11,9 @@ class UsersEdit extends React.Component {
 			activePage: 1,
 			totalProductCount: 0,
 			users: [],
-			selectedUser: null
+			selectedUser: null,
+			name: '',
+			lastName: ''
 		}
 	}
 
@@ -47,7 +49,21 @@ class UsersEdit extends React.Component {
 	};
 
 	onSave = () => {
+		const user = {
+			id: this.state.selectedUser.id,
+			name: this.state.name,
+			lastName: this.state.lastName
+		};
 
+		apiPut(EDIT_USER_PERSONAL_DATA, user)
+			.then(resp => {
+				if (resp.status === 200)
+					alert("Дані успішно оновлено");
+			})
+			.catch(err => {
+				alert(`Error:Сталась помилка`);
+				console.error(err.response.data);
+			});
 	};
 
 	renderUserInfo = () => {
@@ -95,7 +111,8 @@ class UsersEdit extends React.Component {
 							<input type="text"
 								   className="form-control"
 								   defaultValue={this.state.selectedUser.name}
-								   placeholder="Введіть ім'я"/>
+								   placeholder="Введіть ім'я"
+								   onChange={(e) => this.setState({name: e.target.value})}/>
 						</td>
 					</tr>
 					<tr>
@@ -104,7 +121,8 @@ class UsersEdit extends React.Component {
 							<input type="text"
 								   className="form-control"
 								   defaultValue={this.state.selectedUser.lastName}
-								   placeholder="Введіть прізвище"/>
+								   placeholder="Введіть прізвище"
+								   onChange={(e) => this.setState({lastName: e.target.value})}/>
 						</td>
 					</tr>
 					<tr>
