@@ -38,12 +38,8 @@ class LogInModal extends React.Component {
 	};
 
 	// todo need fix onEnter click
-	onLogin = (key) => {
-		if (key === 'Enter') {
-			this.onUserNameBlur();
-			this.onPasswordBlur();
-		}
-
+	onLogin = (e) => {
+		e.preventDefault();
 		if (isValidWhiteSpace(this.state.userName) && isValidWhiteSpace(this.state.password)) {
 			logInToken(this.state.userName, this.state.password)
 				.catch(error => {
@@ -93,8 +89,8 @@ class LogInModal extends React.Component {
 		}
 	};
 
-	renderError = (text) => <small id="emailHelp"
-								   className="form-text text-muted invalid-small">{text}</small>;
+	renderError = (text) => 
+		<small id="emailHelp" className="form-text text-muted invalid-small">{text}</small>;
 
 	render() {
 		return (
@@ -103,42 +99,48 @@ class LogInModal extends React.Component {
 				   shouldCloseOnEsc={true}
 				   style={customStyles}>
 				<div className="form-container">
-					<h3 className="text-center">Вхід</h3>
-					<hr/>
-					<div className="form-group">
-						<label htmlFor="inputEmail">Email або логін</label>
-						<input type="text"
-							   className={`form-control ${this.state.isValidUserName ? '' : 'invalid-input'}`}
-							   id="inputEmail"
-							   aria-describedby="emailHelp"
-							   placeholder="Введіть email або логін"
-							   onChange={this.onChangeUserName}
-							   onBlur={this.onUserNameBlur}
-							   onKeyPress={this.onUserNameKeyPress}/>
-						{!this.state.isValidUserName && this.renderError(this.state.userNameError)}
-					</div>
-					<div className="form-group">
-						<label htmlFor="inputPassword">Пароль</label>
-						<input type="password"
-							   className={`form-control ${this.state.isValidPassword ? '' : 'invalid-input'}`}
-							   id="inputPassword"
-							   placeholder="Введіть пароль..."
-							   onChange={this.onChangePassword}
-							   onKeyPress={this.onPasswordKeyPress}
-							   onBlur={this.onPasswordBlur}/>
-						{!this.state.isValidPassword && this.renderError(this.state.passwordError)}
-					</div>
-					<div className="form-check">
-						<input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-						<label className="form-check-label" htmlFor="exampleCheck1">Запам'ятати</label>
-					</div>
-					<div className="form-container__footer">
-						<button
-							className="btn btn-primary"
-							onClick={this.onLogin}>Увійти
-						</button>
-						<button className="btn btn-danger" onClick={this.onCloseModal}>Закрити</button>
-					</div>
+					<form onSubmit={this.onLogin} method=''>
+						<h3 className="text-center">Вхід</h3>
+						<hr/>
+
+						<div className="form-group">
+							<label htmlFor="inputEmail">Email або логін</label>
+							<input type="text"
+									className={`form-control ${this.state.isValidUserName ? '' : 'invalid-input'}`}
+									id="inputEmail"
+									aria-describedby="emailHelp"
+									placeholder="Введіть email або логін"
+									onChange={this.onChangeUserName}
+									onBlur={this.onUserNameBlur}
+									onKeyPress={this.onUserNameKeyPress}/>
+							{!this.state.isValidUserName && this.renderError(this.state.userNameError)}
+						</div>
+
+						<div className="form-group">
+							<label htmlFor="inputPassword">Пароль</label>
+							<input type="password"
+									className={`form-control ${this.state.isValidPassword ? '' : 'invalid-input'}`}
+									id="inputPassword"
+									placeholder="Введіть пароль..."
+									onChange={this.onChangePassword}
+									onKeyPress={this.onPasswordKeyPress}
+									onBlur={this.onPasswordBlur}/>
+							{!this.state.isValidPassword && this.renderError(this.state.passwordError)}
+						</div>
+
+						<div className="form-check">
+							<input type="checkbox" className="form-check-input" id="exampleCheck1"/>
+							<label className="form-check-label" htmlFor="exampleCheck1">Запам'ятати</label>
+						</div>
+
+						<div className="form-container__footer">
+							<button className="btn btn-primary"
+								type="submit">
+								Увійти
+							</button>
+							<button className="btn btn-danger" onClick={this.onCloseModal}>Закрити</button>
+						</div>
+					</form>
 				</div>
 			</Modal>
 		)
