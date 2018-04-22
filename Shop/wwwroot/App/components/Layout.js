@@ -8,7 +8,7 @@ import AdminPanel from "./Panels/AdminPanel/AdminPanel";
 import LogIn from './LogIn/LogIn';
 import './Layout.scss';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import {UserPanel} from "./Panels/UserPanel/UserPanel";
+import UserPanel from "./Panels/UserPanel/UserPanel";
 import ProductCardPlace from './ProductCardPlace/ProductCardPlace';
 import FullInfoProductPlace from './FullInfoProductPlace/FullInfoProductPlace';
 import {NotFound} from "./NotFound/NotFound";
