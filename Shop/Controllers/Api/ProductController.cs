@@ -375,7 +375,7 @@ namespace Shop.Controllers.Api
 
         #region DELETE
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpDelete("DeleteProduct/{productId}")]
         public async Task<IActionResult> DeleteProduct(string productId)
         {
@@ -393,7 +393,7 @@ namespace Shop.Controllers.Api
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpDelete("DeleteProductImage/{productId}/{number:int}")]
-        public async Task<IActionResult> DeleteProductImage(string productId,int number)
+        public async Task<IActionResult> DeleteProductImage(string productId, int number)
         {
             var product = await _productsRepository
                 .Table
@@ -412,7 +412,7 @@ namespace Shop.Controllers.Api
             {
                 image = images[number];
             }
-            catch(IndexOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 return BadRequest("Image don't exist");
             }
