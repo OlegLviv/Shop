@@ -19,28 +19,28 @@ export const api = () => {
 export const apiGet = url => api()
 	.get(url)
 	.catch(err => {
-		if (err.response.status === 401 && err.response.status === 403)
+		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 	});
 
 export const apiPost = (url, body) => api()
 	.post(url, body)
 	.catch(err => {
-		if (err.response.status === 401 && err.response.status === 403)
+		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 	});
 
 export const apiPut = (url, body) => api()
 	.put(url, body)
 	.catch(err => {
-		if (err.response.status === 401 && err.response.status === 403)
+		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 	});
 
 export const apiDelete = url => api()
     .delete(url)
     .catch(err => {
-        if (err.response.status === 401 && err.response.status === 403)
+        if (err.response.status === 401 || err.response.status === 403)
             window.location.replace('/logIn');
     });
 
