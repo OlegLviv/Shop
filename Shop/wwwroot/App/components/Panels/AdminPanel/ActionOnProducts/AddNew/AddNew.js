@@ -187,7 +187,9 @@ class AddNew extends React.Component {
 
 	// todo need implement in future
 	onClear = () => {
-
+		this.setState({
+			files: [],
+		})
 	};
 
 	renderSelectedImages = () => {
