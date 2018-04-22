@@ -9,7 +9,7 @@ import AddNew from './ActionOnProducts/AddNew/AddNew';
 import Edit from './ActionOnProducts/Edit/Edit';
 import UserEdit from './UsersEdit/UsersEdit';
 import {Spinner} from "../../Spinner/Spinner";
-import {apiWithoutRedirect} from "../../../services/api";
+import {apiGet} from "../../../services/api";
 import {GET_USER_ROLE} from "../../../services/urls/userUrls";
 
 class AdminPanel extends React.Component {
@@ -23,8 +23,7 @@ class AdminPanel extends React.Component {
 	}
 
 	componentDidMount() {
-		apiWithoutRedirect()
-			.get(GET_USER_ROLE)
+		apiGet(GET_USER_ROLE)
 			.then(resp => {
 				console.log(resp);
 				if (resp.data.role === 'Admin')
@@ -42,8 +41,7 @@ class AdminPanel extends React.Component {
 			});
 	}
 
-	renderForbidden = () => <div><h3 className="text-center">403 Forbidden</h3></div>
-
+	//	todo need implement main admin panel route
 	render() {
 		const {isLoading, isLoaded, canShow} = this.state;
 		if (isLoaded && !isLoading && canShow) {
@@ -54,6 +52,7 @@ class AdminPanel extends React.Component {
 					</div>
 					<div className="col-10">
 						<Switch>
+							<Route exact path="/adminPanel" render={()=><div>Admin Panel</div>}/>
 							<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
 							<Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
 							<Route path="/adminPanel/action-on-products/edit" component={Edit}/>
@@ -72,10 +71,7 @@ class AdminPanel extends React.Component {
 			);
 		}
 		if (isLoading && !isLoaded)
-			return <Spinner/>
-		if (isLoaded && !isLoading && !canShow) {
-			return this.renderForbidden()
-		}
+			return <Spinner/>;
 	}
 }
 
