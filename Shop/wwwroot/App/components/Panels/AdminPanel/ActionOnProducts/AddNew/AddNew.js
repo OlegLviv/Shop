@@ -130,10 +130,16 @@ class AddNew extends React.Component {
 	onChangeFile = (e) => {
 		this.tryHideAlert();
 		const {files} = e.target;
+		if (files.length > 2) {
+			this.showAlert('Помилка', 'Ви можете обрати не більше 3-х файлів', 'warning');
+			e.target.value = null;
+			return;
+		}
+		console.log(e.target.files, files);
 		const newFiles = [];
-		for (let i in files) {
+		for (const i in files) {
 			if (files[i].size > 3000000) {
-				this.showAlert('Помилка', 'Розмір файлу не повинен перевищувати 3 MB');
+				this.showAlert('Помилка', 'Розмір файлу не повинен перевищувати 3 MB', 'warning');
 				e.target.value = null;
 				return;
 			}
@@ -182,6 +188,12 @@ class AddNew extends React.Component {
 	// todo need implement in future
 	onClear = () => {
 
+	};
+
+	renderSelectedImages = () => {
+		return (
+			this.state.files.map(file => <div></div>)
+		)
 	};
 
 	render() {
