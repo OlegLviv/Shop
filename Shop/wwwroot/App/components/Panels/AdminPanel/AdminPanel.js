@@ -7,7 +7,7 @@ import {ActionOnUsers} from "./ActionOnUsers/ActionOnUsers";
 import {NotFound} from "../../NotFound/NotFound";
 import AddNew from './ActionOnProducts/AddNew/AddNew';
 import Edit from './ActionOnProducts/Edit/Edit';
-import UserEdit from './UsersEdit/UsersEdit';
+import UserEdit from './ActionOnUsers/UsersEdit/UsersEdit';
 import {Spinner} from "../../Spinner/Spinner";
 import {apiGet} from "../../../services/api";
 import {GET_USER_ROLE} from "../../../services/urls/userUrls";
