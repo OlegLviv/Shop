@@ -44,3 +44,15 @@
 .edit-product-img-td img {
   width: 10rem;
 }
+
+.selected-images-box {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.selected-images-box img {
+  border-radius: 5px;
+  max-height: 25rem;
+  max-width: 20rem;
+}

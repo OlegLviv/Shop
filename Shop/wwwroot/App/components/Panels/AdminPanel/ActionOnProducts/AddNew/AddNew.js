@@ -130,7 +130,7 @@ class AddNew extends React.Component {
 	onChangeFile = (e) => {
 		this.tryHideAlert();
 		const {files} = e.target;
-		if (files.length > 2) {
+		if (files.length > 3) {
 			this.showAlert('Помилка', 'Ви можете обрати не більше 3-х файлів', 'warning');
 			e.target.value = null;
 			return;
@@ -192,7 +192,14 @@ class AddNew extends React.Component {
 
 	renderSelectedImages = () => {
 		return (
-			this.state.files.map(file => <div></div>)
+			this.state.files.length > 0 && <div>
+				<h3 className="text-center my-3">Обрані фотографії</h3>
+				<div className="selected-images-box">
+					{
+						Array.prototype.map.call(this.state.files, file => <img src={URL.createObjectURL(file)}/>)
+					}
+				</div>
+			</div>
 		)
 	};
 
@@ -290,6 +297,7 @@ class AddNew extends React.Component {
 					<div className="container-add-new__row__file-box">
 						<input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
 					</div>
+					{this.renderSelectedImages()}
 					<div className="container-add-new__action-box">
 						<button className="btn btn-info container-add-new__action-box__save"
 								onClick={this.onSave}>Зберегти товар

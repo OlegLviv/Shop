@@ -162,6 +162,11 @@ class Edit extends React.Component {
 		</tr>));
 	};
 
+	//	todo need implement
+	renderAddImages = () => {
+
+	};
+
 	renderEditPanel = () => {
 		const {selectedProduct} = this.state;
 		return (
