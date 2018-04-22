@@ -231,6 +231,20 @@ namespace Shop.Controllers.Api
             return File(prodImages[number].Image, prodImages[number].ContentType);
         }
 
+        [HttpGet("GetProductImageCount/{productId}")]
+        public async Task<IActionResult> GetProductImageCount(string productId)
+        {
+            var product = await _productsRepository
+                .Table
+                .Include(x => x.ProductImages)
+                .FirstOrDefaultAsync(x => x.Id == productId);
+            if (product == null)
+                return BadRequest("Product don't exist. Or Incorrect product id");
+            return Ok(product
+                .ProductImages
+                .Count);
+        }
+
         #endregion
 
         #region POST

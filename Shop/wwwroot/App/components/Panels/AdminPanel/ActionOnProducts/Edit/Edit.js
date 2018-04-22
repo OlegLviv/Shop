@@ -1,9 +1,15 @@
 import React from 'react';
 import './Edit.scss';
-import {api} from "../../../../../services/api";
-import {getProductsUrlByName, EDIT_PRODUCT_URL, getProductUrlForDelete} from "../../../../../services/urls/productUrls";
+import {apiPut, apiGet, apiDelete} from "../../../../../services/api";
+import {
+    getProductsUrlByName,
+    EDIT_PRODUCT_URL,
+    getProductUrlForDelete,
+    getProductImageCountUrl
+} from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
+import {arrayDiff} from "../../../../../utils/utils";
 
 const howProductsPerPage = 5;
 
@@ -20,9 +26,12 @@ class Edit extends React.Component {
             newProductPrice: 0,
             isLoading: false,
             isLoaded: true,
-            isDeleteConfirmed: false
+            isDeleteConfirmed: false,
+            imgUrls: []
         }
     }
+
+    getImageCount = () => apiGet(getProductImageCountUrl(this.state.selectedProduct.id));
 
     onChangeSearch = e => {
         if (!e.target.value) {
@@ -34,8 +43,7 @@ class Edit extends React.Component {
         }
 
         this.setState({searchValue: e.target.value});
-        api()
-            .get(getProductsUrlByName(e.target.value, this.state.activePage, howProductsPerPage))
+        apiGet(getProductsUrlByName(e.target.value, 1, howProductsPerPage))
             .then(resp => {
                 console.log(resp.data);
                 this.setState({
@@ -56,8 +64,7 @@ class Edit extends React.Component {
     };
 
     onPaginationChange = (pageNumber) => {
-        api()
-            .get(getProductsUrlByName(this.state.searchValue, pageNumber, howProductsPerPage))
+        apiGet(getProductsUrlByName(this.state.searchValue, pageNumber, howProductsPerPage))
             .then(resp => {
                 console.log(resp.data);
                 this.setState({
@@ -78,8 +85,7 @@ class Edit extends React.Component {
             name: this.state.newProductName,
             price: this.state.newProductPrice
         };
-        api()
-            .put(EDIT_PRODUCT_URL, newProduct)
+        apiPut(EDIT_PRODUCT_URL, newProduct)
             .then(resp => {
                 console.log(resp.data);
                 this.setState({
@@ -98,8 +104,7 @@ class Edit extends React.Component {
             this.setState({isLoaded: false});
         }
         this.setState({isLoading: true});
-        api()
-            .delete(getProductUrlForDelete(this.state.selectedProduct.id))
+        apiDelete(getProductUrlForDelete(this.state.selectedProduct.id))
             .then(resp => {
                 console.log('resp data', resp.data);
                 if (resp.data >= 1) {
@@ -127,6 +132,26 @@ class Edit extends React.Component {
         })
     };
 
+    // todo need fix this
+    renderImagesEdit = () => {
+        Promise.all([this.getImageCount()])
+            .then(resp => {
+                const imgUrls = [];
+
+                for (let i = 0; i < resp[0].data; i++) {
+                    imgUrls.push(`/api/Product/GetProductImage/${this.state.selectedProduct.id}/${i}`);
+                }
+                return imgUrls.map(url => <tr>
+                    <td>
+                        <img alt="..." src={url}/>
+                    </td>
+                    <td>
+                        <button className="btn btn-danger">Видалити</button>
+                    </td>
+                </tr>);
+            });
+    };
+
     renderEditPanel = () => {
         const {selectedProduct} = this.state;
         return (
@@ -145,8 +170,7 @@ class Edit extends React.Component {
                             <input className="form-control" placeholder="Введіть назву продукту"
                                    defaultValue={selectedProduct.name}
                                    value={this.state.newProductName}
-                                   onChange={(e) => this.setState({newProductName: e.target.value})
-                                   }/>
+                                   onChange={(e) => this.setState({newProductName: e.target.value})}/>
                         </td>
                     </tr>
                     <tr>
@@ -158,6 +182,7 @@ class Edit extends React.Component {
                                    onChange={(e) => this.setState({newProductPrice: e.target.value})}/>
                         </td>
                     </tr>
+                    {this.renderImagesEdit()}
                     <tr>
                         <td>
                             <button className="btn btn-info" onClick={this.onSaveProduct}>Зберети</button>
