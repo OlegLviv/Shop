@@ -4,7 +4,8 @@ import {Navigation} from '../../common/Navigation/Navigation';
 import './AdminPanel.scss';
 import {ActionOnProducts} from "./ActionOnProducts/ActionOnProducts";
 import {ActionOnUsers} from "./ActionOnUsers/ActionOnUsers";
-import {NotFound} from "../../NotFound/NotFound";
+import {NotFound} from "../../common/NotFound/NotFound";
+import {Forbidden} from "../../common/Forbidden/Forbidden";
 import AddNew from './ActionOnProducts/AddNew/AddNew';
 import Edit from './ActionOnProducts/Edit/Edit';
 import UserEdit from './ActionOnUsers/UsersEdit/UsersEdit';
@@ -96,6 +97,8 @@ class AdminPanel extends React.Component {
 		}
 		if (isLoading && !isLoaded)
 			return <Spinner/>;
+		if (isLoaded && !isLoading && !canShow)
+			return <Forbidden/>
 	}
 }
 

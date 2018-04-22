@@ -2,39 +2,39 @@
   display: flex;
   flex-direction: column;
   background: #252525;
-  height: calc(100vh - 118px - 35px);
+  height: 100vh;
   &__header a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    color: #d3d3d3;
-    padding: 1rem;
-    font-size: 18px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	color: #d3d3d3;
+	padding: 1rem;
+	font-size: 18px;
   }
   &__header a:hover {
-    text-decoration: none;
+	text-decoration: none;
   }
   &__items {
-    display: flex;
-    flex-direction: column;
-    &__item {
-      padding: 1.5rem 1rem;
-      display: flex;
-      align-items: center;
-      color: #d3d3d3;
-      &__icon {
-        color: #d3d3d3;
-      }
-      &__text {
-        padding-left: 1rem;
-      }
-    }
-    &__item:hover {
-      background: #17a2b8;
-      text-decoration: none;
-      color: #eee;
-    }
+	display: flex;
+	flex-direction: column;
+	&__item {
+	  padding: 1.5rem 1rem;
+	  display: flex;
+	  align-items: center;
+	  color: #d3d3d3;
+	  &__icon {
+		color: #d3d3d3;
+	  }
+	  &__text {
+		padding-left: 1rem;
+	  }
+	}
+	&__item:hover {
+	  background: #17a2b8;
+	  text-decoration: none;
+	  color: #eee;
+	}
   }
 
 }

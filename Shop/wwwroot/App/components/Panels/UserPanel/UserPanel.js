@@ -2,7 +2,7 @@ import React from 'react';
 import {Navigation} from "../../common/Navigation/Navigation";
 import './UserPanel.scss';
 import {Route, Switch} from 'react-router-dom';
-import {NotFound} from "../../NotFound/NotFound";
+import {NotFound} from "../../common/NotFound/NotFound";
 import ChangePassword from './ChangePassword/ChangePassword';
 
 const navItems = [

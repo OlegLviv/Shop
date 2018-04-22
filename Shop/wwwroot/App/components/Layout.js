@@ -11,7 +11,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import UserPanel from "./Panels/UserPanel/UserPanel";
 import ProductCardPlace from './ProductCardPlace/ProductCardPlace';
 import FullInfoProductPlace from './FullInfoProductPlace/FullInfoProductPlace';
-import {NotFound} from "./NotFound/NotFound";
+import {NotFound} from "./common/NotFound/NotFound";
 
 class Layout extends React.Component {
 	constructor(props) {

@@ -21,6 +21,7 @@ export const apiGet = url => api()
 	.catch(err => {
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
+		else console.error(err.response.data);
 	});
 
 export const apiPost = (url, body) => api()
@@ -28,6 +29,7 @@ export const apiPost = (url, body) => api()
 	.catch(err => {
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
+		else console.error(err.response.data);
 	});
 
 export const apiPut = (url, body) => api()
@@ -35,14 +37,16 @@ export const apiPut = (url, body) => api()
 	.catch(err => {
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
+		else console.error(err.response.data);
 	});
 
 export const apiDelete = url => api()
-    .delete(url)
-    .catch(err => {
-        if (err.response.status === 401 || err.response.status === 403)
-            window.location.replace('/logIn');
-    });
+	.delete(url)
+	.catch(err => {
+		if (err.response.status === 401 || err.response.status === 403)
+			window.location.replace('/logIn');
+		else console.error(err.response.data);
+	});
 
 export const apiWithoutRedirect = () => {
 	if (!localStorage.getItem('access_token'))
