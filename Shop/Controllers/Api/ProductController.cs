@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using Core.Models.DTO;
 using Core.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -373,6 +375,7 @@ namespace Shop.Controllers.Api
 
         #region DELETE
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
         [HttpDelete("DeleteProduct/{productId}")]
         public async Task<IActionResult> DeleteProduct(string productId)
         {
@@ -386,6 +389,35 @@ namespace Shop.Controllers.Api
             if (product.ProductImages.Any())
                 await _imageRepository.DeleteAsync(product.ProductImages);
             return Ok(await _productsRepository.DeleteAsync(product));
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpDelete("DeleteProductImage/{productId}/{number:int}")]
+        public async Task<IActionResult> DeleteProductImage(string productId,int number)
+        {
+            var product = await _productsRepository
+                .Table
+                .Include(x => x.ProductImages)
+                .FirstOrDefaultAsync(x => x.Id == productId);
+
+            if (product == null)
+                return BadRequest("Incorrect product id or product not found");
+
+            var images = product.ProductImages;
+
+            if (!images.Any())
+                return BadRequest("This product have't images");
+            ProductImage image = null;
+            try
+            {
+                image = images[number];
+            }
+            catch(IndexOutOfRangeException)
+            {
+                return BadRequest("Image don't exist");
+            }
+
+            return Ok(await _imageRepository.DeleteAsync(image));
         }
 
 
