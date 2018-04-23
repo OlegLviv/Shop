@@ -139,6 +139,7 @@ namespace Shop.Controllers.Api
             {
                 return BadRequest("User with this email don't exist");
             }
+
             var result = await _userManager.ConfirmEmailAsync(user, code);
             return Ok(result.Succeeded ? "Email confirmed" : "Error: can't confirm email");
         }
@@ -188,6 +189,27 @@ namespace Shop.Controllers.Api
 
             return Ok("Success");
         }
+
+        [HttpPost("SendChangeEmailToken")]
+        public async Task<IActionResult> SendChangeEmailToken([FromBody] SendChangeEmailTokenViewModel model)
+        {
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                return BadRequest("Please confirm your email");
+
+            var token = await _userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
+
+            if (!await _sender.SendEmailAsync(_configuration["EmailCredential:UserName"],
+                user.Email,
+                "Зміна пошти", $"Ваш ключ для зміни пошти {token}"))
+                return BadRequest("Can't send email");
+
+            return Ok("Success");
+        }
         #endregion
 
         #region PUT
@@ -196,6 +218,7 @@ namespace Shop.Controllers.Api
         public async Task<IActionResult> EditPersonalData([FromBody] EditUserPersonalDataViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
+
             if (user == null)
                 return BadRequest("Incorrect user id or user don't found");
 
@@ -203,6 +226,22 @@ namespace Shop.Controllers.Api
             user.LastName = model.LastName;
             await _userRepository.UpdateAsync(user);
             return this.JsonResult(user);
+        }
+
+        [HttpPut("ChangeEmail")]
+        public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailViewModel model)
+        {
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            var resultChangeEmail = await _userManager.ChangeEmailAsync(user, model.NewEmail, model.EmailToken);
+
+            if (!resultChangeEmail.Succeeded)
+                return BadRequest("Can't change email");
+
+            return Ok("Success");
         }
 
         #endregion
