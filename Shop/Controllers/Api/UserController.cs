@@ -71,7 +71,7 @@ namespace Shop.Controllers.Api
             return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet("GetUserByName/{nameOrLastName}/{pageNumber:int?}/{pageSize:int?}")]
         public IActionResult GetUserByName(string nameOrLastName, int pageNumber = 1, int pageSize = 16)
         {
@@ -181,7 +181,7 @@ namespace Shop.Controllers.Api
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
 
             if (!changePasswordResult.Succeeded)
-                return BadRequest("Can't change password");
+                return BadRequest(new { Message = "Can't change password", changePasswordResult.Errors });
 
             return Ok("Success");
         }

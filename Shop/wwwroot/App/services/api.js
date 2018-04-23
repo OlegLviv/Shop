@@ -16,36 +16,48 @@ export const api = () => {
 	}
 };
 
-export const apiGet = url => api()
+export const apiGet = (url, error) => api()
 	.get(url)
 	.catch(err => {
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
-		else console.error(err.response.data);
+		else {
+			console.error(err.response.data);
+			error(err);
+		}
 	});
 
-export const apiPost = (url, body) => api()
+export const apiPost = (url, body, error) => api()
 	.post(url, body)
 	.catch(err => {
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
-		else console.error(err.response.data);
+		else {
+			console.error(err.response.data);
+			error(err);
+		}
 	});
 
-export const apiPut = (url, body) => api()
+export const apiPut = (url, body, error) => api()
 	.put(url, body)
 	.catch(err => {
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
-		else console.error(err.response.data);
+		else {
+			console.error(err.response.data);
+			error(err);
+		}
 	});
 
-export const apiDelete = url => api()
+export const apiDelete = (url, error) => api()
 	.delete(url)
 	.catch(err => {
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
-		else console.error(err.response.data);
+		else {
+			console.error(err.response.data);
+			error(err);
+		}
 	});
 
 export const apiWithoutRedirect = () => {
