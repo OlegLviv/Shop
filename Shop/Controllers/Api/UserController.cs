@@ -51,6 +51,7 @@ namespace Shop.Controllers.Api
         public async Task<IActionResult> GetUserInfo()
         {
             var user = await this.GetUserByIdentityAsync(_userManager);
+
             if (user == null)
                 return BadRequest("User don't exist");
             return this.JsonResult(_mapper.Map<UserDto>(user));
@@ -62,7 +63,9 @@ namespace Shop.Controllers.Api
         {
             if (string.IsNullOrEmpty(id))
                 return BadRequest("Incorrect user id");
+
             var user = await _userManager.FindByIdAsync(id);
+
             if (user == null)
                 return BadRequest("Incorrent user id or user don't found");
             return this.JsonResult(_mapper.Map<UserDto>(user));
@@ -100,10 +103,13 @@ namespace Shop.Controllers.Api
         public async Task<IActionResult> GetUserRole()
         {
             var user = await this.GetUserByIdentityAsync(_userManager);
+
             if (user == null)
                 return BadRequest("User don't exist");
+
             var roles = _roleManager.Roles.ToList();
             string roleName = null;
+
             foreach (var role in roles)
             {
                 if (await _userManager.IsInRoleAsync(user, role.Name))
@@ -112,6 +118,7 @@ namespace Shop.Controllers.Api
                     break;
                 }
             }
+
             if (roleName == null)
                 return BadRequest("User don't exist");
             return Ok(new { Role = roleName });
@@ -125,7 +132,9 @@ namespace Shop.Controllers.Api
             {
                 return BadRequest("Can't confirm email. Userid or code is null");
             }
+
             var user = await _userManager.FindByIdAsync(userId);
+
             if (user == null)
             {
                 return BadRequest("User with this email don't exist");
@@ -147,15 +156,34 @@ namespace Shop.Controllers.Api
                 Name = model.Name,
             };
             var result = await _userManager.CreateAsync(user, model.Password);
+
             if (!result.Succeeded)
                 return BadRequest(new { Message = "Can't create user", result.Errors });
-            var resultAddToRole = await _userManager.AddToRoleAsync(user, _configuration["Roles:Client"]);
+
+            await _userManager.AddToRoleAsync(user, _configuration["Roles:Client"]);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(nameof(UserController.ConfirmEmail), "User", user.Id, token, Request.Scheme);
             var sendRes = await _sender.SendEmailAsync(_configuration["EmailCredential:Email"], model.Email, "Your register confirm link", callbackUrl);
+
             if (!sendRes)
                 return BadRequest("Ups, we can't to send message to your email");
             return Ok(new { IsSuccess = true });
+        }
+
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel model)
+        {
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+            if (!changePasswordResult.Succeeded)
+                return BadRequest("Can't change password");
+
+            return Ok("Success");
         }
         #endregion
 

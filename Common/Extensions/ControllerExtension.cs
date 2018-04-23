@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,9 +15,9 @@ namespace Common.Extensions
             var identityName = controller.User.Identity.Name;
             if (identityName == null)
                 return null;
-            var user = await userManager.FindByNameAsync(identityName) ?? await userManager.FindByEmailAsync(identityName);
-            return user ?? null;
+            return await userManager.FindByNameAsync(identityName) ?? await userManager.FindByEmailAsync(identityName);
         }
+
         public static JsonResult JsonResult(this Controller controller, object data)
         {
             return controller.Json(data, new JsonSerializerSettings
@@ -28,6 +26,7 @@ namespace Common.Extensions
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
         }
+
         public static string[] ArrayParamsToNormalArray(this ControllerBase controller, string[] @params)
         {
             if (@params == null)

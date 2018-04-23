@@ -21,3 +21,12 @@ export const clearObjectProps = (obj) => {
         return;
     Object.keys(obj).map(i => delete obj[i]);
 };
+
+export const arrayDiff = (arr, arrS) => {
+    Array.prototype.diff = function (a) {
+        return this.filter(function (i) {
+            return a.indexOf(i) < 0;
+        });
+    };
+    return arr.diff(arrS);
+};

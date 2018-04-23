@@ -1,7 +1,7 @@
 import React from 'react';
 import './UsersEdit.scss';
-import {apiGet, apiPut} from "../../../../services/api";
-import {getUserByNameOrLastNameUrl, getUserByIdUrl, EDIT_USER_PERSONAL_DATA} from "../../../../services/urls/userUrls";
+import {apiGet, apiPut} from "../../../../../services/api";
+import {getUserByNameOrLastNameUrl, getUserByIdUrl, EDIT_USER_PERSONAL_DATA} from "../../../../../services/urls/userUrls";
 
 class UsersEdit extends React.Component {
 	constructor(props) {
@@ -168,6 +168,7 @@ class UsersEdit extends React.Component {
 								   value={this.state.searchValue}
 								   onChange={this.onChangeSearch}
 								   placeholder="Введіть ім'я або id користувача"/>
+							<small className="my-2">* Для того щоб знайти користувача по id втавте перед id знак @</small>
 						</div>
 						<div className="user-edit-container__product-list-box">
 							<ul className="list-group user-edit-container__product-list-box__list-group">
