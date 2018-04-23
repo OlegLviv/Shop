@@ -178,6 +178,9 @@ namespace Shop.Controllers.Api
             if (user == null)
                 return Unauthorized();
 
+            if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
+                return BadRequest("Incorrect password");
+
             var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
 
             if (!changePasswordResult.Succeeded)
