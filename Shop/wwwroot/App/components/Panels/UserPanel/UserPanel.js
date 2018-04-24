@@ -4,6 +4,7 @@ import './UserPanel.scss';
 import {Route, Switch} from 'react-router-dom';
 import {NotFound} from "../../common/NotFound/NotFound";
 import ChangePassword from './ChangePassword/ChangePassword';
+import ChangeEmail from './ChangeEmail/ChangeEmail';
 
 const navItems = [
 	{
@@ -40,7 +41,7 @@ class UserPanel extends React.Component {
 					<Switch>
 						<Route exact path="/userPanel" render={() => <div>User panel</div>}/>
 						<Route exact path="/userPanel/change-password" component={ChangePassword}/>
-						<Route exact path="/userPanel/change-email" render={() => <div>change-email</div>}/>
+						<Route exact path="/userPanel/change-email" component={ChangeEmail}/>
 						<Route exact path="/userPanel/change-phone-number"
 							   render={() => <div>change-phone-number</div>}/>
 						<Route exact path="/userPanel/mailing" render={() => <div>mailing</div>}/>

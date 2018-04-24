@@ -236,6 +236,9 @@ namespace Shop.Controllers.Api
             if (user == null)
                 return Unauthorized();
 
+            if (user.Email == model.NewEmail)
+                return BadRequest("This email is the same as yours");
+
             var resultChangeEmail = await _userManager.ChangeEmailAsync(user, model.NewEmail, model.EmailToken);
 
             if (!resultChangeEmail.Succeeded)
