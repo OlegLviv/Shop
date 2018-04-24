@@ -14,6 +14,9 @@
   &__form {
 	padding-top: 2rem;
 	width: 55%;
+	&__confirm-token-form-group {
+	  padding-top: 1rem;
+	}
   }
   &__form input::placeholder {
 	font-size: 13px;

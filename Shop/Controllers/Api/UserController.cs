@@ -242,7 +242,11 @@ namespace Shop.Controllers.Api
             var resultChangeEmail = await _userManager.ChangeEmailAsync(user, model.NewEmail, model.EmailToken);
 
             if (!resultChangeEmail.Succeeded)
-                return BadRequest("Can't change email");
+                return BadRequest(new
+                {
+                    Message = "Can't change email",
+                    resultChangeEmail.Errors
+                });
 
             return Ok(_mapper.Map<UserDto>(user));
         }

@@ -18,3 +18,5 @@ export const SEND_CHANGE_EMAIL_TOKEN = '/api/User/SendChangeEmailToken';
 
 //	PUT
 export const EDIT_USER_PERSONAL_DATA = `/api/User/EditPersonalData`;
+
+export const CHANGE_USER_EMAIL = '/api/User/ChangeEmail';
