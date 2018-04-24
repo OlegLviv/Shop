@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories
@@ -19,6 +18,7 @@ namespace DAL.Repositories
         {
             _context = context;
         }
+
         protected virtual DbSet<TEntity> Entities
         {
             get
@@ -69,11 +69,12 @@ namespace DAL.Repositories
                 return -1;
             }
         }
+
         public virtual async Task<int> DeleteAsync(IEnumerable<TEntity> entities)
         {
             try
             {
-                // Can add Parallel.ForEach
+                // todo maybe make sense to add Parallel.ForEach
                 foreach (var entity in entities)
                 {
                     _context.Entry(entity).State = EntityState.Deleted;

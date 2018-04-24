@@ -11,7 +11,6 @@ namespace Core.Mapper
         {
             CreateMap<Product, ProductDto>();
             CreateMap<User, UserDto>();
-            CreateMap<IEnumerable<User>, IEnumerable<UserDto>>();
         }
     }
 }

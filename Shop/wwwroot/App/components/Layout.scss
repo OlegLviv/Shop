@@ -1,10 +1,17 @@
+@import '../main';
+
 .layout-container {
   min-width: 590px;
 }
 
 .invalid-input {
-  border-color: #ff5555;
-  box-shadow: 0 0 0 .2rem rgba(255, 123, 123, .25);
+  border-color: $error-input-border;
+  box-shadow: $error-input-shadow;
+}
+
+.invalid-input:focus {
+  border-color: $error-input-border;
+  box-shadow: $error-input-shadow;
 }
 
 .invalid-small {

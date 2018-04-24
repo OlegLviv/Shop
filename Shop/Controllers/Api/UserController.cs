@@ -241,7 +241,7 @@ namespace Shop.Controllers.Api
             if (!resultChangeEmail.Succeeded)
                 return BadRequest("Can't change email");
 
-            return Ok("Success");
+            return Ok(_mapper.Map<UserDto>(user));
         }
 
         #endregion

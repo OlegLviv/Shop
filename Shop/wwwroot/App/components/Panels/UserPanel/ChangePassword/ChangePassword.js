@@ -119,7 +119,7 @@ class ChangePassword extends React.Component {
 				<div className="cp-container__form">
 					<div className="form-group">
 						<label htmlFor="inputOldPas">Старий пароль</label>
-						<input className="form-control"
+						<input className={`form-control ${!this.state.isValidOldPassword && 'invalid-input'}`}
 							   onChange={this.onChangeOldPass}
 							   value={this.state.oldPassword}
 							   type="password"
@@ -129,7 +129,7 @@ class ChangePassword extends React.Component {
 					</div>
 					<div className="form-group">
 						<label htmlFor="inputNewPas">Новий пароль</label>
-						<input className="form-control"
+						<input className={`form-control ${!this.state.isValidNewPassword && 'invalid-input'}`}
 							   onChange={this.onChangeNewPassword}
 							   value={this.state.newPassword}
 							   type="password"
@@ -139,7 +139,7 @@ class ChangePassword extends React.Component {
 					</div>
 					<div className="form-group">
 						<label htmlFor="inputConfirmNewPas">Повторіть пароль</label>
-						<input className="form-control"
+						<input className={`form-control ${!this.state.isValidConfirmedNewPassword && 'invalid-input'}`}
 							   onChange={this.onChangeConfirmedNewPassword}
 							   value={this.state.confirmedNewPassword}
 							   type="password"
