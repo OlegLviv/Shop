@@ -70,29 +70,32 @@ class ChangePassword extends React.Component {
 			});
 	};
 
+	isValidAllFields = () => isValidPassword(this.state.newPassword) &&
+		isValidWhiteSpace(this.state.newPassword) &&
+		isValidWhiteSpace(this.state.oldPassword) &&
+		(this.state.newPassword !== this.state.oldPassword);
+
 	onPasswordSubmit = () => {
 		this.validateOldPassword(this.state.oldPassword);
 		this.validateNewPassword(this.state.newPassword);
 		this.validateConfirmedNewPassword(this.state.confirmedNewPassword);
 
-		if (!this.state.isValidOldPassword && !this.state.isValidNewPassword && !this.state.isValidConfirmedNewPassword)
+		if (!this.isValidAllFields())
 			return;
 
+		//	todo need add normal alert
 		apiPost(CHANGE_USER_PASSWORD, this.createChangePasswordModel(), ({response}) => {
 			if (response.status === 400 && response.data === 'Incorrect password')
 				this.setState({
 					isValidOldPassword: false,
 					oldPasswordError: 'Невірний пароль'
 				});
-
-			if (response.status === 200 && response.data === 'Success')
-				this.setState({
-					isValidOldPassword: true,
-					oldPasswordError: ''
-				});
 			console.log('err resp', response);
 		})
-			.then(resp => console.log(resp));
+			.then(resp => {
+				if (resp.status === 200 && resp.data === 'Success')
+					alert('Пароль змінено успішно');
+			});
 	};
 
 	onChangeOldPass = e => {
