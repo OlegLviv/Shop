@@ -90,6 +90,7 @@
 	padding: 2rem 3rem 2rem 3rem;
 	display: flex;
 	justify-content: center;
+	align-items: center;
   }
   &__submit-box textarea {
 	max-width: 30rem;
@@ -98,7 +99,7 @@
   }
   &__submit-box button {
 	margin-left: 1rem;
-	max-height: 3rem;
+	height: 3rem;
   }
 }
 
