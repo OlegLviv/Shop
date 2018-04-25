@@ -160,7 +160,7 @@ class AddNew extends React.Component {
 		this.tryHideAlert();
 		if (this.state.productName.length === 0 || this.state.price <= 0) {
 			console.log(this.state.alert.type);
-			this.showAlert('Помилка', 'Будь ласка введіть назву продукту або ціна нежча ніж 0', 'warning');
+			this.showAlert('Помилка', 'Будь ласка введіть назву продукту або ціна нижча ніж 0', 'warning');
 			return;
 		}
 		if (this.state.files.length === 0) {
@@ -192,6 +192,14 @@ class AddNew extends React.Component {
 		})
 	};
 
+	renderAlert = () => {
+		return (
+			<Alert subject={this.state.alert.subject}
+				   body={this.state.alert.body}
+				   alertType={this.state.alert.type}/>
+		);
+	};
+
 	renderSelectedImages = () => {
 		return (
 			this.state.files.length > 0 && <div>
@@ -209,9 +217,7 @@ class AddNew extends React.Component {
 		return (
 			<div>
 				{this.state.isLoaded ? <div className="container-add-new">
-					{this.state.alert.isShow && <Alert subject={this.state.alert.subject}
-													   body={this.state.alert.body}
-													   alertType={this.state.alert.type}/>}
+					{this.state.alert.isShow && this.renderAlert()}
 					<div className="row container-add-new__row">
 						<div className="col-6 container-add-new__row__item" border-right="true">
 							<div>Оберіть карегорію</div>

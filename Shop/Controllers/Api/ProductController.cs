@@ -356,6 +356,7 @@ namespace Shop.Controllers.Api
             });
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
         [HttpPut("EditProduct")]
         public async Task<IActionResult> EditProduct([FromBody] EditProductViewModel model)
         {

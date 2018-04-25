@@ -12,6 +12,7 @@ import UserEdit from './ActionOnUsers/UsersEdit/UsersEdit';
 import {Spinner} from "../../Spinner/Spinner";
 import {apiGet} from "../../../services/api";
 import {GET_USER_ROLE} from "../../../services/urls/userUrls";
+import EditCharacteristic from './ActionOnProducts/EditCharacteristics/EditCharacteristic';
 
 const navItems = [
 	{
@@ -81,6 +82,7 @@ class AdminPanel extends React.Component {
 							<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
 							<Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
 							<Route path="/adminPanel/action-on-products/edit" component={Edit}/>
+							<Route path="/adminPanel/action-on-products/edit-characteristic" component={EditCharacteristic}/>
 							<Route exact path="/adminPanel/action-on-users" component={ActionOnUsers}/>
 							<Route path="/adminPanel/action-on-users/edit-personal-data" component={UserEdit}/>
 							<Route path="/adminPanel/action-on-users/edit-credentials"
