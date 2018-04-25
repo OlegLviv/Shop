@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Models.DomainModels
+﻿namespace Core.Models.DomainModels
 {
     public class PossibleProductProperty : BaseEntity
     {

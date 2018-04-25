@@ -128,6 +128,7 @@ namespace Shop.Controllers.Api
             var products = _productManager
                 .Select(_productsRepository.Table.Include(x => x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
+
             return this.JsonResult(products);
         }
 
@@ -136,6 +137,7 @@ namespace Shop.Controllers.Api
         {
             if (string.IsNullOrEmpty(name))
                 return BadRequest("Incorrect name");
+
             var products = _productsRepository
                 .Table
                 .Where(x => x.Name.ToLower().Contains(name.ToLower()));
@@ -146,6 +148,7 @@ namespace Shop.Controllers.Api
                 Data = products.Page(pageNumber, pageSize),
                 TotalCount = products.Count()
             };
+
             return this.JsonResult(paginator);
         }
 
@@ -154,6 +157,7 @@ namespace Shop.Controllers.Api
         {
             if (string.IsNullOrEmpty(productId))
                 return BadRequest("Incorrent id");
+
             var product = _productsRepository
                 .Table
                 .Include(x => x.Feedbacks)
@@ -164,6 +168,7 @@ namespace Shop.Controllers.Api
 
             var productFeedbacks = product.Feedbacks;
             var feedbacks = new List<FeedbackDto>(productFeedbacks.Count);
+
             foreach (var productFeedback in productFeedbacks)
             {
                 var user = await _userManager.FindByIdAsync(productFeedback.UserId);
@@ -178,6 +183,7 @@ namespace Shop.Controllers.Api
                     Date = ((DateTimeOffset)productFeedback.Date).ToUnixTimeSeconds()
                 });
             }
+
             return this.JsonResult(feedbacks.OrderBy(x => x.Date));
         }
 
@@ -312,11 +318,7 @@ namespace Shop.Controllers.Api
             return Ok(user.ShopingCard);
         }
 
-        #endregion
-
-        #region PUT
-
-        [HttpPut("SendFeedback")]
+        [HttpPost("SendFeedback")]
         public async Task<IActionResult> SendFeeback([FromBody] SendFeedbackViewModel model)
         {
             var product = await _productsRepository
@@ -355,6 +357,21 @@ namespace Shop.Controllers.Api
                 Body = feedback.Body
             });
         }
+
+        //[HttpPost("AddPropertyToProduct")]
+        //public async Task<IActionResult> AddPropertyToProduct([FromBody] AddPropertyToProductViewModel model)
+        //{
+        //    var properties = await _context
+        //        .ProductProperties
+        //        .FirstOrDefaultAsync(x => x.SubCategory.Equals(model.SubCategory, StringComparison.OrdinalIgnoreCase));
+
+        //    if (properties == null)
+        //        return BadRequest("Icorrect sub category or properties not found");
+        //}
+
+        #endregion
+
+        #region PUT
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
         [HttpPut("EditProduct")]

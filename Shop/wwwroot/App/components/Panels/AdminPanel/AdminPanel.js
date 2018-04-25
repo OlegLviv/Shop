@@ -73,16 +73,17 @@ class AdminPanel extends React.Component {
 		if (isLoaded && !isLoading && canShow) {
 			return (
 				<div className="row container-adm-panel">
-					<div className="col-2 container-adm-panel__navigation">
+					<div className="col-xl-2 col-lg-3 container-adm-panel__navigation">
 						<Navigation items={navItems} navLink="/" navText="Navbar"/>
 					</div>
-					<div className="col-10">
+					<div className="col-xl-10 col-lg-9">
 						<Switch>
 							<Route exact path="/adminPanel" render={() => <div>Admin Panel</div>}/>
 							<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
 							<Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
 							<Route path="/adminPanel/action-on-products/edit" component={Edit}/>
-							<Route path="/adminPanel/action-on-products/edit-characteristic" component={EditCharacteristic}/>
+							<Route path="/adminPanel/action-on-products/edit-characteristic"
+								   component={EditCharacteristic}/>
 							<Route exact path="/adminPanel/action-on-users" component={ActionOnUsers}/>
 							<Route path="/adminPanel/action-on-users/edit-personal-data" component={UserEdit}/>
 							<Route path="/adminPanel/action-on-users/edit-credentials"

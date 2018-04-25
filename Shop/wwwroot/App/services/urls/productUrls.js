@@ -18,8 +18,9 @@ export const getProductImageCountUrl = productId => `/api/product/GetProductImag
 //	POST
 export const ADD_PRODUCT_URL = '/api/product/AddProduct';
 
-// PUT
 export const SEND_FEEDBACK_URL = '/api/product/SendFeedback';
+
+// PUT
 
 export const EDIT_PRODUCT_URL = '/api/product/EditProduct';
 

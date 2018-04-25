@@ -7,7 +7,7 @@ import {
 	normalizecategoryToRoute,
 	createProductQueryByObject
 } from "../../../../../utils/productsUtils";
-import {apiWithoutRedirect} from "../../../../../services/api";
+import {apiGet, apiPost} from "../../../../../services/api";
 import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
@@ -53,8 +53,7 @@ class AddNew extends React.Component {
 			this.setState({isLoaded: false});
 
 		this.setState({isLoading: true});
-		apiWithoutRedirect()
-			.get(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
 			.then(resp => {
 				console.log(resp.data);
 				const {product} = this.state;
@@ -69,9 +68,6 @@ class AddNew extends React.Component {
 					isLoaded: true,
 					isLoading: false
 				});
-			})
-			.catch(err => {
-				console.log(err.response);
 			});
 	};
 
@@ -173,16 +169,12 @@ class AddNew extends React.Component {
 			form.append('images', this.state.files[i]);
 		}
 		console.log('form', form.get('images'));
-		apiWithoutRedirect()
-			.post(ADD_PRODUCT_URL, form)
+		apiPost(ADD_PRODUCT_URL, form)
 			.then(resp => {
 				if (resp.data >= 1) {
 					this.showAlert('Успішно', 'Продукт успішно збережено', 'success');
 				}
-			})
-			.catch(err => {
-				console.log(err.response);
-			})
+			});
 	};
 
 	// todo need implement in future

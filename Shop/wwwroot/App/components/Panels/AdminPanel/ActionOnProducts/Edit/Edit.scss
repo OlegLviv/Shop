@@ -1,9 +1,11 @@
+@import '../../../../../main';
+
 .edit-container {
   padding: 2rem;
   &__header {
 	padding: 1rem;
-	background: #252525;
-	color: #d3d3d3;
+	background: $dark-background;
+	color: $dark-grey-color;
   }
   &__search-box {
 	display: flex;
@@ -24,8 +26,8 @@
 		cursor: pointer;
 	  }
 	  &__item:hover {
-		background: #f3f3f3;
-		color: #252525;
+		background: $light-background;
+		color: $dark-background;
 	  }
 	}
   }
@@ -37,8 +39,8 @@
 }
 
 .table-head {
-  background: #252525;
-  color: #d3d3d3;
+  background: $dark-background;
+  color: $dark-grey-color;
 }
 
 .edit-product-img-td img {
