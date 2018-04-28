@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using AutoMapper;
 using BLL.Managers;
 using BLL.Services;
@@ -77,9 +78,10 @@ namespace Shop
                 port: int.Parse(Configuration["SmtpData:Port"])
             ));
 
-            services.AddTransient<ProductManager>();
+            services.AddTransient<ProductManager>(impl => new ProductManager(impl.GetService<IRepositoryAsync<ProductProperty>>(),
+                impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
 
-            services.AddAutoMapper(x=>x.AddProfile(new MappingsProfile()));
+            services.AddAutoMapper(x => x.AddProfile(new MappingsProfile()));
 
             services.AddMvc();
 

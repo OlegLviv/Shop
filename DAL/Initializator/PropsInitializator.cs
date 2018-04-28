@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
 using Microsoft.EntityFrameworkCore;
@@ -97,7 +94,7 @@ namespace DAL.Initializator
                 new ProductProperty
                 {
                     SubCategory = "casket",
-                    Properties = ";"
+                    Properties = ""
                 },
                 new ProductProperty
                 {
@@ -120,7 +117,7 @@ namespace DAL.Initializator
             {
                 new PossibleProductProperty
                 {
-                     SubCategory = "schoolFolders",
+                    SubCategory = "schoolFolders",
                     PropertyName = "Призначення",
                     Values = "Для зошитів;Для праці",
                 },

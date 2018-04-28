@@ -358,16 +358,16 @@ namespace Shop.Controllers.Api
             });
         }
 
-        //[HttpPost("AddPropertyToProduct")]
-        //public async Task<IActionResult> AddPropertyToProduct([FromBody] AddPropertyToProductViewModel model)
-        //{
-        //    var properties = await _context
-        //        .ProductProperties
-        //        .FirstOrDefaultAsync(x => x.SubCategory.Equals(model.SubCategory, StringComparison.OrdinalIgnoreCase));
+        [HttpPost("AddProperties")]
+        public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductViewModel model)
+        {
+            var res = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
 
-        //    if (properties == null)
-        //        return BadRequest("Icorrect sub category or properties not found");
-        //}
+            if (!res)
+                return BadRequest("Can't add new property");
+
+            return Ok(await _productManager.AddNewPossiblePropertiesAsync(model.SubCategory,model.PropName,model.PropValues));
+        }
 
         #endregion
 

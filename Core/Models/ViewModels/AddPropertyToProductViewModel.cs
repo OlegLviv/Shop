@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Core.ValidationAttributes;
 
 namespace Core.Models.ViewModels
 {
@@ -13,6 +14,7 @@ namespace Core.Models.ViewModels
 
         [Required]
         [MinLength(1)]
+        [UnincalValues]
         public List<string> PropValues { get; set; }
     }
 }
