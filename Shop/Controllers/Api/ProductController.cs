@@ -358,7 +358,7 @@ namespace Shop.Controllers.Api
             });
         }
 
-        [HttpPost("AddProperties")]
+        [HttpPost("AddProperty")]
         public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductViewModel model)
         {
             var res = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);

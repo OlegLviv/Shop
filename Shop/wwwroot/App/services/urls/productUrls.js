@@ -20,6 +20,8 @@ export const ADD_PRODUCT_URL = '/api/product/AddProduct';
 
 export const SEND_FEEDBACK_URL = '/api/product/SendFeedback';
 
+export const ADD_PROPERTY = '/api/product/AddProperty';
+
 // PUT
 
 export const EDIT_PRODUCT_URL = '/api/product/EditProduct';

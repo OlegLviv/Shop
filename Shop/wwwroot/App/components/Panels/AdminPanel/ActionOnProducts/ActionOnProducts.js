@@ -15,6 +15,11 @@ export const ActionOnProducts = () => {
 					<Icon name="list" size="3x"/>
 					<div className="text-center">Редагувати</div>
 				</Link>
+				<Link to="/adminPanel/action-on-products/add-new-characteristic"
+					  className="action-on-products-container__menu__item">
+					<Icon name="list-alt" size="3x"/>
+					<div className="text-center">Додати нові характеристики</div>
+				</Link>
 				<Link to="/adminPanel/action-on-products/edit-characteristic"
 					  className="action-on-products-container__menu__item">
 					<Icon name="list-alt" size="3x"/>

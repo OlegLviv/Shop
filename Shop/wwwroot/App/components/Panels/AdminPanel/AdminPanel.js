@@ -7,6 +7,7 @@ import {ActionOnUsers} from "./ActionOnUsers/ActionOnUsers";
 import {NotFound} from "../../common/NotFound/NotFound";
 import {Forbidden} from "../../common/Forbidden/Forbidden";
 import AddNew from './ActionOnProducts/AddNew/AddNew';
+import AddNewCharacteristic from './ActionOnProducts/AddNewCharacteristic/AddNewCharacteristic';
 import Edit from './ActionOnProducts/Edit/Edit';
 import UserEdit from './ActionOnUsers/UsersEdit/UsersEdit';
 import {Spinner} from "../../Spinner/Spinner";
@@ -81,6 +82,7 @@ class AdminPanel extends React.Component {
 							<Route exact path="/adminPanel" render={() => <div>Admin Panel</div>}/>
 							<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
 							<Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
+							<Route path="/adminPanel/action-on-products/add-new-characteristic" component={AddNewCharacteristic}/>
 							<Route path="/adminPanel/action-on-products/edit" component={Edit}/>
 							<Route path="/adminPanel/action-on-products/edit-characteristic"
 								   component={EditCharacteristic}/>
