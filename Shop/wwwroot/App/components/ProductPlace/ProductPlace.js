@@ -141,14 +141,18 @@ class ProductPlace extends React.Component {
 	};
 
 	onSearchByFilter = (priceFrom, priceTo, queryDictionary) => {
+		console.log('qd', queryDictionary);
 		this.renderLoadingSpinner();
 		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
 			getSubCategory(this.props),
 			priceFrom,
 			priceTo,
-			createProductsQueryByObject(queryDictionary), 1, this.state.howManyToShow,
+			Object.keys(queryDictionary).length > 0 ? createProductsQueryByObject(queryDictionary) : ' ',
+			1,
+			this.state.howManyToShow,
 			this.state.sortingType
 		);
+		console.log('url', prodUrl);
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
