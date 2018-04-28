@@ -159,9 +159,13 @@ export const formateQueryDictionary = (key, value, dictionary) => {
 export const formateQueryDictionaryWithRemove = (key, value, dictionary) => {
 	if (!dictionary)
 		return;
+
 	const indexForDel = dictionary[key].indexOf(value);
-	console.log('index for rem', indexForDel);
 	dictionary[key].splice(indexForDel, indexForDel === 0 ? 1 : indexForDel);
+
+	if (dictionary[key].length === 0) {
+		delete dictionary[key];
+	}
 	console.log('rem', dictionary);
 	return dictionary;
 };

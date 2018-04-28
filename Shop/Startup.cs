@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using AutoMapper;
 using BLL.Managers;
 using BLL.Services;
@@ -32,7 +33,7 @@ namespace Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(option =>
-             option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"]) ? "DefaultConnection" : "ProdConnection")));
+             option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"]) ? "DevConnection" : "ProdConnection")));
             services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -77,9 +78,10 @@ namespace Shop
                 port: int.Parse(Configuration["SmtpData:Port"])
             ));
 
-            services.AddTransient<ProductManager>();
+            services.AddTransient<ProductManager>(impl => new ProductManager(impl.GetService<IRepositoryAsync<ProductProperty>>(),
+                impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
 
-            services.AddAutoMapper(x=>x.AddProfile(new MappingsProfile()));
+            services.AddAutoMapper(x => x.AddProfile(new MappingsProfile()));
 
             services.AddMvc();
 
@@ -118,9 +120,6 @@ namespace Shop
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
                 routes.MapSpaFallbackRoute(
                   name: "spa-fallback",
                   defaults: new { controller = "Home", action = "Index" });

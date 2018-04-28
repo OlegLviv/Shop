@@ -23,3 +23,12 @@
 	text-decoration: none;
   }
 }
+
+@media screen and (max-width: 1200px) {
+  .action-on-products-container {
+	&__menu {
+	  align-items: center;
+	  flex-direction: column;
+	}
+  }
+}

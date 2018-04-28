@@ -80,7 +80,7 @@ class MainInfo extends React.Component {
 							<a onClick={this.openLoginModal}>Вхід</a>
 							<a onClick={this.openRegisterModal}>Реєстрація</a>
 						</div> : <div className="info_container__right__menu-item__sub">
-							<div>{userName}</div>
+							<Link to={`/${userName === 'Admin' ? 'adminPanel' : 'userPanel'}`}>{userName}</Link>
 							<a onClick={this.singOut}>Вийти</a>
 						</div>}
 						<LogInModal

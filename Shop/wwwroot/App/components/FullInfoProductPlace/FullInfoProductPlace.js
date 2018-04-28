@@ -50,8 +50,8 @@ class FullInfoProductPlace extends React.Component {
 				userId: user.id,
 				body: this.state.feedbackValue
 			};
-			apiWithoutRedirect()
-				.put(SEND_FEEDBACK_URL, sendCommentObj)
+			apiWithoutRedirect
+				.post(SEND_FEEDBACK_URL, sendCommentObj)
 				.then(resp => {
 					if (resp.status === 200) {
 						const newFeedback = this.state.productFeedback;

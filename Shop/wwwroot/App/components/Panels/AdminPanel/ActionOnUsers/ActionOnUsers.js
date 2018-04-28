@@ -10,16 +10,16 @@ export const ActionOnUsers = () => {
 				<Link to="/adminPanel/action-on-users/edit-personal-data"
 					  className="action-on-products-container__menu__item">
 					<Icon name="edit" size="3x"/>
-					<div>Редагувати персональні дані</div>
+					<div className="text-center">Редагувати персональні дані</div>
 				</Link>
 				<Link to="/adminPanel/action-on-users/edit-credentials"
 					  className="action-on-products-container__menu__item">
 					<Icon name="address-card" size="3x"/>
-					<div>Редагувати облікові дані</div>
+					<div className="text-center">Редагувати облікові дані</div>
 				</Link>
 				<Link to="/adminPanel/action-on-users/lock-unlock" className="action-on-products-container__menu__item">
 					<Icon name="unlock" size="3x"/>
-					<div>Заблокувати/Розблокувати</div>
+					<div className="text-center">Заблокувати/Розблокувати</div>
 				</Link>
 			</div>
 		</div>

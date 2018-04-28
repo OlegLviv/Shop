@@ -7,11 +7,13 @@ import {ActionOnUsers} from "./ActionOnUsers/ActionOnUsers";
 import {NotFound} from "../../common/NotFound/NotFound";
 import {Forbidden} from "../../common/Forbidden/Forbidden";
 import AddNew from './ActionOnProducts/AddNew/AddNew';
+import AddNewCharacteristic from './ActionOnProducts/AddNewCharacteristic/AddNewCharacteristic';
 import Edit from './ActionOnProducts/Edit/Edit';
 import UserEdit from './ActionOnUsers/UsersEdit/UsersEdit';
 import {Spinner} from "../../Spinner/Spinner";
 import {apiGet} from "../../../services/api";
 import {GET_USER_ROLE} from "../../../services/urls/userUrls";
+import EditCharacteristic from './ActionOnProducts/EditCharacteristics/EditCharacteristic';
 
 const navItems = [
 	{
@@ -72,15 +74,18 @@ class AdminPanel extends React.Component {
 		if (isLoaded && !isLoading && canShow) {
 			return (
 				<div className="row container-adm-panel">
-					<div className="col-2 container-adm-panel__navigation">
+					<div className="col-xl-2 col-lg-3 container-adm-panel__navigation">
 						<Navigation items={navItems} navLink="/" navText="Navbar"/>
 					</div>
-					<div className="col-10">
+					<div className="col-xl-10 col-lg-9">
 						<Switch>
 							<Route exact path="/adminPanel" render={() => <div>Admin Panel</div>}/>
 							<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
 							<Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
+							<Route path="/adminPanel/action-on-products/add-new-characteristic" component={AddNewCharacteristic}/>
 							<Route path="/adminPanel/action-on-products/edit" component={Edit}/>
+							<Route path="/adminPanel/action-on-products/edit-characteristic"
+								   component={EditCharacteristic}/>
 							<Route exact path="/adminPanel/action-on-users" component={ActionOnUsers}/>
 							<Route path="/adminPanel/action-on-users/edit-personal-data" component={UserEdit}/>
 							<Route path="/adminPanel/action-on-users/edit-credentials"

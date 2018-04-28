@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BLL.Services
@@ -28,8 +27,9 @@ namespace BLL.Services
                 await _smtpClient.SendMailAsync(new MailMessage(from, email, subject, message));
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                Debug.WriteLine(e);
                 return false;
             }
         }
