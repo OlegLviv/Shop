@@ -172,7 +172,7 @@ class AddNew extends React.Component {
 		apiPost(ADD_PRODUCT_URL, form)
 			.then(resp => {
 				if (resp.data >= 1) {
-					this.showAlert('Успішно', 'Продукт успішно збережено', 'success');
+					this.showAlert('Успішно', 'Товар успішно збережено', 'success');
 				}
 			});
 	};

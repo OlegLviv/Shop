@@ -77,6 +77,15 @@ class AddNewCharacteristic extends React.Component {
 		this.setState({newPossibleProps: possibleProps});
 	};
 
+	onDeleteNewPossiblePropsClick = i => {
+		if (i === 0)
+			return;
+
+		const newPossibleProps = this.state.newPossibleProps;
+		newPossibleProps.splice(i, i);
+		this.setState({newPossibleProps: newPossibleProps});
+	};
+
 	//	todo need normal catch and alert
 	onSaveClick = () => {
 		const body = {
@@ -86,7 +95,7 @@ class AddNewCharacteristic extends React.Component {
 		};
 		console.log('body', body);
 		apiPost(ADD_PROPERTY, body, err => {
-			alert('Error');
+			alert(`Error: ${err.response.data}`);
 		})
 			.then(resp => {
 				if (resp ? resp.status === 200 : false) {
@@ -161,21 +170,34 @@ class AddNewCharacteristic extends React.Component {
 							)
 						})
 					}
-					<tr>
-						<td>
+					<tr className="ec-container__table__tbody__tr">
+						<td className="ec-container__table__tbody__tr__td" is-prop-td="true">
 							<input type="text" className="form-control"
 								   placeholder="Введіть назву нової властивості"
 								   value={this.state.newPropValue}
 								   onChange={this.onNewPropValueChange}/>
 						</td>
-						<td>
-							{this.state.newPossibleProps.map((item, i) => <input className="form-control"
-																				 value={this.state.newPossibleProps[i]}
-																				 type="text"
-																				 placeholder="Введіть значення властивості"
-																				 onChange={(e) => this.onChangePossibleProps(e, i)}/>)}
-							<button className="btn btn-primary" onClick={this.onAddNewPossiblePropClick}>Додати</button>
-							<button className="btn btn-info" onClick={this.onSaveClick}>Зберегти</button>
+						<td className="ec-container__table__tbody__tr__td">
+							{this.state.newPossibleProps.map((item, i) =>
+								<div className="input-group mb-1">
+									<input className="form-control"
+										   value={this.state.newPossibleProps[i]}
+										   type="text"
+										   placeholder="Введіть значення властивості"
+										   onChange={(e) => this.onChangePossibleProps(e, i)}/>
+									<div className="input-group-append">
+										<button className="btn btn-outline-danger"
+												type="button"
+												onClick={() => this.onDeleteNewPossiblePropsClick(i)}
+												disabled={i === 0}>Видалити
+										</button>
+									</div>
+								</div>)}
+							<div className="ec-container__table__tbody__tr__td__input-group">
+								<button className="btn btn-primary" onClick={this.onAddNewPossiblePropClick}>Додати
+								</button>
+								<button className="btn btn-info" onClick={this.onSaveClick}>Зберегти</button>
+							</div>
 						</td>
 					</tr>
 					</tbody>
