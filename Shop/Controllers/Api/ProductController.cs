@@ -406,10 +406,13 @@ namespace Shop.Controllers.Api
         {
             var product = await _productsRepository
                 .GetByIdAsync(model.ProductId);
+
             if (product == null)
                 return BadRequest("Product not found or incorrent product id");
+
             product.Price = model.Price;
             product.Name = model.Name;
+
             return this.JsonResult(new
             {
                 product,

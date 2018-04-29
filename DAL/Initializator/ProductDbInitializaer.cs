@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Models.DomainModels;
 
 namespace DAL.Initializator
@@ -9,7 +10,7 @@ namespace DAL.Initializator
     {
         private static Random _random;
 
-        public static void Initialize(AppDbContext context)
+        public static async Task Initialize(AppDbContext context)
         {
             _random = new Random();
             context.Database.EnsureCreated();
@@ -18,9 +19,9 @@ namespace DAL.Initializator
             {
                 return; // DB has been seeded
             }
-            GenerateProducts(context);
+            await GenerateProductsAsync(context);
         }
-        public static void GenerateProducts(AppDbContext context)
+        public static async Task GenerateProductsAsync(AppDbContext context)
         {
             var products = new List<Product>();
             var product1 = new Product
@@ -116,8 +117,8 @@ namespace DAL.Initializator
             products.Add(product7);
             products.Add(product8);
 
-            context.AddRange(products);
-            context.SaveChanges();
+            await context.AddRangeAsync(products);
+            await context.SaveChangesAsync();
         }
     }
 }

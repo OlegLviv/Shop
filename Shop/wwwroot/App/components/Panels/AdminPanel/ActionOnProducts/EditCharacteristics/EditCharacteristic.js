@@ -41,14 +41,13 @@ class EditCharacteristic extends React.Component {
 			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
 			const possiblePropsErrors = {...this.state.possiblePropsErrors};
 			isValidNewPossibleProps[i] = false;
-			possiblePropsErrors[i] = 'Поле може містити тільки букви';
+			possiblePropsErrors[i] = 'Поле може містити тільки букви і цифри. Мінімальна довжина 2, максимальна 20';
 			this.setState({
 				isValidNewPossibleProps: isValidNewPossibleProps,
 				possiblePropsErrors: possiblePropsErrors
 			});
 		}
 		if (isValidPossibleProp(value) && !this.state.isValidNewPossibleProps[i]) {
-			console.log('valid1', ifValid);
 			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
 			const possiblePropsErrors = {...this.state.possiblePropsErrors};
 			isValidNewPossibleProps[i] = true;

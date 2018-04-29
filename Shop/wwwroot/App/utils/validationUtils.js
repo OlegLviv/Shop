@@ -6,4 +6,4 @@ export const isValidPassword = s => new RegExp('^(?=(?:.*[A-Z]))\\S{6,20}$').tes
 
 export const isValidNameAndLastName = s => new RegExp('^[a-zA-zа-яА-ЯёЁ]{1,20}$').test(s);
 
-export const isValidPossibleProp = s => new RegExp('^[A-zА-яёЁ]+$').test(s);
+export const isValidPossibleProp = s => new RegExp('^[A-zА-яёЁ0-9]{2,20}$').test(s);
