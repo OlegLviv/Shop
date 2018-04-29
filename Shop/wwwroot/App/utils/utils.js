@@ -30,3 +30,22 @@ export const arrayDiff = (arr, arrS) => {
     };
     return arr.diff(arrS);
 };
+
+export const toUpperFirstCharInArray = array => {
+	if (!array)
+		return;
+
+	const newArr = [];
+	for (const i in array) {
+		newArr.push(`${array[i][0].toUpperCase()}${array[i].slice(1)}`);
+	}
+
+	return newArr;
+};
+
+export const toUpperFirstChar = value => {
+	if (!value)
+		return;
+
+	return `${value[0].toUpperCase()}${value.slice(1)}`;
+};

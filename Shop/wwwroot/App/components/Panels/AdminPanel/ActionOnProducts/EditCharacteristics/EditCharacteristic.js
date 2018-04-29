@@ -1,7 +1,7 @@
 import React from 'react';
 import './EditCharacteristic.scss';
 import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
-import {clearObjectProps} from "../../../../../utils/utils";
+import {clearObjectProps, toUpperFirstChar} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
 import {ADD_POSSIBLE_PROPERTY, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {Icon} from 'react-fa';
@@ -110,12 +110,11 @@ class EditCharacteristic extends React.Component {
 	//	todo need to add normal alert
 	onSaveNewPossiblePropertyClick = (i, item) => {
 		const possibleProp = this.state.newPossibleProps[i];
-		const possiblePropUpper = `${possibleProp[0].toUpperCase()}${possibleProp.slice(1)}`;
 
 		const body = {
 			propName: item.propValue,
 			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
-			possibleProperty: possiblePropUpper
+			possibleProperty: toUpperFirstChar(possibleProp)
 		};
 		console.log('body', body);
 		this.validateNewPossiblePropsChange(i, this.state.newPossibleProps[i], () => {
@@ -130,6 +129,10 @@ class EditCharacteristic extends React.Component {
 					}
 				});
 		});
+	};
+
+	onDeleteProperty = i => {
+
 	};
 
 	renderChooseCatSubCat = () => {
@@ -193,6 +196,7 @@ class EditCharacteristic extends React.Component {
 					<tr className="ec-container__table__tbody__tr">
 						<th>Назва властивості</th>
 						<th>Значення властивості</th>
+						<th/>
 					</tr>
 					</thead>
 					<tbody className="ec-container__table__tbody">
@@ -229,6 +233,11 @@ class EditCharacteristic extends React.Component {
 													Зберегти
 												</button> : null}
 										</div>
+									</td>
+									<td>
+										<button className="btn btn-danger"
+												onClick={() => this.onDeleteProperty(i)}>Видалити Властивість
+										</button>
 									</td>
 								</tr>
 							)

@@ -7,18 +7,20 @@ using Core.Models.DomainModels;
 using Common.Extensions;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BLL.Managers
 {
     public class ProductManager
     {
-        private readonly IRepositoryAsync<ProductProperty> _repositoryPP;
-        private readonly IRepositoryAsync<PossibleProductProperty> _repositoryPosiblePP;
+        private readonly IRepositoryAsync<ProductProperty> _repositoryProdProp;
+        private readonly IRepositoryAsync<PossibleProductProperty> _repositoryPosibleProductProp;
 
-        public ProductManager(IRepositoryAsync<ProductProperty> repositoryPP, IRepositoryAsync<PossibleProductProperty> repositoryPosiblePP)
+        public ProductManager(IRepositoryAsync<ProductProperty> repositoryProdProp,
+            IRepositoryAsync<PossibleProductProperty> repositoryPosibleProductProp)
         {
-            _repositoryPP = repositoryPP;
-            _repositoryPosiblePP = repositoryPosiblePP;
+            _repositoryProdProp = repositoryProdProp;
+            _repositoryPosibleProductProp = repositoryPosibleProductProp;
         }
 
         public IEnumerable<Product> Select(IQueryable<Product> products, string[] ids)
@@ -61,8 +63,7 @@ namespace BLL.Managers
             if (string.IsNullOrWhiteSpace(subCategory) || string.IsNullOrWhiteSpace(newProp))
                 throw new ArgumentException();
 
-            var prodProperty = await _repositoryPP.Table.FirstOrDefaultAsync(x =>
-                x.SubCategory.Equals(subCategory, StringComparison.OrdinalIgnoreCase));
+            var prodProperty = await SelectProductPropertyAsync(subCategory);
 
             if (prodProperty == null)
                 return false;
@@ -72,9 +73,9 @@ namespace BLL.Managers
 
             prodProperty.Properties = prodProperty.Properties == string.Empty ? newProp : $"{prodProperty.Properties};{newProp}";
 
-            var updateResult = await _repositoryPP.UpdateAsync(prodProperty);
+            var updateResult = await _repositoryProdProp.UpdateAsync(prodProperty);
 
-            var inserResult = await _repositoryPosiblePP.InsertAsync(new PossibleProductProperty
+            var inserResult = await _repositoryPosibleProductProp.InsertAsync(new PossibleProductProperty
             {
                 Values = "",
                 PropertyName = newProp,
@@ -89,14 +90,13 @@ namespace BLL.Managers
             var posiibleProdPropsList = possibleProdProps?.ToList();
 
             if (string.IsNullOrWhiteSpace(subCategory) ||
-               string.IsNullOrWhiteSpace(subCategory) ||
-               possibleProdProps == null ||
-               !posiibleProdPropsList.Any())
+               string.IsNullOrWhiteSpace(propName))
                 throw new ArgumentException();
 
-            var possibleProps = await _repositoryPosiblePP.Table.FirstOrDefaultAsync(x =>
-                x.SubCategory.Equals(subCategory, StringComparison.OrdinalIgnoreCase) &&
-                x.PropertyName.Equals(propName, StringComparison.OrdinalIgnoreCase));
+            if (posiibleProdPropsList == null || !posiibleProdPropsList.Any())
+                throw new ArgumentException();
+
+            var possibleProps = await SelectPossibleProductPropertyAsync(subCategory, propName);
 
             if (possibleProps == null)
                 return false;
@@ -104,15 +104,29 @@ namespace BLL.Managers
             if (possibleProps.Values.Split(';').Intersect(posiibleProdPropsList).Any())
                 return false;
 
-            var sb = new StringBuilder(possibleProps.Values.Length);
-            posiibleProdPropsList.ForEach(x => { sb.Append($"{x};"); });
-            var possiblePropsRes = new string(sb.ToString().SkipLast(1).ToArray());
+            possibleProps.Values = possibleProps.Values == string.Empty ? string.Join(";", posiibleProdPropsList) : string.Join(";", possibleProps.Values.Split(';').Concat(posiibleProdPropsList));
 
-            possibleProps.Values = possibleProps.Values == string.Empty
-                ? possiblePropsRes
-                : $"{possibleProps.Values};{possiblePropsRes}";
+            return await _repositoryPosibleProductProp.UpdateAsync(possibleProps) >= 1;
+        }
 
-            return await _repositoryPosiblePP.UpdateAsync(possibleProps) >= 1;
+        public async Task<bool> DeletePropertyAsync(string subCategory, string propName)
+        {
+            if (string.IsNullOrWhiteSpace(subCategory) || string.IsNullOrWhiteSpace(propName))
+                throw new ArgumentException();
+
+            var prodProperty = await SelectProductPropertyAsync(subCategory);
+
+            if (!prodProperty.Properties.Split(';').Contains(propName))
+                return false;
+
+            var arrayProps = prodProperty.Properties.Split(';').Where(x => x != propName);
+
+            prodProperty.Properties = string.Join(";", arrayProps);
+
+            var possibleProps = await SelectPossibleProductPropertyAsync(subCategory, propName);
+
+            return await _repositoryPosibleProductProp.DeleteAsync(possibleProps) >= 1 &&
+                   await _repositoryProdProp.UpdateAsync(prodProperty) >= 1;
         }
 
         private bool IsEqualsKeys(string query, string productQuery, out IDictionary<string, string> parsedQ, out IDictionary<string, string> parsedProductQ, out IEnumerable<string> intersectKeys)
@@ -131,6 +145,7 @@ namespace BLL.Managers
         {
             var length = s.Split(';').Length;
             var dictionary = new Dictionary<string, string>(length);
+
             foreach (var item in s.Split(';'))
             {
                 var key = item.Split('=')[0];
@@ -142,5 +157,12 @@ namespace BLL.Managers
         }
 
         private static string[] GetValuesByString(string value) => value.Split(',');
+
+        private async Task<PossibleProductProperty> SelectPossibleProductPropertyAsync(string subCategory, string propName) => await _repositoryPosibleProductProp.Table.FirstOrDefaultAsync(x =>
+             x.SubCategory.Equals(subCategory, StringComparison.OrdinalIgnoreCase) &&
+             x.PropertyName.Equals(propName, StringComparison.OrdinalIgnoreCase));
+
+        private async Task<ProductProperty> SelectProductPropertyAsync(string subCategory) => await _repositoryProdProp.Table.FirstOrDefaultAsync(x =>
+             x.SubCategory.Equals(subCategory, StringComparison.OrdinalIgnoreCase));
     }
 }

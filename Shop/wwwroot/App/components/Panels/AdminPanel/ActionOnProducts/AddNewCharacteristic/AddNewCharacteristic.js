@@ -4,6 +4,7 @@ import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} fr
 import {ADD_PROPERTY, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
+import {toUpperFirstChar, toUpperFirstCharInArray} from "../../../../../utils/utils";
 
 class AddNewCharacteristic extends React.Component {
 	constructor(props) {
@@ -66,13 +67,13 @@ class AddNewCharacteristic extends React.Component {
 	};
 
 	onChangePossibleProps = ({target}, i) => {
-		const newPossibleProps = {...this.state.newPossibleProps};
+		const newPossibleProps = [...this.state.newPossibleProps];
 		newPossibleProps[i] = target.value;
 		this.setState({newPossibleProps: newPossibleProps});
 	};
 
 	onAddNewPossiblePropClick = () => {
-		const possibleProps = {...this.state.newPossibleProps};
+		const possibleProps = [...this.state.newPossibleProps];
 		possibleProps.push('');
 		this.setState({newPossibleProps: possibleProps});
 	};
@@ -81,19 +82,21 @@ class AddNewCharacteristic extends React.Component {
 		if (i === 0)
 			return;
 
-		const newPossibleProps = {...this.state.newPossibleProps};
+		const newPossibleProps = [...this.state.newPossibleProps];
 		newPossibleProps.splice(i, i);
 		this.setState({newPossibleProps: newPossibleProps});
 	};
 
 	//	todo need normal catch and alert
 	onSaveClick = () => {
-		let propName = {...this.state.newPropValue};
+		let propName = this.state.newPropValue;
 		propName = `${propName[0].toUpperCase()}${propName.slice(1)}`;
+		const newPossibleProps = [...this.state.newPossibleProps];
+
 		const body = {
 			propName: propName,
 			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
-			propValues: this.state.newPossibleProps
+			propValues: toUpperFirstCharInArray(newPossibleProps)
 		};
 		console.log('body', body);
 		apiPost(ADD_PROPERTY, body, err => {

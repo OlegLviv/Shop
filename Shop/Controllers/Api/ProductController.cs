@@ -388,7 +388,7 @@ namespace Shop.Controllers.Api
             var addPossiblePropRes = await _productManager
                 .AddNewPossiblePropertiesAsync(model.SubCategory,
                     model.PropName,
-                    new List<string> {model.PossibleProperty});
+                    new List<string> { model.PossibleProperty });
 
             if (!addPossiblePropRes)
                 return BadRequest("Cant add possible property");
@@ -467,7 +467,15 @@ namespace Shop.Controllers.Api
             return Ok(await _imageRepository.DeleteAsync(image));
         }
 
+        [HttpDelete("DeleteProperty/{subCategory}/{propName}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task<IActionResult> DeleteProperty(string subCategory, string propName)
+        {
+            if (!await _productManager.DeletePropertyAsync(subCategory, propName))
+                return BadRequest("Can't delete property");
 
+            return Ok("Success");
+        }
         #endregion
     }
 }
