@@ -4,6 +4,7 @@ import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} fr
 import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet} from "../../../../../services/api";
 import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
+import {Icon} from 'react-fa';
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -122,10 +123,10 @@ class EditCharacteristic extends React.Component {
 												item.possiblePropsValues.map(itemPP =>
 													<option>{itemPP}</option>)
 											}
-											<option>
-												+
-											</option>
 										</select>
+										<button className="btn btn-primary my-1">
+											<Icon name="plus"/>
+										</button>
 									</td>
 								</tr>
 							)
