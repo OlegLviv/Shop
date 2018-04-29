@@ -11,7 +11,7 @@ namespace Core.ValidationAttributes
         {
             var values = ((IEnumerable<string>)value);
 
-            return values.All(val => Regex.IsMatch(val, "^[A-zА-яёЁ0-9]{2,20}$"));
+            return values.All(val => Regex.IsMatch(val, "^[A-zА-яёЁіІ0-9]{2,20}$"));
         }
 
         public override string FormatErrorMessage(string name)
