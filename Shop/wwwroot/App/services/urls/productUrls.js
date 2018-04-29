@@ -22,6 +22,8 @@ export const SEND_FEEDBACK_URL = '/api/product/SendFeedback';
 
 export const ADD_PROPERTY = '/api/product/AddProperty';
 
+export const ADD_POSSIBLE_PROPERTY = '/api/product/AddPossibleProperty';
+
 // PUT
 
 export const EDIT_PRODUCT_URL = '/api/product/EditProduct';

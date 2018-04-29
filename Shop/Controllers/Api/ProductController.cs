@@ -366,12 +366,34 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductViewModel model)
         {
-            var res = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
+            var addPropertyRes = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
 
-            if (!res)
+            if (!addPropertyRes)
                 return BadRequest("Can't add new property");
 
-            return Ok(await _productManager.AddNewPossiblePropertiesAsync(model.SubCategory, model.PropName, model.PropValues));
+            var addPossiblePropsRes =
+                await _productManager.AddNewPossiblePropertiesAsync(model.SubCategory, model.PropName,
+                    model.PropValues);
+
+            if (!addPossiblePropsRes)
+                return BadRequest("Cant add possible property");
+
+            return Ok("Success");
+        }
+
+        [HttpPost("AddPossibleProperty")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task<IActionResult> AddPossibleProperty([FromBody] AddPossiblePropertyToProductViewModel model)
+        {
+            var addPossiblePropRes = await _productManager
+                .AddNewPossiblePropertiesAsync(model.SubCategory,
+                    model.PropName,
+                    new List<string> {model.PossibleProperty});
+
+            if (!addPossiblePropRes)
+                return BadRequest("Cant add possible property");
+
+            return Ok("Success");
         }
 
         #endregion
@@ -394,6 +416,7 @@ namespace Shop.Controllers.Api
                 Result = await _productsRepository.UpdateAsync(product)
             });
         }
+
         #endregion
 
         #region DELETE
@@ -430,7 +453,8 @@ namespace Shop.Controllers.Api
 
             if (!images.Any())
                 return BadRequest("This product have't images");
-            ProductImage image = null;
+
+            ProductImage image;
             try
             {
                 image = images[number];

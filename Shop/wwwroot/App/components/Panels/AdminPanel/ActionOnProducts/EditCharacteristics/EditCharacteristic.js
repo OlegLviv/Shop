@@ -2,8 +2,8 @@ import React from 'react';
 import './EditCharacteristic.scss';
 import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
 import {clearObjectProps} from "../../../../../utils/utils";
-import {apiGet} from "../../../../../services/api";
-import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
+import {apiGet, apiPost} from "../../../../../services/api";
+import {ADD_POSSIBLE_PROPERTY, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {Icon} from 'react-fa';
 
 class EditCharacteristic extends React.Component {
@@ -13,22 +13,24 @@ class EditCharacteristic extends React.Component {
 			category: NAVIGATION_CATEGORIES[1],
 			subCategory: getSubCategories(NAVIGATION_CATEGORIES[1])[0],
 			product: {},
-			subCategoryProps: []
+			subCategoryProps: [],
+			isRenderAddPPField: [],
+			newPossibleProps: []
 		}
 	}
 
 	componentDidMount() {
 		console.log(this.state.subCategory);
-		this.setSubCategoryState();
+		this.updateSubCategoryState();
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 		if (prevState.subCategory !== this.state.subCategory) {
-			this.setSubCategoryState();
+			this.updateSubCategoryState();
 		}
 	}
 
-	setSubCategoryState = () => {
+	updateSubCategoryState = () => {
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
 			.then(resp => {
 				console.log(resp.data);
@@ -54,14 +56,44 @@ class EditCharacteristic extends React.Component {
 	};
 
 	onChangePropsValue = (propName, {target}) => {
-		if (target.value === '+') {
-			console.log('yes');
-			return;
-		}
 		const {product} = this.state;
 		product[propName] = target.value;
 		console.log(product);
 		this.setState({product: product});
+	};
+
+	onNewPossiblePropsChange = (i, {target}) => {
+		let newPossibleProps = this.state.newPossibleProps;
+		newPossibleProps[i] = target.value;
+		this.setState({newPossibleProps: newPossibleProps});
+	};
+
+	onAddNewPossiblePropertyClick = i => {
+		const isRenderAddPPField = this.state.isRenderAddPPField;
+		this.setState(prev => {
+			isRenderAddPPField[i] = !prev.isRenderAddPPField[i];
+			return {isRenderAddPPField: isRenderAddPPField};
+		});
+	};
+
+	//	todo need to add normal validation
+	onSaveNewPossiblePropertyClick = (i, item) => {
+		const body = {
+			propName: item.propValue,
+			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
+			possibleProperty: this.state.newPossibleProps[i]
+		};
+
+		apiPost(ADD_POSSIBLE_PROPERTY, body, err => {
+			alert(`Error: ${err.response.data}`);
+		})
+			.then(resp => {
+				if (resp.status === 200 && resp.data === 'Success') {
+					alert('Дані збережено успішно');
+					this.updateSubCategoryState();
+				}
+
+			});
 	};
 
 	renderChooseCatSubCat = () => {
@@ -97,6 +129,21 @@ class EditCharacteristic extends React.Component {
 		)
 	};
 
+	renderAddNewPPIcon = i => {
+		const isRenderAddPPField = this.state.isRenderAddPPField[i];
+		console.log('render');
+		return (
+			<div>
+				<div className={isRenderAddPPField ? 'hidden' : ''}>
+					<Icon name="plus"/>
+				</div>
+				<div className={isRenderAddPPField ? '' : 'hidden'}>
+					<Icon name="minus"/>
+				</div>
+			</div>
+		)
+	};
+
 	render() {
 		return (
 			<div className="ec-container">
@@ -113,7 +160,7 @@ class EditCharacteristic extends React.Component {
 					</thead>
 					<tbody className="ec-container__table__tbody">
 					{
-						this.state.subCategoryProps.map(item => {
+						this.state.subCategoryProps.map((item, i) => {
 							return (
 								<tr className="ec-container__table__tbody__tr">
 									<td className="ec-container__table__tbody__tr__td">{item.propValue}</td>
@@ -124,9 +171,24 @@ class EditCharacteristic extends React.Component {
 													<option>{itemPP}</option>)
 											}
 										</select>
-										<button className="btn btn-primary my-1">
-											<Icon name="plus"/>
-										</button>
+										{this.state.isRenderAddPPField[i] &&
+										<input className="form-control my-1" type="text"
+											   value={this.state.newPossibleProps[i]}
+											   placeholder="Введіть значення властивості"
+											   onChange={(e) => this.onNewPossiblePropsChange(i, e)}/>}
+										<br/>
+										<div className="ec-container__table__tbody__tr__td__btn-group">
+											<button className="btn btn-primary"
+													onClick={() => this.onAddNewPossiblePropertyClick(i)}>
+												{this.renderAddNewPPIcon(i)}
+											</button>
+											{this.state.newPossibleProps[i] ?
+												(this.state.newPossibleProps[i].length > 0 && this.state.isRenderAddPPField[i]) &&
+												<button className="btn btn-info"
+														onClick={() => this.onSaveNewPossiblePropertyClick(i, item)}>
+													Зберегти
+												</button> : null}
+										</div>
 									</td>
 								</tr>
 							)

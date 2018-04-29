@@ -19,7 +19,20 @@
 		  width: 100%;
 		  height: 2rem;
 		}
+		&__td {
+		  &__btn-group {
+			display: flex;
+			justify-content: center;
+		  }
+		  &__btn-group button {
+			margin: 1rem .2rem;
+		  }
+		}
 	  }
 	}
   }
+}
+
+.hidden {
+  display: none;
 }
