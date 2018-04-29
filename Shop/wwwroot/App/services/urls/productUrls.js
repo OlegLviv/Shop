@@ -32,3 +32,5 @@ export const EDIT_PRODUCT_URL = '/api/product/EditProduct';
 export const getProductUrlForDelete = productId => `/api/product/DeleteProduct/${productId}`;
 
 export const getProductUrlForDeleteImage = (productId, number = 0) => `/api/product/DeleteProductImage/${productId}/${number}`;
+
+export const getProductUrlForDeleteProperty = (subCategory, propName) => `/api/product/DeleteProperty/${subCategory}/${propName}`;

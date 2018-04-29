@@ -2,8 +2,12 @@ import React from 'react';
 import './EditCharacteristic.scss';
 import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
 import {clearObjectProps, toUpperFirstChar} from "../../../../../utils/utils";
-import {apiGet, apiPost} from "../../../../../services/api";
-import {ADD_POSSIBLE_PROPERTY, getProductPropsUrl} from "../../../../../services/urls/productUrls";
+import {apiDelete, apiGet, apiPost} from "../../../../../services/api";
+import {
+	ADD_POSSIBLE_PROPERTY,
+	getProductPropsUrl,
+	getProductUrlForDeleteProperty
+} from "../../../../../services/urls/productUrls";
 import {Icon} from 'react-fa';
 import {isValidPossibleProp} from "../../../../../utils/validationUtils";
 
@@ -131,8 +135,17 @@ class EditCharacteristic extends React.Component {
 		});
 	};
 
-	onDeleteProperty = i => {
-
+	onDeleteProperty = propName => {
+		apiDelete(getProductUrlForDeleteProperty(normalizeSubCategoryToRoute(this.state.subCategory),
+			propName), error => {
+			alert(`Error: ${error.response.data}`);
+		})
+			.then(resp => {
+				if (resp.status === 200 && resp.data === 'Success') {
+					alert('Властивість видалена успішно');
+					this.updateSubCategoryState();
+				}
+			});
 	};
 
 	renderChooseCatSubCat = () => {
@@ -236,7 +249,8 @@ class EditCharacteristic extends React.Component {
 									</td>
 									<td>
 										<button className="btn btn-danger"
-												onClick={() => this.onDeleteProperty(i)}>Видалити Властивість
+												onClick={() => this.onDeleteProperty(item.propValue)}>Видалити
+											Властивість
 										</button>
 									</td>
 								</tr>
