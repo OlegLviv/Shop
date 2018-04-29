@@ -142,7 +142,7 @@ class AddNewCharacteristic extends React.Component {
 		return (
 			<div className="ec-container">
 				<div className="ec-container__header">
-					Add new char
+					Додати нові характеристики
 				</div>
 				{this.renderChooseCatSubCat()}
 				<table className="ec-container__table">
