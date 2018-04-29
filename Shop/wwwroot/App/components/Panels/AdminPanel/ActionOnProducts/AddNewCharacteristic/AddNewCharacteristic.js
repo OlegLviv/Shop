@@ -33,7 +33,7 @@ class AddNewCharacteristic extends React.Component {
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
 			.then(resp => {
 				console.log(resp.data);
-				const {product} = this.state;
+				const product = {...this.state.product};
 				clearObjectProps(product);
 				for (let i in resp.data) {
 					product[resp.data[i].propValue] = resp.data[i].possiblePropsValues[0];
@@ -55,7 +55,7 @@ class AddNewCharacteristic extends React.Component {
 	};
 
 	onChangePropsValue = (propName, {target}) => {
-		const {product} = this.state;
+		const product = {...this.state.product};
 		product[propName] = target.value;
 		console.log(product);
 		this.setState({product: product});
@@ -66,13 +66,13 @@ class AddNewCharacteristic extends React.Component {
 	};
 
 	onChangePossibleProps = ({target}, i) => {
-		const newPossibleProps = this.state.newPossibleProps;
+		const newPossibleProps = {...this.state.newPossibleProps};
 		newPossibleProps[i] = target.value;
 		this.setState({newPossibleProps: newPossibleProps});
 	};
 
 	onAddNewPossiblePropClick = () => {
-		const possibleProps = this.state.newPossibleProps;
+		const possibleProps = {...this.state.newPossibleProps};
 		possibleProps.push('');
 		this.setState({newPossibleProps: possibleProps});
 	};
@@ -81,15 +81,17 @@ class AddNewCharacteristic extends React.Component {
 		if (i === 0)
 			return;
 
-		const newPossibleProps = this.state.newPossibleProps;
+		const newPossibleProps = {...this.state.newPossibleProps};
 		newPossibleProps.splice(i, i);
 		this.setState({newPossibleProps: newPossibleProps});
 	};
 
 	//	todo need normal catch and alert
 	onSaveClick = () => {
+		let propName = {...this.state.newPropValue};
+		propName = `${propName[0].toUpperCase()}${propName.slice(1)}`;
 		const body = {
-			propName: this.state.newPropValue,
+			propName: propName,
 			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
 			propValues: this.state.newPossibleProps
 		};

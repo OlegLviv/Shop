@@ -5,6 +5,7 @@ import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
 import {ADD_POSSIBLE_PROPERTY, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {Icon} from 'react-fa';
+import {isValidPossibleProp} from "../../../../../utils/validationUtils";
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -15,12 +16,13 @@ class EditCharacteristic extends React.Component {
 			product: {},
 			subCategoryProps: [],
 			isRenderAddPPField: [],
-			newPossibleProps: []
+			newPossibleProps: [],
+			isValidNewPossibleProps: [],
+			possiblePropsErrors: []
 		}
 	}
 
 	componentDidMount() {
-		console.log(this.state.subCategory);
 		this.updateSubCategoryState();
 	}
 
@@ -30,11 +32,38 @@ class EditCharacteristic extends React.Component {
 		}
 	}
 
+	validateNewPossiblePropsChange = (i, value, ifValid) => {
+		if (!isValidPossibleProp(value)) {
+			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
+			const possiblePropsErrors = {...this.state.possiblePropsErrors};
+			isValidNewPossibleProps[i] = false;
+			possiblePropsErrors[i] = 'Поле може містити тільки букви';
+			this.setState({
+				isValidNewPossibleProps: isValidNewPossibleProps,
+				possiblePropsErrors: possiblePropsErrors
+			});
+		}
+		if (isValidPossibleProp(value) && !this.state.isValidNewPossibleProps[i]) {
+			console.log('valid1', ifValid);
+			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
+			const possiblePropsErrors = {...this.state.possiblePropsErrors};
+			isValidNewPossibleProps[i] = true;
+			possiblePropsErrors[i] = '';
+			this.setState({
+				isValidNewPossibleProps: isValidNewPossibleProps,
+				possiblePropsErrors: possiblePropsErrors
+			});
+		}
+		if (isValidPossibleProp(value) && this.state.isValidNewPossibleProps[i]) {
+			if (ifValid)
+				ifValid();
+		}
+	};
+
 	updateSubCategoryState = () => {
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
 			.then(resp => {
-				console.log(resp.data);
-				const {product} = this.state;
+				const product = {...this.state.product};
 				clearObjectProps(product);
 				for (let i in resp.data) {
 					product[resp.data[i].propValue] = resp.data[i].possiblePropsValues[0];
@@ -56,44 +85,51 @@ class EditCharacteristic extends React.Component {
 	};
 
 	onChangePropsValue = (propName, {target}) => {
-		const {product} = this.state;
+		const product = {...this.state.product};
 		product[propName] = target.value;
 		console.log(product);
 		this.setState({product: product});
 	};
 
 	onNewPossiblePropsChange = (i, {target}) => {
-		let newPossibleProps = this.state.newPossibleProps;
+		this.validateNewPossiblePropsChange(i, target.value);
+
+		const newPossibleProps = {...this.state.newPossibleProps};
 		newPossibleProps[i] = target.value;
 		this.setState({newPossibleProps: newPossibleProps});
 	};
 
 	onAddNewPossiblePropertyClick = i => {
-		const isRenderAddPPField = this.state.isRenderAddPPField;
+		const isRenderAddPPField = {...this.state.isRenderAddPPField};
 		this.setState(prev => {
 			isRenderAddPPField[i] = !prev.isRenderAddPPField[i];
 			return {isRenderAddPPField: isRenderAddPPField};
 		});
 	};
 
-	//	todo need to add normal validation
+	//	todo need to add normal alert
 	onSaveNewPossiblePropertyClick = (i, item) => {
+		const possibleProp = this.state.newPossibleProps[i];
+		const possiblePropUpper = `${possibleProp[0].toUpperCase()}${possibleProp.slice(1)}`;
+
 		const body = {
 			propName: item.propValue,
 			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
-			possibleProperty: this.state.newPossibleProps[i]
+			possibleProperty: possiblePropUpper
 		};
-
-		apiPost(ADD_POSSIBLE_PROPERTY, body, err => {
-			alert(`Error: ${err.response.data}`);
-		})
-			.then(resp => {
-				if (resp.status === 200 && resp.data === 'Success') {
-					alert('Дані збережено успішно');
-					this.updateSubCategoryState();
-				}
-
-			});
+		console.log('body', body);
+		this.validateNewPossiblePropsChange(i, this.state.newPossibleProps[i], () => {
+			console.log('work');
+			apiPost(ADD_POSSIBLE_PROPERTY, body, err => {
+				alert(`Error: ${err.response.data}`);
+			})
+				.then(resp => {
+					if (resp.status === 200 && resp.data === 'Success') {
+						alert('Дані збережено успішно');
+						this.updateSubCategoryState();
+					}
+				});
+		});
 	};
 
 	renderChooseCatSubCat = () => {
@@ -131,7 +167,6 @@ class EditCharacteristic extends React.Component {
 
 	renderAddNewPPIcon = i => {
 		const isRenderAddPPField = this.state.isRenderAddPPField[i];
-		console.log('render');
 		return (
 			<div>
 				<div className={isRenderAddPPField ? 'hidden' : ''}>
@@ -143,6 +178,8 @@ class EditCharacteristic extends React.Component {
 			</div>
 		)
 	};
+
+	renderError = text => <small className="invalid-small">{text}</small>;
 
 	render() {
 		return (
@@ -172,10 +209,13 @@ class EditCharacteristic extends React.Component {
 											}
 										</select>
 										{this.state.isRenderAddPPField[i] &&
-										<input className="form-control my-1" type="text"
-											   value={this.state.newPossibleProps[i]}
-											   placeholder="Введіть значення властивості"
-											   onChange={(e) => this.onNewPossiblePropsChange(i, e)}/>}
+										<input
+											className={`form-control my-1 ${this.state.isValidNewPossibleProps[i] === false && 'invalid-input'}`}
+											type="text"
+											value={this.state.newPossibleProps[i]}
+											placeholder="Введіть значення властивості"
+											onChange={(e) => this.onNewPossiblePropsChange(i, e)}/>}
+										{this.state.isValidNewPossibleProps[i] === false && this.renderError(this.state.possiblePropsErrors[i])}
 										<br/>
 										<div className="ec-container__table__tbody__tr__td__btn-group">
 											<button className="btn btn-primary"
