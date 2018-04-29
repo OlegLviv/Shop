@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Core.ValidationAttributes
 {
-    internal class NoWhiteSpaceAttribute:ValidationAttribute
+    internal class NoWhiteSpaceInArrayAttribute:ValidationAttribute
     {
         public override bool IsValid(object value)
         {

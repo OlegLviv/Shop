@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Core.Models.ViewModels
 {
@@ -9,8 +6,10 @@ namespace Core.Models.ViewModels
     {
         [Required]
         public string ProductId { get; set; }
+
         [Required]
         public string UserId { get; set; }
+
         [Required]
         [MaxLength(255)]
         public string Body { get; set; }

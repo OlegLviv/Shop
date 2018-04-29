@@ -112,11 +112,13 @@ namespace Shop.Controllers.Api
 
             if (string.IsNullOrEmpty(query))
                 return this.JsonResult(paginator);
+
             var result = _productManager
                 .SelectProducts(query, products)
                 .Page(pageNumber, pageSize);
-            paginator.Data = result;
-            paginator.TotalCount = result.Count();
+            var paginatorData = result as Product[] ?? result.ToArray();
+            paginator.Data = paginatorData;
+            paginator.TotalCount = paginatorData.Count();
             //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
 
             return this.JsonResult(paginator);
@@ -158,10 +160,10 @@ namespace Shop.Controllers.Api
             if (string.IsNullOrEmpty(productId))
                 return BadRequest("Incorrent id");
 
-            var product = _productsRepository
+            var product = await _productsRepository
                 .Table
                 .Include(x => x.Feedbacks)
-                .FirstOrDefault(x => x.Id == productId);
+                .FirstOrDefaultAsync(x => x.Id == productId);
 
             if (product == null)
                 return BadRequest("Product don't exist");
@@ -258,6 +260,7 @@ namespace Shop.Controllers.Api
         #region POST
 
         [HttpPost("AddProduct")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> AddProduct([FromForm] AddProductViewModel model)
         {
             var product = new Product
@@ -319,6 +322,7 @@ namespace Shop.Controllers.Api
         }
 
         [HttpPost("SendFeedback")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> SendFeeback([FromBody] SendFeedbackViewModel model)
         {
             var product = await _productsRepository
@@ -359,36 +363,63 @@ namespace Shop.Controllers.Api
         }
 
         [HttpPost("AddProperty")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductViewModel model)
         {
-            var res = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
+            var addPropertyRes = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
 
-            if (!res)
+            if (!addPropertyRes)
                 return BadRequest("Can't add new property");
 
-            return Ok(await _productManager.AddNewPossiblePropertiesAsync(model.SubCategory,model.PropName,model.PropValues));
+            var addPossiblePropsRes =
+                await _productManager.AddNewPossiblePropertiesAsync(model.SubCategory, model.PropName,
+                    model.PropValues);
+
+            if (!addPossiblePropsRes)
+                return BadRequest("Cant add possible property");
+
+            return Ok("Success");
+        }
+
+        [HttpPost("AddPossibleProperty")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task<IActionResult> AddPossibleProperty([FromBody] AddPossiblePropertyToProductViewModel model)
+        {
+            var addPossiblePropRes = await _productManager
+                .AddNewPossiblePropertiesAsync(model.SubCategory,
+                    model.PropName,
+                    new List<string> { model.PossibleProperty });
+
+            if (!addPossiblePropRes)
+                return BadRequest("Cant add possible property");
+
+            return Ok("Success");
         }
 
         #endregion
 
         #region PUT
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpPut("EditProduct")]
         public async Task<IActionResult> EditProduct([FromBody] EditProductViewModel model)
         {
             var product = await _productsRepository
                 .GetByIdAsync(model.ProductId);
+
             if (product == null)
                 return BadRequest("Product not found or incorrent product id");
+
             product.Price = model.Price;
             product.Name = model.Name;
+
             return this.JsonResult(new
             {
                 product,
                 Result = await _productsRepository.UpdateAsync(product)
             });
         }
+
         #endregion
 
         #region DELETE
@@ -425,7 +456,8 @@ namespace Shop.Controllers.Api
 
             if (!images.Any())
                 return BadRequest("This product have't images");
-            ProductImage image = null;
+
+            ProductImage image;
             try
             {
                 image = images[number];
@@ -438,7 +470,15 @@ namespace Shop.Controllers.Api
             return Ok(await _imageRepository.DeleteAsync(image));
         }
 
+        [HttpDelete("DeleteProperty/{subCategory}/{propName}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task<IActionResult> DeleteProperty(string subCategory, string propName)
+        {
+            if (!await _productManager.DeletePropertyAsync(subCategory, propName))
+                return BadRequest("Can't delete property");
 
+            return Ok("Success");
+        }
         #endregion
     }
 }

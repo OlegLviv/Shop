@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using AutoMapper;
 using BLL.Managers;
 using BLL.Services;
@@ -34,68 +33,23 @@ namespace Shop
         {
             services.AddDbContext<AppDbContext>(option =>
              option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"]) ? "DevConnection" : "ProdConnection")));
-            services.AddIdentity<User, IdentityRole>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 0;
-                options.Password.RequireNonAlphanumeric = false;
 
-                options.User.RequireUniqueEmail = true;
-            })
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddUserManager<UserManager<User>>()
-                .AddSignInManager<SignInManager<User>>()
-                .AddRoleManager<RoleManager<IdentityRole>>()
-                .AddDefaultTokenProviders();
+            AddIdentity(services);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddCookie()
-                .AddJwtBearer(jwtBearerOptions =>
-                {
-                    jwtBearerOptions.RequireHttpsMetadata = false;
-                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateActor = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Token:Issuer"],
-                        ValidAudience = Configuration["Token:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
-                                                           (Configuration["Token:Key"]))
-                    };
-                });
+            AddBearerAuthendification(services);
 
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
 
-            services.AddTransient<IEmailSender, EmailSender>(service => new EmailSender(new System.Net.NetworkCredential
-            {
-                UserName = Configuration["EmailCredential:UserName"],
-                Password = Configuration["EmailCredential:Password"]
-            },
-                host: Configuration["SmtpData:Host"],
-                port: int.Parse(Configuration["SmtpData:Port"])
-            ));
+            AddIEmailSender(services);
 
-            services.AddTransient<ProductManager>(impl => new ProductManager(impl.GetService<IRepositoryAsync<ProductProperty>>(),
+            services.AddTransient(impl => new ProductManager(impl.GetService<IRepositoryAsync<ProductProperty>>(),
                 impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
 
             services.AddAutoMapper(x => x.AddProfile(new MappingsProfile()));
 
             services.AddMvc();
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
-                });
-            });
+            AddSwaggerGen(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -123,6 +77,72 @@ namespace Shop
                 routes.MapSpaFallbackRoute(
                   name: "spa-fallback",
                   defaults: new { controller = "Home", action = "Index" });
+            });
+        }
+
+        private void AddBearerAuthendification(IServiceCollection services)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddCookie()
+                .AddJwtBearer(jwtBearerOptions =>
+                {
+                    jwtBearerOptions.RequireHttpsMetadata = false;
+                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateActor = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Token:Issuer"],
+                        ValidAudience = Configuration["Token:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
+                            (Configuration["Token:Key"]))
+                    };
+                });
+        }
+
+        private void AddIEmailSender(IServiceCollection services)
+        {
+            services.AddTransient<IEmailSender, EmailSender>(service => new EmailSender(new System.Net.NetworkCredential
+            {
+                UserName = Configuration["EmailCredential:UserName"],
+                Password = Configuration["EmailCredential:Password"]
+            },
+                host: Configuration["SmtpData:Host"],
+                port: int.Parse(Configuration["SmtpData:Port"])
+            ));
+        }
+
+        private static void AddIdentity(IServiceCollection services)
+        {
+            services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequiredUniqueChars = 0;
+                    options.Password.RequireNonAlphanumeric = false;
+
+                    options.User.RequireUniqueEmail = true;
+                })
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddUserManager<UserManager<User>>()
+                .AddSignInManager<SignInManager<User>>()
+                .AddRoleManager<RoleManager<IdentityRole>>()
+                .AddDefaultTokenProviders();
+        }
+
+        private static void AddSwaggerGen(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
             });
         }
     }

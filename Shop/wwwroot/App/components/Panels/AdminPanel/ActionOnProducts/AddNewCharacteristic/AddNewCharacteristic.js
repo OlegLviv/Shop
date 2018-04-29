@@ -4,6 +4,7 @@ import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} fr
 import {ADD_PROPERTY, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
+import {toUpperFirstChar, toUpperFirstCharInArray} from "../../../../../utils/utils";
 
 class AddNewCharacteristic extends React.Component {
 	constructor(props) {
@@ -33,7 +34,7 @@ class AddNewCharacteristic extends React.Component {
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
 			.then(resp => {
 				console.log(resp.data);
-				const {product} = this.state;
+				const product = {...this.state.product};
 				clearObjectProps(product);
 				for (let i in resp.data) {
 					product[resp.data[i].propValue] = resp.data[i].possiblePropsValues[0];
@@ -55,7 +56,7 @@ class AddNewCharacteristic extends React.Component {
 	};
 
 	onChangePropsValue = (propName, {target}) => {
-		const {product} = this.state;
+		const product = {...this.state.product};
 		product[propName] = target.value;
 		console.log(product);
 		this.setState({product: product});
@@ -66,27 +67,40 @@ class AddNewCharacteristic extends React.Component {
 	};
 
 	onChangePossibleProps = ({target}, i) => {
-		const newPossibleProps = this.state.newPossibleProps;
+		const newPossibleProps = [...this.state.newPossibleProps];
 		newPossibleProps[i] = target.value;
 		this.setState({newPossibleProps: newPossibleProps});
 	};
 
 	onAddNewPossiblePropClick = () => {
-		const possibleProps = this.state.newPossibleProps;
+		const possibleProps = [...this.state.newPossibleProps];
 		possibleProps.push('');
 		this.setState({newPossibleProps: possibleProps});
 	};
 
+	onDeleteNewPossiblePropsClick = i => {
+		if (i === 0)
+			return;
+
+		const newPossibleProps = [...this.state.newPossibleProps];
+		newPossibleProps.splice(i, i);
+		this.setState({newPossibleProps: newPossibleProps});
+	};
+
 	//	todo need normal catch and alert
 	onSaveClick = () => {
+		let propName = this.state.newPropValue;
+		propName = `${propName[0].toUpperCase()}${propName.slice(1)}`;
+		const newPossibleProps = [...this.state.newPossibleProps];
+
 		const body = {
-			propName: this.state.newPropValue,
+			propName: propName,
 			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
-			propValues: this.state.newPossibleProps
+			propValues: toUpperFirstCharInArray(newPossibleProps)
 		};
 		console.log('body', body);
 		apiPost(ADD_PROPERTY, body, err => {
-			alert('Error');
+			alert(`Error: ${err.response.data}`);
 		})
 			.then(resp => {
 				if (resp ? resp.status === 200 : false) {
@@ -133,7 +147,7 @@ class AddNewCharacteristic extends React.Component {
 		return (
 			<div className="ec-container">
 				<div className="ec-container__header">
-					Add new char
+					Додати нові характеристики
 				</div>
 				{this.renderChooseCatSubCat()}
 				<table className="ec-container__table">
@@ -161,21 +175,34 @@ class AddNewCharacteristic extends React.Component {
 							)
 						})
 					}
-					<tr>
-						<td>
+					<tr className="ec-container__table__tbody__tr">
+						<td className="ec-container__table__tbody__tr__td" is-prop-td="true">
 							<input type="text" className="form-control"
 								   placeholder="Введіть назву нової властивості"
 								   value={this.state.newPropValue}
 								   onChange={this.onNewPropValueChange}/>
 						</td>
-						<td>
-							{this.state.newPossibleProps.map((item, i) => <input className="form-control"
-																				 value={this.state.newPossibleProps[i]}
-																				 type="text"
-																				 placeholder="Введіть значення властивості"
-																				 onChange={(e) => this.onChangePossibleProps(e, i)}/>)}
-							<button className="btn btn-primary" onClick={this.onAddNewPossiblePropClick}>Додати</button>
-							<button className="btn btn-info" onClick={this.onSaveClick}>Зберегти</button>
+						<td className="ec-container__table__tbody__tr__td">
+							{this.state.newPossibleProps.map((item, i) =>
+								<div className="input-group mb-1">
+									<input className="form-control"
+										   value={this.state.newPossibleProps[i]}
+										   type="text"
+										   placeholder="Введіть значення властивості"
+										   onChange={(e) => this.onChangePossibleProps(e, i)}/>
+									<div className="input-group-append">
+										<button className="btn btn-outline-danger"
+												type="button"
+												onClick={() => this.onDeleteNewPossiblePropsClick(i)}
+												disabled={i === 0}>Видалити
+										</button>
+									</div>
+								</div>)}
+							<div className="ec-container__table__tbody__tr__td__input-group">
+								<button className="btn btn-primary" onClick={this.onAddNewPossiblePropClick}>Додати
+								</button>
+								<button className="btn btn-info" onClick={this.onSaveClick}>Зберегти</button>
+							</div>
 						</td>
 					</tr>
 					</tbody>

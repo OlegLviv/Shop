@@ -1,9 +1,15 @@
 import React from 'react';
 import './EditCharacteristic.scss';
 import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
-import {clearObjectProps} from "../../../../../utils/utils";
-import {apiGet} from "../../../../../services/api";
-import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
+import {clearObjectProps, toUpperFirstChar} from "../../../../../utils/utils";
+import {apiDelete, apiGet, apiPost} from "../../../../../services/api";
+import {
+	ADD_POSSIBLE_PROPERTY,
+	getProductPropsUrl,
+	getProductUrlForDeleteProperty
+} from "../../../../../services/urls/productUrls";
+import {Icon} from 'react-fa';
+import {isValidPossibleProp} from "../../../../../utils/validationUtils";
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -12,26 +18,55 @@ class EditCharacteristic extends React.Component {
 			category: NAVIGATION_CATEGORIES[1],
 			subCategory: getSubCategories(NAVIGATION_CATEGORIES[1])[0],
 			product: {},
-			subCategoryProps: []
+			subCategoryProps: [],
+			isRenderAddPPField: [],
+			newPossibleProps: [],
+			isValidNewPossibleProps: [],
+			possiblePropsErrors: []
 		}
 	}
 
 	componentDidMount() {
-		console.log(this.state.subCategory);
-		this.setSubCategoryState();
+		this.updateSubCategoryState();
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 		if (prevState.subCategory !== this.state.subCategory) {
-			this.setSubCategoryState();
+			this.updateSubCategoryState();
 		}
 	}
 
-	setSubCategoryState = () => {
+	validateNewPossiblePropsChange = (i, value, ifValid) => {
+		if (!isValidPossibleProp(value)) {
+			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
+			const possiblePropsErrors = {...this.state.possiblePropsErrors};
+			isValidNewPossibleProps[i] = false;
+			possiblePropsErrors[i] = 'Поле може містити тільки букви і цифри. Мінімальна довжина 2, максимальна 20';
+			this.setState({
+				isValidNewPossibleProps: isValidNewPossibleProps,
+				possiblePropsErrors: possiblePropsErrors
+			});
+		}
+		if (isValidPossibleProp(value) && !this.state.isValidNewPossibleProps[i]) {
+			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
+			const possiblePropsErrors = {...this.state.possiblePropsErrors};
+			isValidNewPossibleProps[i] = true;
+			possiblePropsErrors[i] = '';
+			this.setState({
+				isValidNewPossibleProps: isValidNewPossibleProps,
+				possiblePropsErrors: possiblePropsErrors
+			});
+		}
+		if (isValidPossibleProp(value) && this.state.isValidNewPossibleProps[i]) {
+			if (ifValid)
+				ifValid();
+		}
+	};
+
+	updateSubCategoryState = () => {
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
 			.then(resp => {
-				console.log(resp.data);
-				const {product} = this.state;
+				const product = {...this.state.product};
 				clearObjectProps(product);
 				for (let i in resp.data) {
 					product[resp.data[i].propValue] = resp.data[i].possiblePropsValues[0];
@@ -53,14 +88,63 @@ class EditCharacteristic extends React.Component {
 	};
 
 	onChangePropsValue = (propName, {target}) => {
-		if (target.value === '+') {
-			console.log('yes');
-			return;
-		}
-		const {product} = this.state;
+		const product = {...this.state.product};
 		product[propName] = target.value;
 		console.log(product);
 		this.setState({product: product});
+	};
+
+	onNewPossiblePropsChange = (i, {target}) => {
+		this.validateNewPossiblePropsChange(i, target.value);
+
+		const newPossibleProps = {...this.state.newPossibleProps};
+		newPossibleProps[i] = target.value;
+		this.setState({newPossibleProps: newPossibleProps});
+	};
+
+	onAddNewPossiblePropertyClick = i => {
+		const isRenderAddPPField = {...this.state.isRenderAddPPField};
+		this.setState(prev => {
+			isRenderAddPPField[i] = !prev.isRenderAddPPField[i];
+			return {isRenderAddPPField: isRenderAddPPField};
+		});
+	};
+
+	//	todo need to add normal alert
+	onSaveNewPossiblePropertyClick = (i, item) => {
+		const possibleProp = this.state.newPossibleProps[i];
+
+		const body = {
+			propName: item.propValue,
+			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
+			possibleProperty: toUpperFirstChar(possibleProp)
+		};
+		console.log('body', body);
+		this.validateNewPossiblePropsChange(i, this.state.newPossibleProps[i], () => {
+			console.log('work');
+			apiPost(ADD_POSSIBLE_PROPERTY, body, err => {
+				alert(`Error: ${err.response.data}`);
+			})
+				.then(resp => {
+					if (resp.status === 200 && resp.data === 'Success') {
+						alert('Дані збережено успішно');
+						this.updateSubCategoryState();
+					}
+				});
+		});
+	};
+
+	onDeleteProperty = propName => {
+		apiDelete(getProductUrlForDeleteProperty(normalizeSubCategoryToRoute(this.state.subCategory),
+			propName), error => {
+			alert(`Error: ${error.response.data}`);
+		})
+			.then(resp => {
+				if (resp.status === 200 && resp.data === 'Success') {
+					alert('Властивість видалена успішно');
+					this.updateSubCategoryState();
+				}
+			});
 	};
 
 	renderChooseCatSubCat = () => {
@@ -96,6 +180,22 @@ class EditCharacteristic extends React.Component {
 		)
 	};
 
+	renderAddNewPPIcon = i => {
+		const isRenderAddPPField = this.state.isRenderAddPPField[i];
+		return (
+			<div>
+				<div className={isRenderAddPPField ? 'hidden' : ''}>
+					<Icon name="plus"/>
+				</div>
+				<div className={isRenderAddPPField ? '' : 'hidden'}>
+					<Icon name="minus"/>
+				</div>
+			</div>
+		)
+	};
+
+	renderError = text => <small className="invalid-small">{text}</small>;
+
 	render() {
 		return (
 			<div className="ec-container">
@@ -108,11 +208,12 @@ class EditCharacteristic extends React.Component {
 					<tr className="ec-container__table__tbody__tr">
 						<th>Назва властивості</th>
 						<th>Значення властивості</th>
+						<th/>
 					</tr>
 					</thead>
 					<tbody className="ec-container__table__tbody">
 					{
-						this.state.subCategoryProps.map(item => {
+						this.state.subCategoryProps.map((item, i) => {
 							return (
 								<tr className="ec-container__table__tbody__tr">
 									<td className="ec-container__table__tbody__tr__td">{item.propValue}</td>
@@ -122,10 +223,34 @@ class EditCharacteristic extends React.Component {
 												item.possiblePropsValues.map(itemPP =>
 													<option>{itemPP}</option>)
 											}
-											<option>
-												+
-											</option>
 										</select>
+										{this.state.isRenderAddPPField[i] &&
+										<input
+											className={`form-control my-1 ${this.state.isValidNewPossibleProps[i] === false && 'invalid-input'}`}
+											type="text"
+											value={this.state.newPossibleProps[i]}
+											placeholder="Введіть значення властивості"
+											onChange={(e) => this.onNewPossiblePropsChange(i, e)}/>}
+										{this.state.isValidNewPossibleProps[i] === false && this.renderError(this.state.possiblePropsErrors[i])}
+										<br/>
+										<div className="ec-container__table__tbody__tr__td__btn-group">
+											<button className="btn btn-primary"
+													onClick={() => this.onAddNewPossiblePropertyClick(i)}>
+												{this.renderAddNewPPIcon(i)}
+											</button>
+											{this.state.newPossibleProps[i] ?
+												(this.state.newPossibleProps[i].length > 0 && this.state.isRenderAddPPField[i]) &&
+												<button className="btn btn-info"
+														onClick={() => this.onSaveNewPossiblePropertyClick(i, item)}>
+													Зберегти
+												</button> : null}
+										</div>
+									</td>
+									<td>
+										<button className="btn btn-danger"
+												onClick={() => this.onDeleteProperty(item.propValue)}>Видалити
+											Властивість
+										</button>
 									</td>
 								</tr>
 							)

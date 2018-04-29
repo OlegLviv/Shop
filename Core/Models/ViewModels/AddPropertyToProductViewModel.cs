@@ -15,7 +15,7 @@ namespace Core.Models.ViewModels
         [Required]
         [MinLength(1)]
         [UnincalValues]
-        [NoWhiteSpace]
+        [PropertyValues]
         public List<string> PropValues { get; set; }
     }
 }

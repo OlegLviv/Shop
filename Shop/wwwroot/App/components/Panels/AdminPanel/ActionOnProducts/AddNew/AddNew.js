@@ -13,6 +13,7 @@ import {clearObjectProps} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {Alert} from "../../../../common/Alert/Alert";
+import {Link} from 'react-router-dom';
 import {Icon} from 'react-fa';
 
 class AddNew extends React.Component {
@@ -172,7 +173,7 @@ class AddNew extends React.Component {
 		apiPost(ADD_PRODUCT_URL, form)
 			.then(resp => {
 				if (resp.data >= 1) {
-					this.showAlert('Успішно', 'Продукт успішно збережено', 'success');
+					this.showAlert('Успішно', 'Товар успішно збережено', 'success');
 				}
 			});
 	};
@@ -288,11 +289,14 @@ class AddNew extends React.Component {
 							</div>
 						</div>
 					</div>
-					<div className="container-add-new__row__add-new-prop-box">
-						<button className="btn btn-primary">
-							<div>Додати нову властивість</div>
-							<Icon name="plus"/>
-						</button>
+					<div className="container-add-new__row__add-new-prop-box text-center">
+						<small>* Для того, щоб додати нову властивість перейдіть в Товари->
+							<Link to="/adminPanel/action-on-products/add-new-characteristic">Додати нові
+								характеристики</Link></small>
+						<br/>
+						<small>** Для того, щоб редагувати властивість перейдіть в Товари->
+							<Link to="/adminPanel/action-on-products/edit-characteristic">Редагувати
+								характеристики</Link></small>
 					</div>
 					<div className="container-add-new__row__file-box">
 						<input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>

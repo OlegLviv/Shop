@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Core.Models.DomainModels;
 using DAL;
 using DAL.Initializator;
@@ -31,8 +27,8 @@ namespace Shop
                     var configuration = services.GetRequiredService<IConfiguration>();
 
                     var dbInitializerLogger = services.GetRequiredService<ILogger<UsersDbInitializer>>();
-                    UsersDbInitializer.Initialize(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
-                    ProductDbInitializaer.Initialize(context);
+                    UsersDbInitializer.InitializeAsync(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
+                    ProductDbInitializaer.Initialize(context).Wait();
                     PropsInitializator.InitializeAsync(context).Wait();
                 }
                 catch (Exception ex)

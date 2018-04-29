@@ -19,7 +19,7 @@ const navItems = [
 	{
 		link: '/adminPanel/action-on-products',
 		icon: 'shopping-basket',
-		text: 'Продукти'
+		text: 'Товари'
 	},
 	{
 		link: '/adminPanel/action-on-users',

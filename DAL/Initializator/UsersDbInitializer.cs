@@ -2,17 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Initializator
 {
     public class UsersDbInitializer
     {
-        public static async Task Initialize(AppDbContext context, UserManager<User> userManager,
+        public static async Task InitializeAsync(AppDbContext context, UserManager<User> userManager,
     RoleManager<IdentityRole> roleManager, ILogger<UsersDbInitializer> logger, IConfiguration configuration)
         {
             context.Database.EnsureCreated();
@@ -23,10 +20,10 @@ namespace DAL.Initializator
                 return; // DB has been seeded
             }
 
-            await CreateDefaultRolesAndAdmin(userManager, roleManager, logger, configuration);
-            await CreateDefaultUser(userManager, configuration);
+            await CreateDefaultRolesAndAdminAsync(userManager, roleManager, logger, configuration);
+            await CreateDefaultUserAsync(userManager, configuration);
         }
-        private static async Task CreateDefaultRolesAndAdmin(UserManager<User> um, RoleManager<IdentityRole> rm, ILogger<UsersDbInitializer> logger, IConfiguration configuration)
+        private static async Task CreateDefaultRolesAndAdminAsync(UserManager<User> um, RoleManager<IdentityRole> rm, ILogger logger, IConfiguration configuration)
         {
             var administratorRole = configuration["Roles:Admin"];
             var anonimRole = configuration["Roles:Anonim"];
@@ -52,7 +49,7 @@ namespace DAL.Initializator
                 logger.LogInformation("Admin added to role suceessfuly");
         }
 
-        private static async Task CreateDefaultUser(UserManager<User> userManager, IConfiguration configuration)
+        private static async Task CreateDefaultUserAsync(UserManager<User> userManager, IConfiguration configuration)
         {
             var user = new User
             {

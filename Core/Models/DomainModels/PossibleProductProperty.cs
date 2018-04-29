@@ -11,6 +11,7 @@ namespace Core.Models.DomainModels
         [Required]
         public string PropertyName { get; set; }
 
+        //  todo maybe not need Stringlist
         [Required]
         [MinLength(2)]
         [StringList]
