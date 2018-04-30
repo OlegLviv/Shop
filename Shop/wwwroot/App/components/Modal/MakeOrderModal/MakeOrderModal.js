@@ -1,43 +1,124 @@
 import React from 'react';
 import {customStyles} from "../modalStyles";
 import Modal from 'react-modal';
+import {isValidEmail, isValidNameLastName, isValidPhoneNumber} from "../../../utils/validationUtils";
 
 class MakeOrderModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			email: '',
-			phone: ''
+			phone: '',
+			nameLastName: '',
+			isValidEmail: true,
+			isValidPhone: true,
+			isValidNameLastName: true,
+			emailError: '',
+			phoneError: '',
+			nameLastNameError: '',
+			wayOfDelivery: 'Нова пошта'
 		}
 	}
+
+	validateEmail = value => {
+		if (!isValidEmail(value)) {
+			this.setState({
+				isValidEmail: false,
+				emailError: 'Некоректний Email'
+			});
+			return false;
+		}
+		if (isValidEmail(value) && !this.state.isValidEmail) {
+			this.setState({
+				isValidEmail: true,
+				emailError: ''
+			});
+			return false;
+		}
+		if (isValidEmail(value) && this.state.isValidEmail)
+			return true;
+	};
+
+	validatePhone = value => {
+		if (!isValidPhoneNumber(value)) {
+			this.setState({
+				isValidPhone: false,
+				phoneError: 'Некоректний номер телефону'
+			});
+			return false;
+		}
+		if (isValidPhoneNumber(value) && !this.state.isValidPhone) {
+			this.setState({
+				isValidPhone: true,
+				phoneError: ''
+			});
+			return false;
+		}
+		if (isValidPhoneNumber(value) && this.state.isValidPhone)
+			return true;
+	};
+
+	validateNameLastName = value => {
+		if (!isValidNameLastName(value)) {
+			this.setState({
+				isValidNameLastName: false,
+				nameLastNameError: 'Будь ласка введіть імя і прізвище, або просто ім\'я'
+			});
+			return false;
+		}
+		if (isValidNameLastName(value) && !this.state.isValidNameLastName) {
+			this.setState({
+				isValidNameLastName: true,
+				nameLastNameError: ''
+			});
+			return false;
+		}
+		if (isValidNameLastName(value) && this.state.isValidNameLastName)
+			return true;
+	};
+
+	isValidAllFields = () => {
+		const isValidEmail = this.validateEmail(this.state.email);
+		const isValidPhone = this.validatePhone(this.state.phone);
+		const isValidNameLastName = this.validateNameLastName(this.state.nameLastName);
+
+		return isValidEmail && isValidPhone && isValidNameLastName;
+	};
+
+	onChangeEmail = (e) => {
+		this.validateEmail(e.target.value);
+		this.setState({email: e.target.value});
+	};
+
+	onChangePhone = (e) => {
+		this.validatePhone(e.target.value);
+		this.setState({phone: e.target.value});
+	};
+
+	onChangeNameLastName = ({target}) => {
+		this.validateNameLastName(target.value);
+		this.setState({nameLastName: target.value});
+	};
+
+	onWayOfDeliveryChange = ({target}) => {
+		this.setState({wayOfDelivery: target.value});
+	};
+
+	onSubmitOrder = () => {
+		if (this.isValidAllFields())
+			this.props.onSubmitOrder({
+				email: this.state.email,
+				phone: this.state.phone,
+				nameLastName: this.state.nameLastName,
+				wayOfDelivery: this.state.wayOfDelivery
+			});
+	};
 
 	onCloseModal = () => {
 		this.props.onCloseModal();
 	};
 
-	onSubmitOrder = () => {
-		console.log('submit order');
-	};
-
-	onEmailKeyPress = (e) => {
-		if (e.key === 'Enter') {
-			this.onSubmitOrder();
-		}
-	};
-
-	onPhoneKeyPress = (e) => {
-		if (e.key === 'Enter') {
-			this.onSubmitOrder();
-		}
-	};
-
-	onChangeEmail = (e) => {
-		this.setState({email: e.target.value});
-	};
-
-	onChangePhone = (e) => {
-		this.setState({phone: e.target.value});
-	};
+	renderError = text => <small className="invalid-small">{text}</small>;
 
 	render() {
 		return (
@@ -49,39 +130,47 @@ class MakeOrderModal extends React.Component {
 					<div className="form-group">
 						<label htmlFor="inputEmail">Email</label>
 						<input type="text"
-							   className="form-control"
+							   className={`form-control ${!this.state.isValidEmail && 'invalid-input'}`}
 							   id="inputEmail"
 							   aria-describedby="emailHelp"
 							   placeholder="Введіть email"
 							   value={this.state.email}
-							   onChange={this.onChangeEmail}
-							   onKeyPress={this.onEmailKeyPress}/>
-						<small id="emailHelp" className="form-text text-muted">We'll never share your email with
-							anyone else.
-						</small>
+							   onChange={this.onChangeEmail}/>
+						{!this.state.isValidEmail && this.renderError(this.state.emailError)}
 					</div>
 					<div className="form-group">
 						<label htmlFor="inputPhone">Телефон</label>
 						<input type="text"
-							   className="form-control"
+							   className={`form-control ${!this.state.isValidPhone && 'invalid-input'}`}
 							   id="inputPhone"
 							   placeholder="Введіть свій номер телефону..."
 							   value={this.state.phone}
-							   onChange={this.onChangePhone}
-							   onKeyPress={this.onPhoneKeyPress}/>
+							   onChange={this.onChangePhone}/>
+						{!this.state.isValidPhone && this.renderError(this.state.phoneError)}
+					</div>
+					<div className="form-group">
+						<label htmlFor="inputNameLastName">Ім'я і прізвище</label>
+						<input type="text"
+							   className={`form-control ${!this.state.isValidNameLastName && 'invalid-input'}`}
+							   id="inputNameLastName"
+							   placeholder="Введіть своє ім'я і прізвище"
+							   value={this.state.nameLastName}
+							   onChange={this.onChangeNameLastName}/>
+						{!this.state.isValidNameLastName && this.renderError(this.state.nameLastNameError)}
 					</div>
 					<div className="form-group">
 						<label htmlFor="selectPay">Оберіть спосіб доставки</label>
-						<select className="form-control" id="selectPay">
+						<select className="form-control" id="selectPay" onChange={this.onWayOfDeliveryChange}
+								value={this.state.wayOfDelivery}>
 							<option>Нова пошта</option>
-							<option>Пошта</option>
-							<option>Пошта</option>
+							<option>Пошта1</option>
+							<option>Пошта2</option>
 						</select>
 					</div>
 					<div className="form-container__footer">
 						<button
 							className="btn btn-primary"
-							onClick={this.onSubmitOrder}>Увійти
+							onClick={this.onSubmitOrder}>Відправити
 						</button>
 						<button className="btn btn-danger" onClick={this.onCloseModal}>Закрити</button>
 					</div>

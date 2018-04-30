@@ -117,11 +117,15 @@ class ProductCardPlace extends React.Component {
 
 	onCloseMakeOrderModal = () => this.setState({isMakeOrderModalOpen: false});
 
+	onSubmitOrder = orderObj => {
+		console.log(orderObj);
+	};
+
 	// todo maybe need create page for this, not modal
 	renderMakeOrderModal = () => <MakeOrderModal
 		isModalOpen={this.state.isMakeOrderModalOpen}
 		onCloseModal={this.onCloseMakeOrderModal}
-	/>;
+		onSubmitOrder={this.onSubmitOrder}/>;
 
 	renderSwitchContent = () => {
 		const {isProductsLoading, isProductsLoaded, isNotProducts} = this.state;

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.Token
 {
     /// <summary>
     /// ViewModel for login user
     /// </summary>
-    public class LoginViewModel
+    public class LoginDto
     {
         [Required]
         public string UserName { get; set; }

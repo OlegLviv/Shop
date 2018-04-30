@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Core.Models.DomainModels.Base;
 using Core.ValidationAttributes;
 
 namespace Core.Models.DomainModels

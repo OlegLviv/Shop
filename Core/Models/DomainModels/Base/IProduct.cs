@@ -1,4 +1,4 @@
-﻿namespace Core.Models.DomainModels
+﻿namespace Core.Models.DomainModels.Base
 {
     public interface IProduct
     {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Filters.ActionFilters;
@@ -10,12 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Common.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Core.Models.DomainModels;
-using Core.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using BLL.Services;
 using Common.Helpers;
 using Core.Interfaces;
 using Core.Models.DTO;
+using Core.Models.DTO.User;
 
 namespace Shop.Controllers.Api
 {
@@ -147,7 +145,7 @@ namespace Shop.Controllers.Api
         #region POST
         [AllowAnonymous]
         [HttpPost("Registration")]
-        public async Task<IActionResult> Registration([FromBody]RegistrationViewModel model)
+        public async Task<IActionResult> Registration([FromBody]RegistrationUserDto model)
         {
             var user = new User
             {
@@ -172,7 +170,7 @@ namespace Shop.Controllers.Api
         }
 
         [HttpPost("ChangePassword")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel model)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
         {
             var user = await this.GetUserByIdentityAsync(_userManager);
 
@@ -191,7 +189,7 @@ namespace Shop.Controllers.Api
         }
 
         [HttpPost("SendChangeEmailToken")]
-        public async Task<IActionResult> SendChangeEmailToken([FromBody] SendChangeEmailTokenViewModel model)
+        public async Task<IActionResult> SendChangeEmailToken([FromBody] SendChangeUserEmailTokenDto model)
         {
             var user = await this.GetUserByIdentityAsync(_userManager);
 
@@ -215,7 +213,7 @@ namespace Shop.Controllers.Api
         #region PUT
 
         [HttpPut("EditPersonalData")]
-        public async Task<IActionResult> EditPersonalData([FromBody] EditUserPersonalDataViewModel model)
+        public async Task<IActionResult> EditPersonalData([FromBody] EditUserPersonalDataDto model)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
 
@@ -229,7 +227,7 @@ namespace Shop.Controllers.Api
         }
 
         [HttpPut("ChangeEmail")]
-        public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailViewModel model)
+        public async Task<IActionResult> ChangeEmail([FromBody] ChangeEmailDto model)
         {
             var user = await this.GetUserByIdentityAsync(_userManager);
 

@@ -13,7 +13,8 @@ using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using Core.Models.DTO;
-using Core.Models.ViewModels;
+using Core.Models.DTO.Product;
+using Core.Models.DTO.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
@@ -261,7 +262,7 @@ namespace Shop.Controllers.Api
 
         [HttpPost("AddProduct")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> AddProduct([FromForm] AddProductViewModel model)
+        public async Task<IActionResult> AddProduct([FromForm] AddProductDto model)
         {
             var product = new Product
             {
@@ -303,7 +304,7 @@ namespace Shop.Controllers.Api
 
         // todo maybe it's no need
         [HttpPost("AddProductToShopingCard")]
-        public async Task<IActionResult> AddProductToShopingCard([FromBody] UserAddProductToShopingCard model)
+        public async Task<IActionResult> AddProductToShopingCard([FromBody] AddProductToShopingCardUserDto model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId) ??
                        await this.GetUserByIdentityAsync(_userManager);
@@ -323,7 +324,7 @@ namespace Shop.Controllers.Api
 
         [HttpPost("SendFeedback")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> SendFeeback([FromBody] SendFeedbackViewModel model)
+        public async Task<IActionResult> SendFeeback([FromBody] SendProductFeedbackDto model)
         {
             var product = await _productsRepository
                 .GetByIdAsync(model.ProductId);
@@ -364,7 +365,7 @@ namespace Shop.Controllers.Api
 
         [HttpPost("AddProperty")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductViewModel model)
+        public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductDto model)
         {
             var addPropertyRes = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
 
@@ -383,7 +384,7 @@ namespace Shop.Controllers.Api
 
         [HttpPost("AddPossibleProperty")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> AddPossibleProperty([FromBody] AddPossiblePropertyToProductViewModel model)
+        public async Task<IActionResult> AddPossibleProperty([FromBody] AddPossiblePropertyToProductDto model)
         {
             var addPossiblePropRes = await _productManager
                 .AddNewPossiblePropertiesAsync(model.SubCategory,
@@ -402,7 +403,7 @@ namespace Shop.Controllers.Api
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpPut("EditProduct")]
-        public async Task<IActionResult> EditProduct([FromBody] EditProductViewModel model)
+        public async Task<IActionResult> EditProduct([FromBody] EditProductDto model)
         {
             var product = await _productsRepository
                 .GetByIdAsync(model.ProductId);

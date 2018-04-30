@@ -2,6 +2,7 @@
 using AutoMapper;
 using Core.Models.DomainModels;
 using Core.Models.DTO;
+using Core.Models.DTO.Order;
 
 namespace Core.Mapper
 {
@@ -11,6 +12,7 @@ namespace Core.Mapper
         {
             CreateMap<Product, ProductDto>();
             CreateMap<User, UserDto>();
+            CreateMap<AnonimOrder, CreateAnonimOrderDto>();
         }
     }
 }

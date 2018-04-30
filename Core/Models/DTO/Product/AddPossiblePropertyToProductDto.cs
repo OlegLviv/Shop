@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.Product
 {
-    public class AddPossiblePropertyToProductViewModel
+    public class AddPossiblePropertyToProductDto
     {
         [Required]
         [RegularExpression("^[A-zА-яёЁіІ0-9]{2,20}$")]

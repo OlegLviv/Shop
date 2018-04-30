@@ -46,6 +46,7 @@ class EditCharacteristic extends React.Component {
 				isValidNewPossibleProps: isValidNewPossibleProps,
 				possiblePropsErrors: possiblePropsErrors
 			});
+			return;
 		}
 		if (isValidPossibleProp(value) && !this.state.isValidNewPossibleProps[i]) {
 			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
@@ -56,6 +57,7 @@ class EditCharacteristic extends React.Component {
 				isValidNewPossibleProps: isValidNewPossibleProps,
 				possiblePropsErrors: possiblePropsErrors
 			});
+			return;
 		}
 		if (isValidPossibleProp(value) && this.state.isValidNewPossibleProps[i]) {
 			if (ifValid)

@@ -1,0 +1,29 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Core.Models.DomainModels.Base;
+
+namespace Core.Models.DomainModels
+{
+    public class AnonimOrder : BaseEntity
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [Phone]
+        public string Phone { get; set; }
+
+        [Required]
+        [RegularExpression("^(([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+)((\\s?)([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+))?){1,20}$")]
+        public string NameLastName { get; set; }
+
+        [Required]
+        [Range(0.1, double.MaxValue)]
+        public double TotalPrice { get; set; }
+
+        [Required]
+        public string WayOfDelivery { get; set; }
+
+        public OrderStatus OrderStatus { get; set; } = OrderStatus.New;
+    }
+}

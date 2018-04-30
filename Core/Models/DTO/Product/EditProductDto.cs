@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.Product
 {
-    public class EditProductViewModel
+    public class EditProductDto
     {
         [Required]
         public string ProductId { get; set; }

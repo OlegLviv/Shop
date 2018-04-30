@@ -6,7 +6,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
-using Core.Models.ViewModels;
+using Core.Models.DTO.Token;
+using Core.Models.DTO.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,10 @@ namespace Shop.Controllers.Api
                                 _tokenLifetime,
                                 _tokenKey;
 
-        public TokenController(IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
+        public TokenController(IConfiguration configuration,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _configuration = configuration;
             _userManager = userManager;
@@ -42,7 +46,7 @@ namespace Shop.Controllers.Api
 
         [HttpPost]
         [Route("getToken")]
-        public async Task<IActionResult> GetToken([FromBody]LoginViewModel model)
+        public async Task<IActionResult> GetToken([FromBody]LoginDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.UserName);
             if (user == null)
