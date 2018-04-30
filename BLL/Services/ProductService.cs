@@ -112,6 +112,7 @@ namespace BLL.Services
                    await _repositoryProdProp.UpdateAsync(prodProperty) >= 1;
         }
 
+        //  todo need remove out
         private bool IsEqualsKeys(string query, string productQuery, out IDictionary<string, string> parsedQ, out IDictionary<string, string> parsedProductQ, out IEnumerable<string> intersectKeys)
         {
             parsedQ = ParseQuery(query);

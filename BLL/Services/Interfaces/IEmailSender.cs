@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace BLL.Services
+namespace BLL.Services.Interfaces
 {
     public interface IEmailSender
     {

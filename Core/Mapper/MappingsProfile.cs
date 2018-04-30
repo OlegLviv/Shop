@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Core.Models.DomainModels;
 using Core.Models.DomainModels.Base;
 using Core.Models.DTO;
@@ -14,6 +15,8 @@ namespace Core.Mapper
             CreateMap<User, UserDto>();
             CreateMap<BaseOrderDto, BaseOrder>();
             CreateMap<CreateAnonimOrderDto, AnonimOrder>();
+            CreateMap<AnonimOrder, OrderDto>();
+            CreateMap<UserOrder, OrderDto>();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.DomainModels.Base
 {
-    public class BaseOrder : BaseEntity
+    public class BaseOrder : BaseEntity, IBaseOrder
     {
         [Required]
         public Product Product { get; set; }
