@@ -42,7 +42,7 @@ namespace Shop
 
             AddIEmailSender(services);
 
-            services.AddTransient(impl => new ProductManager(impl.GetService<IRepositoryAsync<ProductProperty>>(),
+            services.AddTransient(impl => new ProductService(impl.GetService<IRepositoryAsync<ProductProperty>>(),
                 impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
 
             services.AddAutoMapper(x => x.AddProfile(new MappingsProfile()));

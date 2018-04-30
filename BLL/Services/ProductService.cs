@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Core.Models.DomainModels;
 using Common.Extensions;
 using Core.Interfaces;
+using Core.Models.DomainModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
-namespace BLL.Managers
+namespace BLL.Services
 {
-    public class ProductManager
+    public class ProductService
     {
         private readonly IRepositoryAsync<ProductProperty> _repositoryProdProp;
         private readonly IRepositoryAsync<PossibleProductProperty> _repositoryPosibleProductProp;
 
-        public ProductManager(IRepositoryAsync<ProductProperty> repositoryProdProp,
+        public ProductService(IRepositoryAsync<ProductProperty> repositoryProdProp,
             IRepositoryAsync<PossibleProductProperty> repositoryPosibleProductProp)
         {
             _repositoryProdProp = repositoryProdProp;
@@ -34,24 +32,9 @@ namespace BLL.Managers
         {
             foreach (var product in products)
             {
-                var isReturn = true;
+                bool isReturn;
 
-                if (IsEqualsKeys(query, product.Query, out var parsedQ, out var parsedProductQ, out var intersectKeys))
-                {
-                    foreach (var pKey in intersectKeys)
-                    {
-                        var parsedQValues = GetValuesByString(parsedQ[pKey]);
-
-                        if (parsedQValues.Length > 1)
-                        {
-                            if (!parsedQValues.Intersect(parsedProductQ[pKey]).Any())
-                                isReturn = false;
-                        }
-                        else if (parsedProductQ[pKey] != parsedQ[pKey])
-                            isReturn = false;
-                    }
-                }
-                else isReturn = false;
+                isReturn = IsEqualsKeys(query, product.Query, out var parsedQ, out var parsedProductQ, out var intersectKeys) && CanReturn(parsedQ, parsedProductQ, intersectKeys);
 
                 if (isReturn)
                     yield return product;
@@ -164,5 +147,24 @@ namespace BLL.Managers
 
         private async Task<ProductProperty> SelectProductPropertyAsync(string subCategory) => await _repositoryProdProp.Table.FirstOrDefaultAsync(x =>
              x.SubCategory.Equals(subCategory, StringComparison.OrdinalIgnoreCase));
+
+        private static bool CanReturn(IDictionary<string, string> parsedQ, IDictionary<string, string> parsedProductQ, IEnumerable<string> intersectKeys)
+        {
+            var isReturn = true;
+            foreach (var pKey in intersectKeys)
+            {
+                var parsedQValues = GetValuesByString(parsedQ[pKey]);
+
+                if (parsedQValues.Length > 1)
+                {
+                    if (!parsedQValues.Intersect(parsedProductQ[pKey]).Any())
+                        isReturn = false;
+                }
+                else if (parsedProductQ[pKey] != parsedQ[pKey])
+                    isReturn = false;
+            }
+
+            return isReturn;
+        }
     }
 }

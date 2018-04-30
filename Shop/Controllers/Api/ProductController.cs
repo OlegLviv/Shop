@@ -30,19 +30,19 @@ namespace Shop.Controllers.Api
         private readonly AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
         private readonly IRepositoryAsync<ProductImage> _imageRepository;
-        private readonly ProductManager _productManager;
+        private readonly ProductService _productService;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
         public ProductController(AppDbContext context,
             IRepositoryAsync<Product> productsRepository,
-            ProductManager productManager,
+            ProductService productService,
             UserManager<User> userManager, IMapper mapper,
             IRepositoryAsync<ProductImage> imageRepository)
         {
             _context = context;
             _productsRepository = productsRepository;
-            _productManager = productManager;
+            _productService = productService;
             _userManager = userManager;
             _mapper = mapper;
             _imageRepository = imageRepository;
@@ -114,7 +114,7 @@ namespace Shop.Controllers.Api
             if (string.IsNullOrEmpty(query))
                 return this.JsonResult(paginator);
 
-            var result = _productManager
+            var result = _productService
                 .SelectProducts(query, products)
                 .Page(pageNumber, pageSize);
             var paginatorData = result as Product[] ?? result.ToArray();
@@ -128,7 +128,7 @@ namespace Shop.Controllers.Api
         [HttpGet("GetProductsByIds/{productIds}")]
         public IActionResult GetProductsByIds(string[] productIds)
         {
-            var products = _productManager
+            var products = _productService
                 .Select(_productsRepository.Table.Include(x => x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
 
@@ -373,13 +373,13 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductDto model)
         {
-            var addPropertyRes = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
+            var addPropertyRes = await _productService.AddNewPropertyAsync(model.SubCategory, model.PropName);
 
             if (!addPropertyRes)
                 return BadRequest("Can't add new property");
 
             var addPossiblePropsRes =
-                await _productManager.AddNewPossiblePropertiesAsync(model.SubCategory, model.PropName,
+                await _productService.AddNewPossiblePropertiesAsync(model.SubCategory, model.PropName,
                     model.PropValues);
 
             if (!addPossiblePropsRes)
@@ -392,7 +392,7 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> AddPossibleProperty([FromBody] AddPossiblePropertyToProductDto model)
         {
-            var addPossiblePropRes = await _productManager
+            var addPossiblePropRes = await _productService
                 .AddNewPossiblePropertiesAsync(model.SubCategory,
                     model.PropName,
                     new List<string> { model.PossibleProperty });
@@ -481,7 +481,7 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteProperty(string subCategory, string propName)
         {
-            if (!await _productManager.DeletePropertyAsync(subCategory, propName))
+            if (!await _productService.DeletePropertyAsync(subCategory, propName))
                 return BadRequest("Can't delete property");
 
             return Ok("Success");
