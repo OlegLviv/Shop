@@ -149,7 +149,7 @@ class ProductCardPlace extends React.Component {
 							this.state.products.map((item, i) => {
 								return (
 									<tr>
-										<td data-label="Номер">{i + 1}</td>
+										<td data-label="Номер"><h5>{i + 1}</h5></td>
 										<td data-label="Назва">
 											<div className="media">
 												<img className="mr-2 product-img"

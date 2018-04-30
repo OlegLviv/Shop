@@ -1,3 +1,5 @@
+@import '../../main';
+
 .container-product {
   padding: 2rem 5rem 0 5rem;
   &__row {
@@ -38,15 +40,18 @@
 	  }
 	}
 	&__info-container {
-	  border: 1px #d3d3d3 solid;
+	  border: 1px $dark-grey-color solid;
 	  padding-top: 2rem;
 	  padding-left: 3rem;
-	  background: #f3f3f3;
+	  background: $light-background;
 	  border-radius: 5px;
 	  &__main-info {
 		&__price {
 		  display: flex;
 		  align-items: baseline;
+		}
+		&__price h3 {
+		  color: $dark-blue-color;
 		}
 	  }
 	  &__to-card {
@@ -67,13 +72,13 @@
 	  transition-property: all;
 	  transition-duration: .7s;
 	  padding: 2rem 3rem 2rem 3rem;
-	  background: #f3f3f3;
+	  background: $light-background;
 	  max-width: 30rem;
 	  min-width: 25rem;
 	  min-height: 10rem;
 	  border-radius: 10px;
 	  box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, 0.1);
-	  border: 1px #d3d3d3 solid;
+	  border: 1px $dark-grey-color solid;
 	  &__date {
 		font-size: 10px;
 	  }
@@ -108,7 +113,7 @@
 }
 
 .h4-dev {
-  color: #252525;
+  color: $dark-background;
   padding-right: 3rem;
 }
 
@@ -117,11 +122,7 @@
 }
 
 .card-header {
-  background: #f3f3f3;
-}
-
-h3 {
-  color: #10498A;
+  background: $light-background;
 }
 
 @media screen and (max-width: 760px) {
