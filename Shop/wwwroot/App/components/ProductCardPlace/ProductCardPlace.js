@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProductCardPlace.scss';
 import {Icon} from 'react-fa';
-import {getCookie, getProductsCookies, setCookie} from "../../services/cookies";
+import {getProductsCookies, setCookie} from "../../services/cookies";
 import {apiWithoutRedirect} from "../../services/api";
 import {getProductsByIdsUrl} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
@@ -9,6 +9,8 @@ import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
 import {Spinner} from "../Spinner/Spinner";
 import MakeOrderModal from '../Modal/MakeOrderModal/MakeOrderModal';
+import {createOrders} from "../../utils/orderUtils";
+import {CREATE_ORDER_URL} from "../../services/urls/orderUrls";
 
 const renderNoProducts = () => {
 	return (
@@ -21,7 +23,7 @@ const renderNoProducts = () => {
 };
 
 const getProductIds = productCArr => productCArr.map(item => item.id);
-const getProductCounts = productCArr => productCArr.map(item => item.count);
+const getProductCounts = productCArr => productCArr.map(item => Number(item.count));
 
 class ProductCardPlace extends React.Component {
 	constructor(props) {
@@ -117,8 +119,21 @@ class ProductCardPlace extends React.Component {
 
 	onCloseMakeOrderModal = () => this.setState({isMakeOrderModalOpen: false});
 
+	//	todo maybe need validate this order because it hard object
 	onSubmitOrder = orderObj => {
+		const orders = createOrders(this.state.products.map(item => item.id), this.state.productsCounts);
+		orderObj.orders = orders;
+		orderObj.totalPrice = this.getTotalPrice();
 		console.log(orderObj);
+		apiWithoutRedirect()
+			.post(CREATE_ORDER_URL, orderObj)
+			.then(resp => {
+				if (resp.status === 200 && resp.data === 'Success') {
+					alert('Заказ успішно відправлено');
+					this.onCloseMakeOrderModal();
+				}
+			})
+			.catch(err => console.log(err.response.data));
 	};
 
 	// todo maybe need create page for this, not modal

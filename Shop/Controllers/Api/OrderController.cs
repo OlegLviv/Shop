@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BLL.Filters.ActionFilters;
 using Core.Interfaces;
 using Core.Models.DomainModels;
 using Core.Models.DTO.Order;
@@ -12,7 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Shop.Controllers.Api
 {
     [Produces("application/json")]
-    [Route("api/Orders")]
+    [Route("api/Order")]
+    [ModelStateFilter]
     public class OrderController : Controller
     {
         private readonly IMapper _mapper;
@@ -29,11 +31,19 @@ namespace Shop.Controllers.Api
         }
         #region POST
 
-        //[HttpPost("CreateOrder")]
-        //public async Task<IActionResult> CreateOrder(CreateAnonimOrderDto model)
-        //{
-        //    var anonimOrder = _mapper.Map<AnonimOrder>(model);
-        //}
-#endregion
+        [HttpPost("CreateOrder")]
+        public async Task<IActionResult> CreateOrder([FromBody] CreateAnonimOrderDto model)
+        {
+
+            var anonimOrder = _mapper.Map<AnonimOrder>(model);
+            anonimOrder.Orders.ForEach(c => c.OrderId = anonimOrder.Id);
+            var inserResult = await _anonimOrderRepositoryAsync.InsertAsync(anonimOrder);
+
+            if (inserResult <= 1)
+                return BadRequest("Can't create order");
+
+            return Ok("Success");
+        }
+        #endregion
     }
 }

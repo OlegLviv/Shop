@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Core.Models.DomainModels;
 
 namespace Core.Models.DTO.Order
@@ -16,6 +17,9 @@ namespace Core.Models.DTO.Order
         [Required]
         [RegularExpression("^(([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+)((\\s?)([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+))?){1,20}$")]
         public string NameLastName { get; set; }
+
+        [Required]
+        public List<BaseOrderDto> Orders { get; set; }
 
         [Required]
         [Range(0.1, double.MaxValue)]

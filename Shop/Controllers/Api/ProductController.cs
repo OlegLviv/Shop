@@ -328,11 +328,15 @@ namespace Shop.Controllers.Api
         {
             var product = await _productsRepository
                 .GetByIdAsync(model.ProductId);
+
             if (product == null)
                 return BadRequest("Product don't exist");
+
             var user = await _userManager.FindByIdAsync(model.UserId);
+
             if (user == null)
                 return BadRequest("User with this id don't exist");
+
             var feedback = new Feedback
             {
                 Product = product,
@@ -351,8 +355,10 @@ namespace Shop.Controllers.Api
                 .Add(feedback);
             var updateResult = await _productsRepository
                 .UpdateAsync(product);
+
             if (updateResult <= 0)
                 throw new Exception("Can't update product");
+            //  todo need mapping
             return this.JsonResult(new FeedbackDto
             {
                 UserName = user.Name,
