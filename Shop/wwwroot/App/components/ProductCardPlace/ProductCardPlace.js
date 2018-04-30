@@ -112,7 +112,11 @@ class ProductCardPlace extends React.Component {
 
 	onCleanProductsCard = () => {
 		setCookie('productsCard', null, 0);
-		this.setState({products: [], isNotProducts: true});
+		this.setState({
+			products: [],
+			isNotProducts: true,
+			productsCounts: []
+		});
 	};
 
 	onMakeOrder = () => this.setState({isMakeOrderModalOpen: true});
@@ -125,15 +129,20 @@ class ProductCardPlace extends React.Component {
 		orderObj.orders = orders;
 		orderObj.totalPrice = this.getTotalPrice();
 		console.log(orderObj);
+
 		apiWithoutRedirect()
 			.post(CREATE_ORDER_URL, orderObj)
 			.then(resp => {
 				if (resp.status === 200 && resp.data === 'Success') {
 					alert('Заказ успішно відправлено');
+					this.onCleanProductsCard();
 					this.onCloseMakeOrderModal();
 				}
 			})
-			.catch(err => console.log(err.response.data));
+			.catch(err => {
+				console.log(err.response.data)
+				alert("error");
+			});
 	};
 
 	// todo maybe need create page for this, not modal
