@@ -1,9 +1,9 @@
 import React from 'react';
 import './ProductCardPlace.scss';
 import {Icon} from 'react-fa';
-import {getCookie, setCookie} from "../../services/cookies";
+import {getCookie, getProductsCookies, setCookie} from "../../services/cookies";
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductsUrlByIds} from "../../services/urls/productUrls";
+import {getProductsByIdsUrl} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
@@ -20,6 +20,9 @@ const renderNoProducts = () => {
 	)
 };
 
+const getProductIds = productCArr => productCArr.map(item => item.id);
+const getProductCounts = productCArr => productCArr.map(item => item.count);
+
 class ProductCardPlace extends React.Component {
 	constructor(props) {
 		super(props);
@@ -33,9 +36,24 @@ class ProductCardPlace extends React.Component {
 		}
 	}
 
+	initProductsCounts = products => {
+		const productCArr = getProductsCookies('productsCard');
+		let newProductsCounts = [];
+
+		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
+			for (let i = 0; i < products.length; i++) {
+				newProductsCounts[i] = 1;
+			}
+		}
+		else
+			newProductsCounts = getProductCounts(productCArr);
+		this.setState({productsCounts: newProductsCounts});
+	};
+
 	componentDidMount() {
-		const productIds = getCookie('productsCard');
-		if (!productIds) {
+		const productCArr = getProductsCookies('productsCard');
+
+		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
 			this.setState({isNotProducts: true});
 			return;
 		}
@@ -44,9 +62,8 @@ class ProductCardPlace extends React.Component {
 		}
 		this.setState({isProductsLoading: true});
 		apiWithoutRedirect()
-			.get(getProductsUrlByIds(productIds))
+			.get(getProductsByIdsUrl(getProductIds(productCArr)))
 			.then(resp => {
-				console.log('resp', resp.data);
 				if (resp.data.length === 0) {
 					setCookie('productsCard', null, 0);
 					this.setState({
@@ -64,16 +81,8 @@ class ProductCardPlace extends React.Component {
 					isProductsLoading: false,
 					isProductsLoaded: true
 				});
-			})
+			});
 	}
-
-	initProductsCounts = (products) => {
-		const newProductsCounts = [];
-		for (let i = 0; i < products.length; i++) {
-			newProductsCounts[i] = 1;
-		}
-		this.setState({productsCounts: newProductsCounts});
-	};
 
 	getTotalPrice = () => {
 		const {products, productsCounts} = this.state;
@@ -115,7 +124,6 @@ class ProductCardPlace extends React.Component {
 	/>;
 
 	renderSwitchContent = () => {
-		console.log('switch');
 		const {isProductsLoading, isProductsLoaded, isNotProducts} = this.state;
 		if (isProductsLoaded && !isProductsLoading && !isNotProducts) {
 			return (

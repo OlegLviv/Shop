@@ -1,7 +1,7 @@
 import React from 'react';
 import './AddNewCharacteristic.scss';
 import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} from "../../../../../utils/productsUtils";
-import {ADD_PROPERTY, getProductPropsUrl} from "../../../../../services/urls/productUrls";
+import {ADD_PROPERTY_URL, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
 import {toUpperFirstChar, toUpperFirstCharInArray} from "../../../../../utils/utils";
@@ -99,7 +99,7 @@ class AddNewCharacteristic extends React.Component {
 			propValues: toUpperFirstCharInArray(newPossibleProps)
 		};
 		console.log('body', body);
-		apiPost(ADD_PROPERTY, body, err => {
+		apiPost(ADD_PROPERTY_URL, body, err => {
 			alert(`Error: ${err.response.data}`);
 		})
 			.then(resp => {

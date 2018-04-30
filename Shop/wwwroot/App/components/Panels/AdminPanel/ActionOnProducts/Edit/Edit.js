@@ -2,11 +2,11 @@ import React from 'react';
 import './Edit.scss';
 import {apiPut, apiGet, apiDelete} from "../../../../../services/api";
 import {
-	getProductsUrlByName,
+	getProductsByNameUrl,
 	EDIT_PRODUCT_URL,
-	getProductUrlForDelete,
+	getDeleteProductUrl,
 	getProductImageCountUrl,
-	getProductUrlForDeleteImage
+	getDeleteProductImageUrl
 } from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
@@ -44,7 +44,7 @@ class Edit extends React.Component {
 		}
 
 		this.setState({searchValue: e.target.value});
-		apiGet(getProductsUrlByName(e.target.value, 1, howProductsPerPage))
+		apiGet(getProductsByNameUrl(e.target.value, 1, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
 				this.setState({
@@ -65,7 +65,7 @@ class Edit extends React.Component {
 	};
 
 	onPaginationChange = (pageNumber) => {
-		apiGet(getProductsUrlByName(this.state.searchValue, pageNumber, howProductsPerPage))
+		apiGet(getProductsByNameUrl(this.state.searchValue, pageNumber, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
 				this.setState({
@@ -105,7 +105,7 @@ class Edit extends React.Component {
 			this.setState({isLoaded: false});
 		}
 		this.setState({isLoading: true});
-		apiDelete(getProductUrlForDelete(this.state.selectedProduct.id))
+		apiDelete(getDeleteProductUrl(this.state.selectedProduct.id))
 			.then(resp => {
 				console.log('resp data', resp.data);
 				if (resp.data >= 1) {
@@ -134,7 +134,7 @@ class Edit extends React.Component {
 	};
 
 	onDeleteImage = (i) => {
-		apiDelete(getProductUrlForDeleteImage(this.state.selectedProduct.id, i))
+		apiDelete(getDeleteProductImageUrl(this.state.selectedProduct.id, i))
 			.then(resp => console.log(resp));
 	};
 

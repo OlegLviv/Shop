@@ -17,7 +17,7 @@ class Home extends Component {
                     <Route exact path="/products/:category/:subCategory"
                            render={(props) => <ProductPlace {...props} isLogIn={this.props.isLogIn}/>}/>
                     <Route path="/" component={ProductPlace}/>
-                    <Route path="/products/:category/:subCategory/:q" component={ProductPlace}/>
+                    <Route exact path="/products/:category/:subCategory/:q" component={ProductPlace}/>
                 </Switch>
             </div>
         );

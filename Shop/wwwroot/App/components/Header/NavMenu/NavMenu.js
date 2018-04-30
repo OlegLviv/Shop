@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import {getCookie} from '../../../services/cookies';
 import Autocomplete from 'react-autocomplete';
 import {apiWithoutRedirect} from "../../../services/api";
-import {getProductsUrlByName} from "../../../services/urls/productUrls";
+import {getProductsByNameUrl} from "../../../services/urls/productUrls";
 
 const getLikeProductsCount = () => {
 	const prodCookie = getCookie('likeProducts');
@@ -51,7 +51,7 @@ class NavMenu extends React.Component {
 			return;
 		}
 		apiWithoutRedirect()
-			.get(getProductsUrlByName(value))
+			.get(getProductsByNameUrl(value))
 			.then(reps => {
 				this.setState({products: reps.data.data});
 			});
