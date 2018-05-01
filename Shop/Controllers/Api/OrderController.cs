@@ -40,6 +40,28 @@ namespace Shop.Controllers.Api
         #region GET
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("GetOrder/{id}")]
+        public async Task<IActionResult> GetOrder(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return BadRequest("Incorrect id");
+
+            var anonimOrder = await _anonimOrderRepositoryAsync.Table.Include(x => x.Orders)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            UserOrder userOrder = null;
+
+            if (anonimOrder != null)
+                return this.JsonResult(_mapper.Map<OrderDto>(anonimOrder));
+
+            userOrder = await _userOrderRepositoryAsync.GetByIdAsync(id);
+
+            if (userOrder == null)
+                return BadRequest("Incorrect id or can't find order");
+
+            return this.JsonResult(_mapper.Map<OrderDto>(userOrder));
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet("GetOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
         public IActionResult GetOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
         {
@@ -51,7 +73,7 @@ namespace Shop.Controllers.Api
 
             var anonOrders = _anonimOrderRepositoryAsync
                 .Table
-                .Include(x=>x.Orders)
+                .Include(x => x.Orders)
                 .Where(x => x.OrderStatus == orderStatus);
 
             var userOrders = _userOrderRepositoryAsync

@@ -8,8 +8,18 @@
 	color: $dark-grey-color;
   }
   &__list-group {
+	padding-top: 2rem;
+	padding-left: 25%;
+	padding-right: 25%;
 	&__list-group-item {
 	  cursor: pointer;
+	}
+	&__list-group-item a {
+	  color: $dark-background;
+	}
+	&__list-group-item a:hover {
+	  color: $dark-background;
+	  text-decoration: none;
 	}
 	&__list-group-item:hover {
 	  background: $light-background;
