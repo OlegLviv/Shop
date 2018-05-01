@@ -211,7 +211,7 @@ class ProductPlace extends React.Component {
 					{this.state.products.map(item => {
 						return (
 							<div
-								className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 container-products__row__item">
+								className="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-6 container-products__row__item">
 								<ProductCard
 									product={item}
 									key={item.id}

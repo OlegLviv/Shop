@@ -14,7 +14,6 @@ import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {Alert} from "../../../../common/Alert/Alert";
 import {Link} from 'react-router-dom';
-import {Icon} from 'react-fa';
 
 class AddNew extends React.Component {
 	constructor(props) {
@@ -178,7 +177,6 @@ class AddNew extends React.Component {
 			});
 	};
 
-	// todo need implement in future
 	onClear = () => {
 		this.setState({
 			files: [],

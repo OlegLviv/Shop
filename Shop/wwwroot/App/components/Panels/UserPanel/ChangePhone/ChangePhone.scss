@@ -1,0 +1,18 @@
+@import '../../../../main';
+
+.ch-phone-cont {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  &__header {
+	width: 100%;
+	background: $dark-background;
+	padding: 1rem;
+	color: $dark-grey-color;
+  }
+  &__form {
+	padding-top: 2rem;
+	width: 55%;
+  }
+}

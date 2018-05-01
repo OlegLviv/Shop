@@ -5,6 +5,7 @@ import {Route, Switch} from 'react-router-dom';
 import {NotFound} from "../../common/NotFound/NotFound";
 import ChangePassword from './ChangePassword/ChangePassword';
 import ChangeEmail from './ChangeEmail/ChangeEmail';
+import ChangePhone from './ChangePhone/ChangePhone';
 
 const navItems = [
 	{
@@ -27,7 +28,6 @@ const navItems = [
 		icon: 'envelope',
 		text: 'Розсилки',
 	}
-
 ];
 
 class UserPanel extends React.Component {
@@ -42,6 +42,7 @@ class UserPanel extends React.Component {
 						<Route exact path="/userPanel" render={() => <div>User panel</div>}/>
 						<Route exact path="/userPanel/change-password" component={ChangePassword}/>
 						<Route exact path="/userPanel/change-email" component={ChangeEmail}/>
+						<Route exact path="/userPanel/change-phone-number" component={ChangePhone}/>
 						<Route exact path="/userPanel/change-phone-number"
 							   render={() => <div>change-phone-number</div>}/>
 						<Route exact path="/userPanel/mailing" render={() => <div>mailing</div>}/>
