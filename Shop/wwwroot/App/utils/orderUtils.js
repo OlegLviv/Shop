@@ -12,3 +12,18 @@ export const createOrders = (productIds, counts) => {
 	}
 	return orderArr;
 };
+
+export const converOrderSatus = orderStatus => {
+	switch (orderStatus) {
+		case 0:
+			return 'Нове';
+		case 1:
+			return 'Переглянуте';
+		case 2:
+			return 'Відіслано';
+		case 3:
+			return 'Очікує на отримання';
+		case 4:
+			return 'Закрито';
+	}
+};

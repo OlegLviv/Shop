@@ -1,0 +1,28 @@
+@import '../../../../../main';
+
+.user-info-container {
+  padding: 2rem;
+  &__header {
+	padding: 1rem;
+	background: $dark-background;
+	color: $dark-grey-color;
+  }
+}
+
+.info-products-container {
+  padding: 2rem;
+  &__header {
+	padding: 1rem;
+	background: $dark-background;
+	color: $dark-grey-color;
+  }
+}
+
+.order-info-container {
+  padding: 2rem;
+  &__header {
+	padding: 1rem;
+	background: $dark-background;
+	color: $dark-grey-color;
+  }
+}
