@@ -9,7 +9,10 @@ using Core.Interfaces;
 using Core.Models.DomainModels;
 using Core.Models.DTO;
 using Core.Models.DTO.Order;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Shop.Controllers.Api
 {
@@ -36,8 +39,9 @@ namespace Shop.Controllers.Api
 
         #region GET
 
-        [HttpGet("GetOrders/{pageNumber:int?}/{pageSize:int?}")]
-        public IActionResult GetOrders(int pageNumber = 1, int pageSize = 16)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("GetOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
+        public IActionResult GetOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
         {
             var paginator = new Paginator<OrderDto>
             {
@@ -45,17 +49,19 @@ namespace Shop.Controllers.Api
                 PageSize = pageSize
             };
 
-            var anonOrders = _anonimOrderRepositoryAsync.Table.Page(pageNumber, pageSize);
-            paginator.Data = _mapper.Map<IEnumerable<OrderDto>>(anonOrders);
+            var anonOrders = _anonimOrderRepositoryAsync
+                .Table
+                .Include(x=>x.Orders)
+                .Where(x => x.OrderStatus == orderStatus);
 
-            if (anonOrders.Count() < pageSize)
-            {
-                var userOrders = _userOrderRepositoryAsync.Table.Take(pageSize - anonOrders.Count());
-                paginator.Data = paginator
-                    .Data
-                    .Concat(_mapper.Map<IEnumerable<OrderDto>>(userOrders));
-                paginator.TotalCount = anonOrders.Count() + userOrders.Count();
-            }
+            var userOrders = _userOrderRepositoryAsync
+                .Table
+                .Where(x => x.OrderStatus == orderStatus);
+
+            paginator.TotalCount = anonOrders.Count() + userOrders.Count();
+            paginator.Data = _mapper.Map<IEnumerable<OrderDto>>(anonOrders)
+                .Concat(_mapper.Map<IEnumerable<OrderDto>>(userOrders))
+                .Page(pageNumber, pageSize);
 
             return this.JsonResult(paginator);
         }

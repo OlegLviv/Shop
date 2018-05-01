@@ -14,6 +14,7 @@ namespace Core.Mapper
             CreateMap<Product, ProductDto>();
             CreateMap<User, UserDto>();
             CreateMap<BaseOrderDto, BaseOrder>();
+            CreateMap<BaseOrder, BaseOrderDto>();
             CreateMap<CreateAnonimOrderDto, AnonimOrder>();
             CreateMap<AnonimOrder, OrderDto>();
             CreateMap<UserOrder, OrderDto>();

@@ -15,6 +15,7 @@ import {apiGet} from "../../../services/api";
 import {GET_USER_ROLE} from "../../../services/urls/userUrls";
 import EditCharacteristic from './ActionOnProducts/EditCharacteristics/EditCharacteristic';
 import Orders from './Orders/Orders';
+import FullOrder from './Orders/FullOrder/FullOrder';
 
 const navItems = [
 	{
@@ -101,7 +102,8 @@ class AdminPanel extends React.Component {
 								   render={() => <div>Edit lock/unlock</div>}/>
 							<Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>
 							<Route path="/adminPanel/owner-settings" render={() => <div>owner settings</div>}/>
-							<Route path="/adminPanel/orders" component={Orders}/>
+							<Route exact path="/adminPanel/orders" component={Orders}/>
+							<Route path="/adminPanel/orders/:orderId" render={props => <FullOrder {...props}/>}/>
 							<Route component={NotFound}/>
 						</Switch>
 					</div>
