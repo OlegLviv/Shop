@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.Product
 {
-    public class AddProductViewModel
+    public class AddProductDto
     {
         [Required]
         [MaxLength(128)]

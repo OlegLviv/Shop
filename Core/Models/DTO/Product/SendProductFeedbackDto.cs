@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.Product
 {
-    public class SendFeedbackViewModel
+    public class SendProductFeedbackDto
     {
         [Required]
         public string ProductId { get; set; }

@@ -13,27 +13,28 @@ export const setCookies = (name, values, days) => {
 	document.cookie = name + "=" + values + ";" + expires + ";path=/";
 };
 
-export const addCookies = (name, value, days) => {
+export const addProductCookies = (name, id, count, days) => {
 	const d = new Date();
+	const idCountStr = `${id}--${count}`;
 	d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
 	const expires = "expires=" + d.toUTCString();
 	const oldCookie = getCookie(name);
-	if (oldCookie === value) {
+	if (oldCookie === idCountStr) {
 		return;
 	}
 	const oldCookies = oldCookie.split(',');
 	for (let cookie in oldCookies) {
-		if (oldCookies[cookie] === value) {
+		if (oldCookies[cookie] === idCountStr) {
 			return;
 		}
 	}
 	if (!oldCookie) {
-		document.cookie = name + "=" + value + ";" + expires + ";path=/";
+		document.cookie = name + "=" + idCountStr + ";" + expires + ";path=/";
 		return;
 	}
 	let newCookie = '';
 	if (oldCookie) {
-		newCookie = oldCookie.concat(`,${value}`);
+		newCookie = oldCookie.concat(`,${idCountStr}`);
 	}
 	document.cookie = name + "=" + newCookie + ";" + expires + ";path=/";
 };
@@ -51,9 +52,23 @@ export const getCookie = (cname) => {
 			return c.substring(name.length, c.length);
 		}
 	}
-		return '';
+	return '';
 };
 
-export const getCookies = (cname) => {
-	return getCookie(cname).split(',');
+export const getProductsCookies = cname => {
+	const prodCookie = getCookie(cname);
+
+	if(!prodCookie)
+		return [];
+
+	const idCountArr = prodCookie.split(',');
+	const idCountObjArr = [];
+
+	for (const i in idCountArr) {
+		idCountObjArr.push({
+			id: idCountArr[i].split('--')[0],
+			count: idCountArr[i].split('--')[1]
+		});
+	}
+	return idCountObjArr;
 };

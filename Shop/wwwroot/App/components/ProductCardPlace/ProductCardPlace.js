@@ -1,14 +1,16 @@
 import React from 'react';
 import './ProductCardPlace.scss';
 import {Icon} from 'react-fa';
-import {getCookie, setCookie} from "../../services/cookies";
+import {getProductsCookies, setCookie} from "../../services/cookies";
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductsUrlByIds} from "../../services/urls/productUrls";
+import {getProductsByIdsUrl} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
 import {Spinner} from "../Spinner/Spinner";
 import MakeOrderModal from '../Modal/MakeOrderModal/MakeOrderModal';
+import {createOrders} from "../../utils/orderUtils";
+import {CREATE_ORDER_URL} from "../../services/urls/orderUrls";
 
 const renderNoProducts = () => {
 	return (
@@ -19,6 +21,9 @@ const renderNoProducts = () => {
 		</div>
 	)
 };
+
+const getProductIds = productCArr => productCArr.map(item => item.id);
+const getProductCounts = productCArr => productCArr.map(item => Number(item.count));
 
 class ProductCardPlace extends React.Component {
 	constructor(props) {
@@ -33,9 +38,24 @@ class ProductCardPlace extends React.Component {
 		}
 	}
 
+	initProductsCounts = products => {
+		const productCArr = getProductsCookies('productsCard');
+		let newProductsCounts = [];
+
+		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
+			for (let i = 0; i < products.length; i++) {
+				newProductsCounts[i] = 1;
+			}
+		}
+		else
+			newProductsCounts = getProductCounts(productCArr);
+		this.setState({productsCounts: newProductsCounts});
+	};
+
 	componentDidMount() {
-		const productIds = getCookie('productsCard');
-		if (!productIds) {
+		const productCArr = getProductsCookies('productsCard');
+
+		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
 			this.setState({isNotProducts: true});
 			return;
 		}
@@ -44,9 +64,8 @@ class ProductCardPlace extends React.Component {
 		}
 		this.setState({isProductsLoading: true});
 		apiWithoutRedirect()
-			.get(getProductsUrlByIds(productIds))
+			.get(getProductsByIdsUrl(getProductIds(productCArr)))
 			.then(resp => {
-				console.log('resp', resp.data);
 				if (resp.data.length === 0) {
 					setCookie('productsCard', null, 0);
 					this.setState({
@@ -64,16 +83,8 @@ class ProductCardPlace extends React.Component {
 					isProductsLoading: false,
 					isProductsLoaded: true
 				});
-			})
+			});
 	}
-
-	initProductsCounts = (products) => {
-		const newProductsCounts = [];
-		for (let i = 0; i < products.length; i++) {
-			newProductsCounts[i] = 1;
-		}
-		this.setState({productsCounts: newProductsCounts});
-	};
 
 	getTotalPrice = () => {
 		const {products, productsCounts} = this.state;
@@ -101,21 +112,46 @@ class ProductCardPlace extends React.Component {
 
 	onCleanProductsCard = () => {
 		setCookie('productsCard', null, 0);
-		this.setState({products: [], isNotProducts: true});
+		this.setState({
+			products: [],
+			isNotProducts: true,
+			productsCounts: []
+		});
 	};
 
 	onMakeOrder = () => this.setState({isMakeOrderModalOpen: true});
 
 	onCloseMakeOrderModal = () => this.setState({isMakeOrderModalOpen: false});
 
+	//	todo maybe need validate this order because it hard object
+	onSubmitOrder = orderObj => {
+		const orders = createOrders(this.state.products.map(item => item.id), this.state.productsCounts);
+		orderObj.orders = orders;
+		orderObj.totalPrice = this.getTotalPrice();
+		console.log(orderObj);
+
+		apiWithoutRedirect()
+			.post(CREATE_ORDER_URL, orderObj)
+			.then(resp => {
+				if (resp.status === 200 && resp.data === 'Success') {
+					alert('Заказ успішно відправлено');
+					this.onCleanProductsCard();
+					this.onCloseMakeOrderModal();
+				}
+			})
+			.catch(err => {
+				console.log(err.response.data)
+				alert("error");
+			});
+	};
+
 	// todo maybe need create page for this, not modal
 	renderMakeOrderModal = () => <MakeOrderModal
 		isModalOpen={this.state.isMakeOrderModalOpen}
 		onCloseModal={this.onCloseMakeOrderModal}
-	/>;
+		onSubmitOrder={this.onSubmitOrder}/>;
 
 	renderSwitchContent = () => {
-		console.log('switch');
 		const {isProductsLoading, isProductsLoaded, isNotProducts} = this.state;
 		if (isProductsLoaded && !isProductsLoading && !isNotProducts) {
 			return (
@@ -141,7 +177,7 @@ class ProductCardPlace extends React.Component {
 							this.state.products.map((item, i) => {
 								return (
 									<tr>
-										<td data-label="Номер">{i + 1}</td>
+										<td data-label="Номер"><h5>{i + 1}</h5></td>
 										<td data-label="Назва">
 											<div className="media">
 												<img className="mr-2 product-img"

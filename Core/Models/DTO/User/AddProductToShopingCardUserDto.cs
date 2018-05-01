@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.User
 {
-    public class UserAddProductToShopingCard
+    public class AddProductToShopingCardUserDto
     {
         [Required]
         public string UserId { get; set; }

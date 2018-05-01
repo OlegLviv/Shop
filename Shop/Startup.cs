@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using AutoMapper;
-using BLL.Managers;
 using BLL.Services;
+using BLL.Services.Interfaces;
 using Core.Interfaces;
 using Core.Mapper;
 using Core.Models.DomainModels;
@@ -42,8 +42,7 @@ namespace Shop
 
             AddIEmailSender(services);
 
-            services.AddTransient(impl => new ProductManager(impl.GetService<IRepositoryAsync<ProductProperty>>(),
-                impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
+            AddServices(services);
 
             services.AddAutoMapper(x => x.AddProfile(new MappingsProfile()));
 
@@ -144,6 +143,15 @@ namespace Shop
                     Type = "apiKey"
                 });
             });
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddTransient(impl => new ProductService(impl.GetService<IRepositoryAsync<ProductProperty>>(),
+                impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
+
+            services.AddTransient<IOrderService, OrderService>(impl =>
+                new OrderService(impl.GetService<IRepositoryAsync<Product>>()));
         }
     }
 }

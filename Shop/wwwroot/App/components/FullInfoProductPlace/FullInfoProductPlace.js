@@ -1,6 +1,6 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductUrlById, getProductFeedbackUrlById} from "../../services/urls/productUrls";
+import {getProductByIdUrl, getProductFeedbackByIdUrl} from "../../services/urls/productUrls";
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
 import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
@@ -23,7 +23,7 @@ class FullInfoProductPlace extends React.Component {
 	// todo need add catch
 	componentDidMount() {
 		apiWithoutRedirect()
-			.get(getProductUrlById(getProductId(this.props)))
+			.get(getProductByIdUrl(getProductId(this.props)))
 			.then(resp => {
 				this.setState({product: resp.data});
 			});
@@ -32,7 +32,7 @@ class FullInfoProductPlace extends React.Component {
 	// todo need add catch
 	componentWillReceiveProps(nextProps) {
 		apiWithoutRedirect()
-			.get(getProductUrlById(getProductId(nextProps)))
+			.get(getProductByIdUrl(getProductId(nextProps)))
 			.then(resp => {
 				this.setState({product: resp.data});
 			});
@@ -182,7 +182,7 @@ class FullInfoProductPlace extends React.Component {
 							onClick={() => {
 								this.setState({aboutProductNacCase: 'feedback'});
 								apiWithoutRedirect()
-									.get(getProductFeedbackUrlById(this.state.product.id))
+									.get(getProductFeedbackByIdUrl(this.state.product.id))
 									.then(resp => {
 										this.setState({productFeedback: resp.data})
 									})

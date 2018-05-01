@@ -14,6 +14,8 @@ import {Spinner} from "../../Spinner/Spinner";
 import {apiGet} from "../../../services/api";
 import {GET_USER_ROLE} from "../../../services/urls/userUrls";
 import EditCharacteristic from './ActionOnProducts/EditCharacteristics/EditCharacteristic';
+import Orders from './Orders/Orders';
+import FullOrder from './Orders/FullOrder/FullOrder';
 
 const navItems = [
 	{
@@ -35,6 +37,11 @@ const navItems = [
 		link: '/adminPanel/owner-settings',
 		icon: 'user',
 		text: 'Особисті настройки'
+	},
+	{
+		link: '/adminPanel/orders',
+		icon: 'folder-open',
+		text: 'Замовлення'
 	}
 
 ];
@@ -82,7 +89,8 @@ class AdminPanel extends React.Component {
 							<Route exact path="/adminPanel" render={() => <div>Admin Panel</div>}/>
 							<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>
 							<Route path="/adminPanel/action-on-products/add-new" component={AddNew}/>
-							<Route path="/adminPanel/action-on-products/add-new-characteristic" component={AddNewCharacteristic}/>
+							<Route path="/adminPanel/action-on-products/add-new-characteristic"
+								   component={AddNewCharacteristic}/>
 							<Route path="/adminPanel/action-on-products/edit" component={Edit}/>
 							<Route path="/adminPanel/action-on-products/edit-characteristic"
 								   component={EditCharacteristic}/>
@@ -94,6 +102,8 @@ class AdminPanel extends React.Component {
 								   render={() => <div>Edit lock/unlock</div>}/>
 							<Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>
 							<Route path="/adminPanel/owner-settings" render={() => <div>owner settings</div>}/>
+							<Route exact path="/adminPanel/orders" component={Orders}/>
+							<Route path="/adminPanel/orders/:orderId" render={props => <FullOrder {...props}/>}/>
 							<Route component={NotFound}/>
 						</Switch>
 					</div>

@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Core.ValidationAttributes;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.Product
 {
-    public class AddPropertyToProductViewModel
+    public class AddPropertyToProductDto
     {
         [Required]
         public string SubCategory { get; set; }

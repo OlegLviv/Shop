@@ -4,9 +4,9 @@ import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} fr
 import {clearObjectProps, toUpperFirstChar} from "../../../../../utils/utils";
 import {apiDelete, apiGet, apiPost} from "../../../../../services/api";
 import {
-	ADD_POSSIBLE_PROPERTY,
+	ADD_POSSIBLE_PROPERTY_URL,
 	getProductPropsUrl,
-	getProductUrlForDeleteProperty
+	getDeleteProductPropertyUrl
 } from "../../../../../services/urls/productUrls";
 import {Icon} from 'react-fa';
 import {isValidPossibleProp} from "../../../../../utils/validationUtils";
@@ -46,6 +46,7 @@ class EditCharacteristic extends React.Component {
 				isValidNewPossibleProps: isValidNewPossibleProps,
 				possiblePropsErrors: possiblePropsErrors
 			});
+			return;
 		}
 		if (isValidPossibleProp(value) && !this.state.isValidNewPossibleProps[i]) {
 			const isValidNewPossibleProps = {...this.state.isValidNewPossibleProps};
@@ -56,6 +57,7 @@ class EditCharacteristic extends React.Component {
 				isValidNewPossibleProps: isValidNewPossibleProps,
 				possiblePropsErrors: possiblePropsErrors
 			});
+			return;
 		}
 		if (isValidPossibleProp(value) && this.state.isValidNewPossibleProps[i]) {
 			if (ifValid)
@@ -122,7 +124,7 @@ class EditCharacteristic extends React.Component {
 		console.log('body', body);
 		this.validateNewPossiblePropsChange(i, this.state.newPossibleProps[i], () => {
 			console.log('work');
-			apiPost(ADD_POSSIBLE_PROPERTY, body, err => {
+			apiPost(ADD_POSSIBLE_PROPERTY_URL, body, err => {
 				alert(`Error: ${err.response.data}`);
 			})
 				.then(resp => {
@@ -135,7 +137,7 @@ class EditCharacteristic extends React.Component {
 	};
 
 	onDeleteProperty = propName => {
-		apiDelete(getProductUrlForDeleteProperty(normalizeSubCategoryToRoute(this.state.subCategory),
+		apiDelete(getDeleteProductPropertyUrl(normalizeSubCategoryToRoute(this.state.subCategory),
 			propName), error => {
 			alert(`Error: ${error.response.data}`);
 		})

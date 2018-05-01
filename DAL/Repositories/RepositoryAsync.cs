@@ -1,11 +1,11 @@
 ﻿using Core.Interfaces;
-using Core.Models.DomainModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Models.DomainModels.Base;
 
 namespace DAL.Repositories
 {

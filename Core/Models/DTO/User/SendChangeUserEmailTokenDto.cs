@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.ViewModels
+namespace Core.Models.DTO.User
 {
-    public class SendChangeEmailTokenViewModel
+    public class SendChangeUserEmailTokenDto
     {
         [Required]
         public string NewEmail { get; set; }

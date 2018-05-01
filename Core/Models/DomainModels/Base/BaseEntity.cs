@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models.DomainModels
+namespace Core.Models.DomainModels.Base
 {
     public class BaseEntity : IBaseEntity
     {

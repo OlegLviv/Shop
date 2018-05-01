@@ -1,12 +1,14 @@
+@import '../../main';
+
 .container-p-card-place {
   padding: 2rem 5rem 0 5rem;
 
   &__footer {
 	display: flex;
 	justify-content: space-between;
-	background: #f3f3f3;
+	background: $light-background;
 	padding: 3rem 2rem 3rem 2rem;
-	border: 1px #d3d3d3 solid;
+	border: 1px $dark-grey-color solid;
 	border-radius: 5px;
 	&__total-info {
 
@@ -46,6 +48,7 @@
 		display: flex;
 		padding-top: 1rem;
 		flex-direction: column;
+		align-items: center;
 	  }
 	}
   }

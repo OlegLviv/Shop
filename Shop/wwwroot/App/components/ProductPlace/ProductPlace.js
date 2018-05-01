@@ -1,9 +1,9 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductUrlByCatSubCat, getProductsUrlByQuery} from "../../services/urls/productUrls";
+import {getProductByCatSubCatUrl, getProductsByQueryUrl} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
-import {addCookies} from "../../services/cookies";
+import {addProductCookies} from "../../services/cookies";
 import {addObjectQueryToProducts, createProductsQueryByObject} from "../../utils/productsUtils";
 import NavigationProducts from './NavigationProducts/NavigationProducts';
 import ExpandedNavigationProducts from "./NavigationProducts/ExpandedNavigationProducts";
@@ -42,7 +42,7 @@ class ProductPlace extends React.Component {
 		if (!category && !subCategory) {
 			return;
 		}
-		const prodUrl = getProductUrlByCatSubCat(category, subCategory);
+		const prodUrl = getProductByCatSubCatUrl(category, subCategory);
 		if (this.state.isProductsLoaded) {
 			this.setState({isProductsLoaded: false})
 		}
@@ -73,7 +73,7 @@ class ProductPlace extends React.Component {
 			this.setState({products: null});
 			return;
 		}
-		const prodUrl = getProductUrlByCatSubCat(getCategory(nextProps), getSubCategory(nextProps));
+		const prodUrl = getProductByCatSubCatUrl(getCategory(nextProps), getSubCategory(nextProps));
 		this.renderLoadingSpinner();
 		apiWithoutRedirect()
 			.get(prodUrl)
@@ -94,14 +94,14 @@ class ProductPlace extends React.Component {
 	}
 
 	onProductCardButClick = (e, id) => {
-		if (!this.props.isLogIn) {
-			addCookies('productsCard', id, 1);
-		}
+		// if (!this.props.isLogIn) {
+			addProductCookies('productsCard', id, 1);
+		// }
 	};
 
 	onLikeButClick = (e, id) => {
 		if (!this.props.isLogIn) {
-			addCookies('likeProducts', id, 1);
+			addProductCookies('likeProducts', id, 1);
 		}
 	};
 
@@ -117,7 +117,7 @@ class ProductPlace extends React.Component {
 	onPaginationChange = (pageNumber) => {
 		this.renderLoadingSpinner();
 		console.log(this.state.priceRangeForPagination);
-		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
+		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
 			getSubCategory(this.props),
 			this.state.priceRangeForPagination.minPrice,
 			this.state.priceRangeForPagination.maxPrice, ' ', pageNumber,
@@ -143,7 +143,7 @@ class ProductPlace extends React.Component {
 	onSearchByFilter = (priceFrom, priceTo, queryDictionary) => {
 		console.log('qd', queryDictionary);
 		this.renderLoadingSpinner();
-		const prodUrl = getProductsUrlByQuery(getCategory(this.props),
+		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
 			getSubCategory(this.props),
 			priceFrom,
 			priceTo,
@@ -190,6 +190,8 @@ class ProductPlace extends React.Component {
 
 
 	renderSwitchContent = () => {
+		console.log('loading', this.state.isProductsLoading);
+		console.log('loaded', this.state.isProductsLoaded);
 		if (!this.state.isProductsLoading && this.state.isProductsLoaded && (this.state.products ? this.state.products.length > 0 : false)) {
 			return (<div className="container-fluid container-products">
 				<div className="container-products__how-to-show">
@@ -238,9 +240,7 @@ class ProductPlace extends React.Component {
 		if (this.state.isProductsLoading && !this.state.isProductsLoaded) {
 			return <Spinner/>
 		}
-		if (!this.state.isProductsLoading && !this.state.isProductsLoaded) {
-			return <div>Def content</div>
-		}
+		else return <div>Def content</div>;
 	};
 
 // todo need fix if products > 0. Closing expanded nav products and can't continue filtration

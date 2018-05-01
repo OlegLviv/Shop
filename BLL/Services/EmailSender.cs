@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using BLL.Services.Interfaces;
 
 namespace BLL.Services
 {

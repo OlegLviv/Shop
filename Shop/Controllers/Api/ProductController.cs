@@ -9,11 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Common.Extensions;
 using Core.Interfaces;
 using BLL.Filters.ActionFilters;
-using BLL.Managers;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
+using BLL.Services;
 using Core.Models.DTO;
-using Core.Models.ViewModels;
+using Core.Models.DTO.Product;
+using Core.Models.DTO.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
@@ -29,19 +30,19 @@ namespace Shop.Controllers.Api
         private readonly AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
         private readonly IRepositoryAsync<ProductImage> _imageRepository;
-        private readonly ProductManager _productManager;
+        private readonly ProductService _productService;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
         public ProductController(AppDbContext context,
             IRepositoryAsync<Product> productsRepository,
-            ProductManager productManager,
+            ProductService productService,
             UserManager<User> userManager, IMapper mapper,
             IRepositoryAsync<ProductImage> imageRepository)
         {
             _context = context;
             _productsRepository = productsRepository;
-            _productManager = productManager;
+            _productService = productService;
             _userManager = userManager;
             _mapper = mapper;
             _imageRepository = imageRepository;
@@ -113,7 +114,7 @@ namespace Shop.Controllers.Api
             if (string.IsNullOrEmpty(query))
                 return this.JsonResult(paginator);
 
-            var result = _productManager
+            var result = _productService
                 .SelectProducts(query, products)
                 .Page(pageNumber, pageSize);
             var paginatorData = result as Product[] ?? result.ToArray();
@@ -127,7 +128,7 @@ namespace Shop.Controllers.Api
         [HttpGet("GetProductsByIds/{productIds}")]
         public IActionResult GetProductsByIds(string[] productIds)
         {
-            var products = _productManager
+            var products = _productService
                 .Select(_productsRepository.Table.Include(x => x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
 
@@ -261,7 +262,7 @@ namespace Shop.Controllers.Api
 
         [HttpPost("AddProduct")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> AddProduct([FromForm] AddProductViewModel model)
+        public async Task<IActionResult> AddProduct([FromForm] AddProductDto model)
         {
             var product = new Product
             {
@@ -303,7 +304,7 @@ namespace Shop.Controllers.Api
 
         // todo maybe it's no need
         [HttpPost("AddProductToShopingCard")]
-        public async Task<IActionResult> AddProductToShopingCard([FromBody] UserAddProductToShopingCard model)
+        public async Task<IActionResult> AddProductToShopingCard([FromBody] AddProductToShopingCardUserDto model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId) ??
                        await this.GetUserByIdentityAsync(_userManager);
@@ -323,15 +324,19 @@ namespace Shop.Controllers.Api
 
         [HttpPost("SendFeedback")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> SendFeeback([FromBody] SendFeedbackViewModel model)
+        public async Task<IActionResult> SendFeeback([FromBody] SendProductFeedbackDto model)
         {
             var product = await _productsRepository
                 .GetByIdAsync(model.ProductId);
+
             if (product == null)
                 return BadRequest("Product don't exist");
+
             var user = await _userManager.FindByIdAsync(model.UserId);
+
             if (user == null)
                 return BadRequest("User with this id don't exist");
+
             var feedback = new Feedback
             {
                 Product = product,
@@ -350,8 +355,10 @@ namespace Shop.Controllers.Api
                 .Add(feedback);
             var updateResult = await _productsRepository
                 .UpdateAsync(product);
+
             if (updateResult <= 0)
                 throw new Exception("Can't update product");
+            //  todo need mapping
             return this.JsonResult(new FeedbackDto
             {
                 UserName = user.Name,
@@ -364,15 +371,15 @@ namespace Shop.Controllers.Api
 
         [HttpPost("AddProperty")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductViewModel model)
+        public async Task<IActionResult> AddProperty([FromBody] AddPropertyToProductDto model)
         {
-            var addPropertyRes = await _productManager.AddNewPropertyAsync(model.SubCategory, model.PropName);
+            var addPropertyRes = await _productService.AddNewPropertyAsync(model.SubCategory, model.PropName);
 
             if (!addPropertyRes)
                 return BadRequest("Can't add new property");
 
             var addPossiblePropsRes =
-                await _productManager.AddNewPossiblePropertiesAsync(model.SubCategory, model.PropName,
+                await _productService.AddNewPossiblePropertiesAsync(model.SubCategory, model.PropName,
                     model.PropValues);
 
             if (!addPossiblePropsRes)
@@ -383,9 +390,9 @@ namespace Shop.Controllers.Api
 
         [HttpPost("AddPossibleProperty")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> AddPossibleProperty([FromBody] AddPossiblePropertyToProductViewModel model)
+        public async Task<IActionResult> AddPossibleProperty([FromBody] AddPossiblePropertyToProductDto model)
         {
-            var addPossiblePropRes = await _productManager
+            var addPossiblePropRes = await _productService
                 .AddNewPossiblePropertiesAsync(model.SubCategory,
                     model.PropName,
                     new List<string> { model.PossibleProperty });
@@ -402,7 +409,7 @@ namespace Shop.Controllers.Api
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpPut("EditProduct")]
-        public async Task<IActionResult> EditProduct([FromBody] EditProductViewModel model)
+        public async Task<IActionResult> EditProduct([FromBody] EditProductDto model)
         {
             var product = await _productsRepository
                 .GetByIdAsync(model.ProductId);
@@ -474,7 +481,7 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteProperty(string subCategory, string propName)
         {
-            if (!await _productManager.DeletePropertyAsync(subCategory, propName))
+            if (!await _productService.DeletePropertyAsync(subCategory, propName))
                 return BadRequest("Can't delete property");
 
             return Ok("Success");

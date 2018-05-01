@@ -1,4 +1,6 @@
 ﻿
+using Core.Models.DomainModels.Base;
+
 namespace Core.Models.DomainModels
 {
     public class ShopingCard : BaseEntity

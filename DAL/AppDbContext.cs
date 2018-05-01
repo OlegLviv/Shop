@@ -1,4 +1,5 @@
 ﻿using Core.Models.DomainModels;
+using Core.Models.DomainModels.Base;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,9 @@ namespace DAL
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductProperty> ProductProperties { get; set; }
         public DbSet<PossibleProductProperty> PossibleProductProperties { get; set; }
+        public DbSet<UserOrder> UserOrders { get; set; }
+        public DbSet<AnonimOrder> AnonimOrders { get; set; }
+        public DbSet<BaseOrder> BaseOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
