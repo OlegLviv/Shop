@@ -86,6 +86,11 @@ class ProductCardPlace extends React.Component {
 			});
 	}
 
+	componentWillReceiveProps(nextProps) {
+		console.log(this.props);
+		console.log(nextProps);
+	}
+
 	getTotalPrice = () => {
 		const {products, productsCounts} = this.state;
 		let total = 0;
@@ -149,7 +154,8 @@ class ProductCardPlace extends React.Component {
 	renderMakeOrderModal = () => <MakeOrderModal
 		isModalOpen={this.state.isMakeOrderModalOpen}
 		onCloseModal={this.onCloseMakeOrderModal}
-		onSubmitOrder={this.onSubmitOrder}/>;
+		onSubmitOrder={this.onSubmitOrder}
+		user={this.props.user}/>;
 
 	renderSwitchContent = () => {
 		const {isProductsLoading, isProductsLoaded, isNotProducts} = this.state;

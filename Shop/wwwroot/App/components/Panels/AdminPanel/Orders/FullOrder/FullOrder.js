@@ -1,7 +1,7 @@
 import React from 'react';
 import './FullOrder.scss';
-import {apiGet} from "../../../../../services/api";
-import {getOrderUrl} from "../../../../../services/urls/orderUrls";
+import {apiGet, apiPut} from "../../../../../services/api";
+import {getChangeOrderStatusUrl, getOrderUrl} from "../../../../../services/urls/orderUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {getProductsByIdsUrl} from "../../../../../services/urls/productUrls";
 import {OrderStatus} from "../../../../common/OrderStatus/OrderStatus";
@@ -13,22 +13,16 @@ class FullOrder extends React.Component {
 			order: null,
 			isLoading: true,
 			isLoaded: false,
-			productsContainer: []
+			productsContainer: [],
+			isOrderStatusExpanded: false
 		}
 	}
 
 	componentDidMount() {
-		apiGet(getOrderUrl(this.getId()))
-			.then(resp => {
-				console.log(resp.data);
-				this.updateProducts(resp.data.orders);
-				this.setState({
-					order: resp.data
-				});
-			});
+		this.updateOrder();
 	}
 
-	updateProducts = (orders) => {
+	updateProducts = orders => {
 		apiGet(getProductsByIdsUrl(orders.map(order => order.productId)))
 			.then(resp => {
 				const productsContainer = [];
@@ -42,10 +36,41 @@ class FullOrder extends React.Component {
 					isLoaded: true,
 					isLoading: false
 				});
+				if (this.state.isOrderStatusExpanded)
+					this.setState({isOrderStatusExpanded: false});
+			});
+	};
+
+	updateOrder = () => {
+		this.setState({isLoading: true, isLoaded: false});
+		apiGet(getOrderUrl(this.getId()))
+			.then(resp => {
+				this.updateProducts(resp.data.orders);
+				this.setState({
+					order: resp.data
+				});
 			});
 	};
 
 	getId = () => this.props.match.params['orderId'];
+
+	onExpandOrderStatusClick = () => this.setState({isOrderStatusExpanded: true});
+
+	onOrdersStatusChange = ({target}) => {
+		const order = {...this.state.order};
+		order.orderStatus = target.value;
+		this.setState({order: order});
+	};
+
+	onSaveOrderStatus = () => {
+		apiPut(getChangeOrderStatusUrl(this.state.order.id, this.state.order.orderStatus), err => alert('Error'))
+			.then(resp => {
+				if (resp.status === 200) {
+					this.updateOrder();
+					alert('Статус успішно змінено');
+				}
+			});
+	};
 
 	renderUserInfo = () => {
 		return (
@@ -108,7 +133,24 @@ class FullOrder extends React.Component {
 					<tr>
 						<td>Статус замовлення</td>
 						<td>
-							<OrderStatus orderStatus={this.state.order.orderStatus}/>
+							{!this.state.isOrderStatusExpanded &&
+							<OrderStatus orderStatus={this.state.order.orderStatus}/>}
+							{this.state.isOrderStatusExpanded &&
+							<select onChange={this.onOrdersStatusChange} value={this.state.order.orderStatus}>
+								<option value={0}>Нове</option>
+								<option value={1}>Переглянуте</option>
+								<option value={2}>Відіслано</option>
+								<option value={3}>Очікує на отримання</option>
+								<option value={4}>Закрито</option>
+							</select>}
+							<div className="order-status-nav-box">
+								<button className="btn btn-info"
+										onClick={this.onExpandOrderStatusClick}>Змінити
+								</button>
+								{this.state.isOrderStatusExpanded &&
+								<button className="btn btn-primary" onClick={this.onSaveOrderStatus}>Зберегти</button>
+								}
+							</div>
 						</td>
 					</tr>
 					</tbody>

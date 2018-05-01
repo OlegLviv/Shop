@@ -5,6 +5,7 @@ import {getOrdersUrl} from "../../../../services/urls/orderUrls";
 import Pagination from 'react-js-pagination';
 import {Link} from 'react-router-dom';
 import {Spinner} from "../../../Spinner/Spinner";
+import {convertOrderStatus} from "../../../../utils/orderUtils";
 
 const itemPerPage = 5;
 
@@ -85,7 +86,7 @@ class Orders extends React.Component {
 			);
 		if (this.state.isLoaded && !this.state.isLoading && this.state.orders.length === 0)
 			return (<div className="text-center my-5">
-				<h5>Нових замовлень немає</h5>
+				<h5>{`Нових замовлень з статусом *${convertOrderStatus(this.state.orderStatus)}* немає`}</h5>
 			</div>);
 		else return (<Spinner/>);
 	};

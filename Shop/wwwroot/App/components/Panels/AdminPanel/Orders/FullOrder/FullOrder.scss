@@ -26,3 +26,13 @@
 	color: $dark-grey-color;
   }
 }
+
+.order-status-nav-box {
+  padding-top: .5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.order-status-nav-box button {
+  margin: .3rem;
+}
