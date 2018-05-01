@@ -95,7 +95,7 @@ class ProductPlace extends React.Component {
 
 	onProductCardButClick = (e, id) => {
 		// if (!this.props.isLogIn) {
-			addProductCookies('productsCard', id, 1);
+		addProductCookies('productsCard', id, 1);
 		// }
 	};
 
@@ -142,6 +142,8 @@ class ProductPlace extends React.Component {
 
 	onSearchByFilter = (priceFrom, priceTo, queryDictionary) => {
 		console.log('qd', queryDictionary);
+		if (!queryDictionary)
+			return;
 		this.renderLoadingSpinner();
 		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
 			getSubCategory(this.props),
@@ -190,8 +192,6 @@ class ProductPlace extends React.Component {
 
 
 	renderSwitchContent = () => {
-		console.log('loading', this.state.isProductsLoading);
-		console.log('loaded', this.state.isProductsLoaded);
 		if (!this.state.isProductsLoading && this.state.isProductsLoaded && (this.state.products ? this.state.products.length > 0 : false)) {
 			return (<div className="container-fluid container-products">
 				<div className="container-products__how-to-show">
