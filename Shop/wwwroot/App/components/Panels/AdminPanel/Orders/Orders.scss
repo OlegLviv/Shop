@@ -3,6 +3,8 @@
 .orders-container {
   padding: 2rem;
   &__header {
+	display: flex;
+	justify-content: space-between;
 	padding: 1rem;
 	background: $dark-background;
 	color: $dark-grey-color;

@@ -48,15 +48,16 @@ class Orders extends React.Component {
 			});
 	};
 
+	onOrdersStatusChange = ({target}) => this.setState({orderStatus: Number(target.value)});
+
 	onPaginationChange = pageNumber => {
 		this.setState({activePage: pageNumber});
 	};
 
-	render() {
-		if (this.state.isLoaded && !this.state.isLoading)
+	renderSwitchContent = () => {
+		if (this.state.isLoaded && !this.state.isLoading && this.state.orders.length > 0)
 			return (
-				<div className="orders-container">
-					<div className="orders-container__header">Список замовлень</div>
+				<div>
 					<ul className="list-group orders-container__list-group">
 						{
 							this.state.orders.map(order =>
@@ -82,7 +83,29 @@ class Orders extends React.Component {
 					</div>
 				</div>
 			);
+		if (this.state.isLoaded && !this.state.isLoading && this.state.orders.length === 0)
+			return (<div className="text-center my-5">
+				<h5>Нових замовлень немає</h5>
+			</div>);
 		else return (<Spinner/>);
+	};
+
+	render() {
+		return (
+			<div className="orders-container">
+				<div className="orders-container__header">
+					<div>Список замовлень</div>
+					<select onChange={this.onOrdersStatusChange} value={this.state.orderStatus}>
+						<option value={0}>Нові</option>
+						<option value={1}>Переглянуті</option>
+						<option value={2}>Відіслані</option>
+						<option value={3}>Очікують на отримання</option>
+						<option value={4}>Закриті</option>
+					</select>
+				</div>
+				{this.renderSwitchContent()}
+			</div>
+		);
 	}
 }
 

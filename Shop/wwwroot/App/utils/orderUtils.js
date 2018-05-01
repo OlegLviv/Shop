@@ -13,7 +13,7 @@ export const createOrders = (productIds, counts) => {
 	return orderArr;
 };
 
-export const converOrderSatus = orderStatus => {
+export const convertOrderStatus = orderStatus => {
 	switch (orderStatus) {
 		case 0:
 			return 'Нове';

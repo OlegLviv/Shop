@@ -1,6 +1,6 @@
 import React from 'react';
 import './OrderStatus.scss';
-import {converOrderSatus} from "../../../utils/orderUtils";
+import {convertOrderStatus} from "../../../utils/orderUtils";
 
 const switchColor = orderStatus => {
 	switch (orderStatus) {
@@ -23,7 +23,7 @@ export const OrderStatus = props => {
 			 style={{
 				 background: switchColor(props.orderStatus)
 			 }}>
-			{converOrderSatus(props.orderStatus)}
+			{convertOrderStatus(props.orderStatus)}
 		</div>
 	);
 };
