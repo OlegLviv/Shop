@@ -8,6 +8,7 @@ import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
 import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
 import {getRandomArbitrary} from "../../utils/utils";
+import {addProductCookies} from "../../services/cookies";
 
 const getProductId = (props) => props.match.params.productId;
 
@@ -22,7 +23,8 @@ class FullInfoProductPlace extends React.Component {
 			feedbackValue: '',
 			isLoadingFeedbacks: false,
 			isLoadedFeedbacks: false,
-			selectedImgUrl: ''
+			selectedImgUrl: '',
+			isAddedToBacket: false
 		}
 	}
 
@@ -134,6 +136,11 @@ class FullInfoProductPlace extends React.Component {
 	};
 
 	onSmallImgClick = src => this.setState({selectedImgUrl: src});
+
+	onAddToBackedClick = () => {
+		addProductCookies('productsCard', this.state.product.id, this.state.productCount, 1);
+		this.setState({isAddedToBacket: true});
+	};
 
 	renderDescription = () => {
 		return (
@@ -280,7 +287,12 @@ class FullInfoProductPlace extends React.Component {
 											</button>
 										</div>
 										<div className="container-product__row__info-container__to-card__btn-to-card">
-											<button className="btn btn-dark btn-lg">В кошик</button>
+											<button className="btn btn-dark btn-lg" onClick={this.onAddToBackedClick}
+													disabled={this.state.isAddedToBacket}>
+												{
+													this.state.isAddedToBacket ? 'Додано' : 'В кошик'
+												}
+											</button>
 											<button className="btn btn-info btn-lg">В обране</button>
 										</div>
 									</div>
