@@ -1,6 +1,9 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductByCatSubCatUrl, getProductsByQueryUrl} from "../../services/urls/productUrls";
+import {
+    getProductByCatSubCatUrl, getProductImageCountUrl, getProductImageUrl,
+    getProductsByQueryUrl
+} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addProductCookies} from "../../services/cookies";
@@ -34,7 +37,8 @@ class ProductPlace extends React.Component {
                 minPrice: priceRange.minPrice,
                 maxPrice: priceRange.maxPrice
             },
-            isExpandedNavProd: true
+            isExpandedNavProd: true,
+            productsImages: {}
         }
     }
 
@@ -189,6 +193,21 @@ class ProductPlace extends React.Component {
 
     onBackExpNavProdClick = () => this.setState({isExpandedNavProd: false});
 
+    fetchImgSrc = id => {
+        const GET_PRODUCT_IMG = getProductImageUrl(id, 0);
+        const GET_PRODUCT_IMG_COUNT = getProductImageCountUrl(id);
+
+        return Promise.resolve(apiWithoutRedirect()
+            .get(GET_PRODUCT_IMG_COUNT)
+            .then(resp => {
+                if (resp.data > 0) {
+                    return GET_PRODUCT_IMG;
+                }
+                else
+                    return 'https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png';
+            }));
+    };
+
     renderLoadingSpinner = () => {
         this.setState({isProductsLoading: true});
         if (this.state.isProductsLoaded) {
@@ -219,6 +238,8 @@ class ProductPlace extends React.Component {
                             <div
                                 className="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-6 container-products__row__item">
                                 <ProductCard
+                                    imgSrcPromise={this.fetchImgSrc(item.id)}
+                                    defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
                                     product={item}
                                     key={item.id}
                                     onLikeButClick={this.onLikeButClick}

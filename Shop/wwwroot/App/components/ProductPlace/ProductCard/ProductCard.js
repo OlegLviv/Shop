@@ -7,12 +7,20 @@ class ProductCard extends React.Component {
         super(props);
         this.state = {
             inProductCardTextBut: 'В кошик',
-            isEnableInProductCardBut: true
+            isEnableInProductCardBut: true,
+            imgSrc: this.props.defaultImgSrc
         }
     }
 
+    componentDidMount() {
+        this.props.imgSrcPromise.then(data => this.setState({imgSrc: data}))
+    }
+
+    componentWillReceiveProps(nextProps) {
+        nextProps.imgSrcPromise.then(data => this.setState({imgSrc: data}))
+    }
+
     onProductCardButClick = (e) => {
-        // todo need fix 'if user can revert product'
         if (this.state.inProductCardTextBut !== 'Додано') {
             this.setState((prev) => ({
                 inProductCardTextBut: 'Додано',
@@ -30,7 +38,7 @@ class ProductCard extends React.Component {
         return (
             <div className="card card-dev">
                 <img className="card-img-top"
-                     src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
+                     src={this.state.imgSrc}
                      alt="Card image cap"/>
                 <div className="card-body">
                     <Link to={`/product/${this.props.product.id}`}>
