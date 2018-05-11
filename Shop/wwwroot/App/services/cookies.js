@@ -58,7 +58,7 @@ export const getCookie = (cname) => {
 export const getProductsCookies = cname => {
 	const prodCookie = getCookie(cname);
 
-	if(!prodCookie)
+	if (!prodCookie)
 		return [];
 
 	const idCountArr = prodCookie.split(',');
@@ -67,7 +67,7 @@ export const getProductsCookies = cname => {
 	for (const i in idCountArr) {
 		idCountObjArr.push({
 			id: idCountArr[i].split('--')[0],
-			count: idCountArr[i].split('--')[1]
+			count: Number(idCountArr[i].split('--')[1])
 		});
 	}
 	return idCountObjArr;

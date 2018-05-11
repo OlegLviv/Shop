@@ -6,6 +6,7 @@ import {getCookie} from '../../../services/cookies';
 import Autocomplete from 'react-autocomplete';
 import {apiWithoutRedirect} from "../../../services/api";
 import {getProductsByNameUrl} from "../../../services/urls/productUrls";
+import {connect} from 'react-redux';
 
 const getLikeProductsCount = () => {
 	const prodCookie = getCookie('likeProducts');
@@ -24,12 +25,10 @@ const autocompleteMenuStyle = {
 	'min-width': '20rem'
 };
 
-const getProductCardItemCount = () => {
-	const prodCookie = getCookie('productsCard');
-	if (!prodCookie.split(',')[0]) {
-		return 0;
-	}
-	return prodCookie.split(',').length;
+const getProductCardItemCount = ({products}) => {
+	let sum = 0;
+	products.map(product => sum += product.count);
+	return sum;
 };
 
 class NavMenu extends React.Component {
@@ -72,8 +71,9 @@ class NavMenu extends React.Component {
 	};
 
 	render() {
+		console.log(this.props.products);
 		const likeProdCount = getLikeProductsCount();
-		const productCardItemsCount = getProductCardItemCount();
+		const productCardItemsCount = getProductCardItemCount(this.props);
 		return (
 			<div className="menu-container">
 				<nav className="navbar navbar-expand-lg navbar-light menu-container__navbar">
@@ -125,4 +125,6 @@ class NavMenu extends React.Component {
 	}
 }
 
-export default NavMenu;
+export default connect(state => ({
+	products: state.products
+}))(NavMenu);
