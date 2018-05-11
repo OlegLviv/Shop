@@ -2,7 +2,7 @@
 
 .container-p-card-place {
   padding: 2rem 5rem 0 5rem;
-
+	min-height: 100vh;
   &__footer {
 	display: flex;
 	justify-content: space-between;
