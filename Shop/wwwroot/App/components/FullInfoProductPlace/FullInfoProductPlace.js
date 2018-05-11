@@ -9,6 +9,7 @@ import {Spinner} from "../Spinner/Spinner";
 import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
 import {getRandomArbitrary} from "../../utils/utils";
 import {addProductCookies} from "../../services/cookies";
+import {connect} from 'react-redux';
 
 const getProductId = (props) => props.match.params.productId;
 
@@ -24,7 +25,7 @@ class FullInfoProductPlace extends React.Component {
 			isLoadingFeedbacks: false,
 			isLoadedFeedbacks: false,
 			selectedImgUrl: '',
-			isAddedToBacket: false
+			addProductButText: 'В кошик'
 		}
 	}
 
@@ -36,6 +37,12 @@ class FullInfoProductPlace extends React.Component {
 	// todo need add catch
 	componentWillReceiveProps(nextProps) {
 		this.updateProduct(nextProps);
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		if (this.state.addProductButText !== nextState.addProductButText) {
+			setTimeout(() => this.setState({addProductButText: 'В кошик'}), 2500);
+		}
 	}
 
 	updateProduct = props => {
@@ -138,8 +145,12 @@ class FullInfoProductPlace extends React.Component {
 	onSmallImgClick = src => this.setState({selectedImgUrl: src});
 
 	onAddToBackedClick = () => {
+		if (this.state.addProductButText === 'Додано')
+			return;
+
 		addProductCookies('productsCard', this.state.product.id, this.state.productCount, 1);
-		this.setState({isAddedToBacket: true});
+		this.props.onAddNewProduct(this.state.product.id, this.state.productCount);
+		this.setState({addProductButText: 'Додано'});
 	};
 
 	renderDescription = () => {
@@ -287,10 +298,9 @@ class FullInfoProductPlace extends React.Component {
 											</button>
 										</div>
 										<div className="container-product__row__info-container__to-card__btn-to-card">
-											<button className="btn btn-dark btn-lg" onClick={this.onAddToBackedClick}
-													disabled={this.state.isAddedToBacket}>
+											<button className="btn btn-dark btn-lg" onClick={this.onAddToBackedClick}>
 												{
-													this.state.isAddedToBacket ? 'Додано' : 'В кошик'
+													this.state.addProductButText
 												}
 											</button>
 											<button className="btn btn-info btn-lg">В обране</button>
@@ -307,4 +317,6 @@ class FullInfoProductPlace extends React.Component {
 	}
 }
 
-export default FullInfoProductPlace;
+export default connect(state => ({}), dispatch => ({
+	onAddNewProduct: (id, count) => dispatch({type: 'ADD_NEW', id: id, count: count})
+}))(FullInfoProductPlace);

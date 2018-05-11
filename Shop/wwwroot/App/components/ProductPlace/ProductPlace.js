@@ -101,8 +101,9 @@ class ProductPlace extends React.Component {
 			});
 	}
 
-	onProductCardButClick = (e, id) => {
-		// if (!this.props.isLogIn) {
+	onAddProductToShoppingCardButClick = (e, id) => {
+		// if (this.state.) {
+		console.log('click');
 		addProductCookies('productsCard', id, 1);
 		this.props.onAddProductToShoppingCard(id, 1);
 		// }
@@ -244,7 +245,7 @@ class ProductPlace extends React.Component {
 									product={item}
 									key={item.id}
 									onLikeButClick={this.onLikeButClick}
-									onProductCardButClick={this.onProductCardButClick}/>
+									onAddProduct={this.onAddProductToShoppingCardButClick}/>
 							</div>
 						)
 					})}

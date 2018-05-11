@@ -1,24 +1,15 @@
-import {getProductsCookies} from "../services/cookies";
+import {getProductsOutOfCookies} from "../services/cookies";
 
-const initialState = getProductsCookies('productsCard');
+const initialState = getProductsOutOfCookies('productsCard');
 
 export const products = (state = initialState, action) => {
 	switch (action.type) {
 		case 'ADD_NEW':
-			let canReturnDef = false;
-			state.forEach((product) => {
-				if (product.id === action.id) {
-					canReturnDef = true;
-					return;
-				}
-			});
-			if (canReturnDef)
-				return state;
-			else return [
+			return [
 				...state,
 				{
 					id: action.id,
-					count: action.count
+					count: Number(action.count)
 				}
 			];
 		default:

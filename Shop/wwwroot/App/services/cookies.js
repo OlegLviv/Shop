@@ -16,27 +16,29 @@ export const setCookies = (name, values, days) => {
 export const addProductCookies = (name, id, count, days) => {
 	const d = new Date();
 	const idCountStr = `${id}--${count}`;
+
 	d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+
 	const expires = "expires=" + d.toUTCString();
-	const oldCookie = getCookie(name);
-	if (oldCookie === idCountStr) {
+	const products = getProductsOutOfCookies(name);
+	let newCookie = '';
+
+	if(!products.length){
+		document.cookie = `${name}=${idCountStr};${expires};path=/`;
 		return;
 	}
-	const oldCookies = oldCookie.split(',');
-	for (let cookie in oldCookies) {
-		if (oldCookies[cookie] === idCountStr) {
+
+	for (const i in products) {
+		if (id === products[i].id) {
+			products[i].count += count;
+			newCookie = products.map(product => `${product.id}--${product.count}`).join(',');
+			document.cookie = `${name}=${newCookie};${expires};path=/`;
 			return;
 		}
 	}
-	if (!oldCookie) {
-		document.cookie = name + "=" + idCountStr + ";" + expires + ";path=/";
-		return;
-	}
-	let newCookie = '';
-	if (oldCookie) {
-		newCookie = oldCookie.concat(`,${idCountStr}`);
-	}
-	document.cookie = name + "=" + newCookie + ";" + expires + ";path=/";
+
+	newCookie = products.map(product => `${product.id}--${product.count}`).join(',').concat(`,${idCountStr}`);
+	document.cookie = `${name}=${newCookie};${expires};path=/`;
 };
 
 export const getCookie = (cname) => {
@@ -55,7 +57,7 @@ export const getCookie = (cname) => {
 	return '';
 };
 
-export const getProductsCookies = cname => {
+export const getProductsOutOfCookies = cname => {
 	const prodCookie = getCookie(cname);
 
 	if (!prodCookie)
