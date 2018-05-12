@@ -51,7 +51,7 @@ class Layout extends React.Component {
 						<Route path='/likedProducts' render={() => <div>{'prod'}</div>}/>
 						<Route component={NotFound}/>
 					</Switch>
-					<Footer/>
+					<Footer user={user} isLogIn={isLogIn}/>
 				</div>
 			</Router>
 		);

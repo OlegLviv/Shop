@@ -16,6 +16,11 @@ class Footer extends React.Component {
 		}
 	}
 
+	componentWillUpdate({isLogIn, user}) {
+		if (isLogIn && user && this.props.isLogIn !== isLogIn)
+			this.setState({emailToSubscribe: user.email});
+	}
+
 	validateEmail = (value, validAction) => {
 		if (!isValidEmail(value)) {
 			this.setState({isValidEmail: false});
