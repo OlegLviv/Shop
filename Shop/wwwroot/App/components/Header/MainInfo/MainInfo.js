@@ -4,7 +4,7 @@ import RegisterModal from '../../Modal/RegisterModal/RegisterModal';
 import LogInModal from '../../Modal/LogInModal/LogInModal';
 import './MainInfo.scss';
 import {apiWithoutRedirect} from "../../../services/api";
-import {GET_USER_INFO} from "../../../services/urls/userUrls";
+import {GET_USER_INFO_URL} from "../../../services/urls/userUrls";
 import {singOutToken} from "../../../services/authService";
 
 class MainInfo extends React.Component {
@@ -19,7 +19,7 @@ class MainInfo extends React.Component {
 
 	componentDidMount() {
 		apiWithoutRedirect()
-			.get(GET_USER_INFO)
+			.get(GET_USER_INFO_URL)
 			.then(resp => {
 				if (resp.data.userName) {
 					this.props.onLogIn(resp.data);

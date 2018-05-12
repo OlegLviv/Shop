@@ -1,7 +1,7 @@
 import React from 'react';
 import './ChangePassword.scss';
 import {apiPost} from "../../../../services/api";
-import {CHANGE_USER_PASSWORD} from "../../../../services/urls/userUrls";
+import {CHANGE_USER_PASSWORD_URL} from "../../../../services/urls/userUrls";
 import {isValidPassword, isValidWhiteSpace} from "../../../../utils/validationUtils";
 import {SuccessChangedPasswordModal} from "./SuccessChangedPasswordModal";
 import {Spinner} from "../../../Spinner/Spinner";
@@ -96,7 +96,7 @@ class ChangePassword extends React.Component {
 
 		this.trySetLoadings();
 
-		apiPost(CHANGE_USER_PASSWORD, this.createChangePasswordModel(), ({response}) => {
+		apiPost(CHANGE_USER_PASSWORD_URL, this.createChangePasswordModel(), ({response}) => {
 			if (response.status === 400 && response.data === 'Incorrect password')
 				this.setState({
 					isValidOldPassword: false,

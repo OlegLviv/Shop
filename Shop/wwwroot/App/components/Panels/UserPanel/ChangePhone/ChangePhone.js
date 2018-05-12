@@ -1,7 +1,7 @@
 import React from 'react';
 import './ChangePhone.scss';
 import {isValidPhoneNumber} from "../../../../utils/validationUtils";
-import {GET_USER_INFO} from "../../../../services/urls/userUrls";
+import {GET_USER_INFO_URL} from "../../../../services/urls/userUrls";
 import {apiGet} from "../../../../services/api";
 
 //	todo need implement in future
@@ -17,7 +17,7 @@ class ChangePhone extends React.Component {
 	}
 
 	componentDidMount() {
-		apiGet(GET_USER_INFO)
+		apiGet(GET_USER_INFO_URL)
 			.then(resp => {
 				console.log(resp);
 				this.setState({oldPhone: resp.data.phoneNumber});

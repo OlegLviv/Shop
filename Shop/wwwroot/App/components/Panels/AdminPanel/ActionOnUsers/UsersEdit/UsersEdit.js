@@ -4,7 +4,7 @@ import {apiGet, apiPut} from "../../../../../services/api";
 import {
 	getUserByNameOrLastNameUrl,
 	getUserByIdUrl,
-	EDIT_USER_PERSONAL_DATA
+	EDIT_USER_PERSONAL_DATA_URL
 } from "../../../../../services/urls/userUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {SuccessUpdatedUserDataModal} from "./SuccessUpdatedUserDataModal";
@@ -90,7 +90,7 @@ class UsersEdit extends React.Component {
 		};
 
 		this.trySetTrueLoadings();
-		apiPut(EDIT_USER_PERSONAL_DATA, user)
+		apiPut(EDIT_USER_PERSONAL_DATA_URL, user)
 			.then(resp => {
 				if (resp.status === 200) {
 					this.setState({isLoaded: true, isLoading: false, isShowSuccessUpdatedUserModal: true});

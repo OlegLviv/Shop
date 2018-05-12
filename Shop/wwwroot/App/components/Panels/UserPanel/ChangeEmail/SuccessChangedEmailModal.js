@@ -1,13 +1,13 @@
 import React from 'react';
 import {AlertModal} from "../../../common/AlertModal/AlertModal";
 
-export const SuccessChangedPasswordModal = ({isOpen, onClose}) => {
+export const SuccessChangedEmailModal = ({isOpen, onClose}) => {
 	return (
 		<AlertModal isOpen={isOpen}
 					onCloseAlertModal={onClose}
-					headerText="Зміна паролю"
+					headerText="Зміна Email"
 					subjectText="Успішно"
-					body="Пароль успішно змінено"
+					body="Email успішно змінено"
 		/>
 	)
 };

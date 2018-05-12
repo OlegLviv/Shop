@@ -12,7 +12,7 @@ import Edit from './ActionOnProducts/Edit/Edit';
 import UserEdit from './ActionOnUsers/UsersEdit/UsersEdit';
 import {Spinner} from "../../Spinner/Spinner";
 import {apiGet} from "../../../services/api";
-import {GET_USER_ROLE} from "../../../services/urls/userUrls";
+import {GET_USER_ROLE_URL} from "../../../services/urls/userUrls";
 import EditCharacteristic from './ActionOnProducts/EditCharacteristics/EditCharacteristic';
 import Orders from './Orders/Orders';
 import FullOrder from './Orders/FullOrder/FullOrder';
@@ -57,7 +57,7 @@ class AdminPanel extends React.Component {
 	}
 
 	componentDidMount() {
-		apiGet(GET_USER_ROLE)
+		apiGet(GET_USER_ROLE_URL)
 			.then(resp => {
 				console.log(resp);
 				if (resp.data.role === 'Admin')
