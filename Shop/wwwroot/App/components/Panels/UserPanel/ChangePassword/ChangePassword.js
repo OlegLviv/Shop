@@ -3,6 +3,8 @@ import './ChangePassword.scss';
 import {apiPost} from "../../../../services/api";
 import {CHANGE_USER_PASSWORD} from "../../../../services/urls/userUrls";
 import {isValidPassword, isValidWhiteSpace} from "../../../../utils/validationUtils";
+import {SuccessChangedPasswordModal} from "./SuccessChangedPasswordModal";
+import {Spinner} from "../../../Spinner/Spinner";
 
 class ChangePassword extends React.Component {
 	constructor(props) {
@@ -16,9 +18,19 @@ class ChangePassword extends React.Component {
 			isValidConfirmedNewPassword: true,
 			newPasswordError: '',
 			oldPasswordError: '',
-			confirmedNewPasswordError: ''
+			confirmedNewPasswordError: '',
+			isShowSuccessChangedPasswordModal: false,
+			isLoaded: true,
+			isLoading: false
 		}
 	}
+
+	trySetLoadings = () => {
+		if (!this.state.isLoading)
+			this.setState({isLoading: true});
+		if (this.state.isLoaded)
+			this.setState({isLoaded: false});
+	};
 
 	createChangePasswordModel = () => ({
 		oldPassword: this.state.oldPassword,
@@ -82,18 +94,34 @@ class ChangePassword extends React.Component {
 		if (!this.isValidAllFields())
 			return;
 
-		//	todo need add normal alert
+		this.trySetLoadings();
+
 		apiPost(CHANGE_USER_PASSWORD, this.createChangePasswordModel(), ({response}) => {
 			if (response.status === 400 && response.data === 'Incorrect password')
 				this.setState({
 					isValidOldPassword: false,
-					oldPasswordError: 'Невірний пароль'
+					oldPasswordError: 'Невірний пароль',
+					isLoading: false,
+					isLoaded: true
 				});
-			console.log('err resp', response);
+			else alert(`Error: ${response.data}`);
 		})
 			.then(resp => {
 				if (resp.status === 200 && resp.data === 'Success')
-					alert('Пароль змінено успішно');
+					this.setState({
+						isShowSuccessChangedPasswordModal: true,
+						oldPassword: '',
+						newPassword: '',
+						confirmedNewPassword: '',
+						isLoading: false,
+						isLoaded: true
+					});
+			})
+			.catch(() => {
+				this.setState({
+					isLoading: false,
+					isLoaded: true
+				});
 			});
 	};
 
@@ -112,45 +140,58 @@ class ChangePassword extends React.Component {
 		this.validateConfirmedNewPassword(e.target.value);
 	};
 
+	onCloseSuccessChangedPasswordModal = () => this.setState({isShowSuccessChangedPasswordModal: false});
+
 	renderError = text => <small className="invalid-small">{text}</small>;
+
+	renderSuccessChangedPasswordModal = () => <SuccessChangedPasswordModal
+		isOpen={this.state.isShowSuccessChangedPasswordModal}
+		onClose={this.onCloseSuccessChangedPasswordModal}/>;
+
+	renderChangePasswordForm = () => {
+		return (
+			<div className="cp-container__form">
+				<div className="form-group">
+					<label htmlFor="inputOldPas">Старий пароль</label>
+					<input className={`form-control ${!this.state.isValidOldPassword && 'invalid-input'}`}
+						   onChange={this.onChangeOldPass}
+						   value={this.state.oldPassword}
+						   type="password"
+						   id="inputOldPas"
+						   placeholder="Введіть старий пароль"/>
+					{!this.state.isValidOldPassword && this.renderError(this.state.oldPasswordError)}
+				</div>
+				<div className="form-group">
+					<label htmlFor="inputNewPas">Новий пароль</label>
+					<input className={`form-control ${!this.state.isValidNewPassword && 'invalid-input'}`}
+						   onChange={this.onChangeNewPassword}
+						   value={this.state.newPassword}
+						   type="password"
+						   id="inputNewPas"
+						   placeholder="Введіть новий пароль"/>
+					{!this.state.isValidNewPassword && this.renderError(this.state.newPasswordError)}
+				</div>
+				<div className="form-group">
+					<label htmlFor="inputConfirmNewPas">Повторіть пароль</label>
+					<input className={`form-control ${!this.state.isValidConfirmedNewPassword && 'invalid-input'}`}
+						   onChange={this.onChangeConfirmedNewPassword}
+						   value={this.state.confirmedNewPassword}
+						   type="password"
+						   id="inputConfirmNewPas"
+						   placeholder="Повторіть старий пароль"/>
+					{!this.state.isValidConfirmedNewPassword && this.renderError(this.state.confirmedNewPasswordError)}
+				</div>
+				<button className="btn btn-info" onClick={this.onPasswordSubmit}>Змінити</button>
+			</div>
+		)
+	};
 
 	render() {
 		return (
 			<div className="cp-container">
+				{this.renderSuccessChangedPasswordModal()}
 				<div className="cp-container__header">Зміна паролю</div>
-				<div className="cp-container__form">
-					<div className="form-group">
-						<label htmlFor="inputOldPas">Старий пароль</label>
-						<input className={`form-control ${!this.state.isValidOldPassword && 'invalid-input'}`}
-							   onChange={this.onChangeOldPass}
-							   value={this.state.oldPassword}
-							   type="password"
-							   id="inputOldPas"
-							   placeholder="Введіть старий пароль"/>
-						{!this.state.isValidOldPassword && this.renderError(this.state.oldPasswordError)}
-					</div>
-					<div className="form-group">
-						<label htmlFor="inputNewPas">Новий пароль</label>
-						<input className={`form-control ${!this.state.isValidNewPassword && 'invalid-input'}`}
-							   onChange={this.onChangeNewPassword}
-							   value={this.state.newPassword}
-							   type="password"
-							   id="inputNewPas"
-							   placeholder="Введіть новий пароль"/>
-						{!this.state.isValidNewPassword && this.renderError(this.state.newPasswordError)}
-					</div>
-					<div className="form-group">
-						<label htmlFor="inputConfirmNewPas">Повторіть пароль</label>
-						<input className={`form-control ${!this.state.isValidConfirmedNewPassword && 'invalid-input'}`}
-							   onChange={this.onChangeConfirmedNewPassword}
-							   value={this.state.confirmedNewPassword}
-							   type="password"
-							   id="inputConfirmNewPas"
-							   placeholder="Повторіть старий пароль"/>
-						{!this.state.isValidConfirmedNewPassword && this.renderError(this.state.confirmedNewPasswordError)}
-					</div>
-					<button className="btn btn-info" onClick={this.onPasswordSubmit}>Змінити</button>
-				</div>
+				{this.state.isLoaded && !this.state.isLoading ? this.renderChangePasswordForm() : <Spinner/>}
 			</div>
 		)
 	}
