@@ -5,6 +5,7 @@ import {getChangeOrderStatusUrl, getOrderUrl} from "../../../../../services/urls
 import {Spinner} from "../../../../Spinner/Spinner";
 import {getProductsByIdsUrl} from "../../../../../services/urls/productUrls";
 import {OrderStatus} from "../../../../common/OrderStatus/OrderStatus";
+import {SuccessOrderStatusChangedModal} from "./SuccessOrderStatusChangedModal";
 
 class FullOrder extends React.Component {
 	constructor(props) {
@@ -14,7 +15,8 @@ class FullOrder extends React.Component {
 			isLoading: true,
 			isLoaded: false,
 			productsContainer: [],
-			isOrderStatusExpanded: false
+			isOrderStatusExpanded: false,
+			isShowSuccessOrderStatusChangedModal: false
 		}
 	}
 
@@ -63,14 +65,17 @@ class FullOrder extends React.Component {
 	};
 
 	onSaveOrderStatus = () => {
-		apiPut(getChangeOrderStatusUrl(this.state.order.id, this.state.order.orderStatus), err => alert('Error'))
+		apiPut(getChangeOrderStatusUrl(this.state.order.id, this.state.order.orderStatus))
 			.then(resp => {
 				if (resp.status === 200) {
 					this.updateOrder();
-					alert('Статус успішно змінено');
+					this.setState({isShowSuccessOrderStatusChangedModal: true});
 				}
-			});
+			})
+			.catch(err => alert(`Error: ${err}`));
 	};
+
+	onCloseSuccessOrderStatusChangedModal = () => this.setState({isShowSuccessOrderStatusChangedModal: false});
 
 	renderUserInfo = () => {
 		return (
@@ -159,6 +164,10 @@ class FullOrder extends React.Component {
 		);
 	};
 
+	renderSuccessOrderStatusChangedModal = () => <SuccessOrderStatusChangedModal
+		isOpen={this.state.isShowSuccessOrderStatusChangedModal}
+		onClose={this.onCloseSuccessOrderStatusChangedModal}/>
+
 	render() {
 		if (this.state.isLoaded && !this.state.isLoading)
 			return (
@@ -166,6 +175,7 @@ class FullOrder extends React.Component {
 					{this.renderUserInfo()}
 					{this.renderProductsInfo()}
 					{this.renderOrderInfo()}
+					{this.renderSuccessOrderStatusChangedModal()}
 				</div>
 			);
 		return (<Spinner/>)
