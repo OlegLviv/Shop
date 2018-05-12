@@ -1,7 +1,12 @@
 import React from 'react';
 import './UsersEdit.scss';
 import {apiGet, apiPut} from "../../../../../services/api";
-import {getUserByNameOrLastNameUrl, getUserByIdUrl, EDIT_USER_PERSONAL_DATA} from "../../../../../services/urls/userUrls";
+import {
+	getUserByNameOrLastNameUrl,
+	getUserByIdUrl,
+	EDIT_USER_PERSONAL_DATA
+} from "../../../../../services/urls/userUrls";
+import {Spinner} from "../../../../Spinner/Spinner";
 
 class UsersEdit extends React.Component {
 	constructor(props) {
@@ -13,27 +18,49 @@ class UsersEdit extends React.Component {
 			users: [],
 			selectedUser: null,
 			name: '',
-			lastName: ''
+			lastName: '',
+			isLoading: false,
+			isLoaded: true
 		}
 	}
 
+	trySetTrueLoadings = () => {
+		if (!this.state.isLoading)
+			this.setState({isLoading: true});
+		if (this.state.isLoaded)
+			this.setState({isLoaded: false});
+	};
+
 	setUsersByNameInState = name => {
+		this.trySetTrueLoadings();
 		apiGet(getUserByNameOrLastNameUrl(name, this.state.activePage))
 			.then(resp => this.setState({
 				users: resp.data.data,
 				activePage: resp.pageNumber,
-				totalProductCount: resp.totalCount
+				totalProductCount: resp.totalCount,
+				isLoaded: true,
+				isLoading: false
 			}));
 	};
 
 	setUsersByIdInState = id => {
+		console.log(id);
+		this.trySetTrueLoadings();
 		apiGet(getUserByIdUrl(id))
-			.then(resp => this.setState({users: [resp.data]}));
+			.then(resp => this.setState({users: [resp.data], isLoaded: true, isLoading: false}))
+			.catch(() => {
+				this.setState({users: [], isLoaded: true, isLoading: false});
+			});
 	};
 
 	onChangeSearch = e => {
 		const {value} = e.target;
-		if (value[0] === '@' && value.length > 1) {
+
+		if (value[0] === '@' && value.length < 2) {
+			this.setState({searchValue: value});
+			return;
+		}
+		if (value[0] === '@' && value.length > 2) {
 			this.setState({searchValue: value});
 			this.setUsersByIdInState(value.slice(1));
 		}
@@ -59,14 +86,17 @@ class UsersEdit extends React.Component {
 			lastName: this.state.lastName
 		};
 
+		this.trySetTrueLoadings();
 		apiPut(EDIT_USER_PERSONAL_DATA, user)
 			.then(resp => {
-				if (resp.status === 200)
+				if (resp.status === 200) {
 					alert("Дані успішно оновлено");
+					this.setState({isLoaded: true, isLoading: false});
+				}
 			})
-			.catch(err => {
+			.catch(() => {
 				alert(`Error:Сталась помилка`);
-				console.error(err.response.data);
+				this.setState({isLoaded: true, isLoading: false});
 			});
 	};
 
@@ -153,6 +183,26 @@ class UsersEdit extends React.Component {
 		);
 	};
 
+	renderNotFoundById = () => {
+		if (!this.state.isLoading &&
+			this.state.isLoaded &&
+			!this.state.users.length &&
+			this.state.searchValue.length > 2 &&
+			this.state.searchValue[0] === '@')
+			return <div className="text-center"><h4>Нічого не знайдено</h4></div>;
+		else return null;
+	};
+
+	renderNotFoundByName = () => {
+		if (!this.state.isLoading &&
+			this.state.isLoaded &&
+			!this.state.users.length &&
+			this.state.searchValue.length &&
+			this.state.searchValue[0] !== '@')
+			return <div className="text-center"><h4>Нічого не знайдено</h4></div>;
+		else return null;
+	};
+
 	render() {
 		return (
 			<div className="user-edit-container">
@@ -168,20 +218,24 @@ class UsersEdit extends React.Component {
 								   value={this.state.searchValue}
 								   onChange={this.onChangeSearch}
 								   placeholder="Введіть ім'я або id користувача"/>
-							<small className="my-2">* Для того щоб знайти користувача по id втавте перед id знак @</small>
+							<small className="my-2">* Для того щоб знайти користувача по id втавте перед id знак @
+							</small>
 						</div>
 						<div className="user-edit-container__product-list-box">
-							<ul className="list-group user-edit-container__product-list-box__list-group">
-								{
-									this.state.users.map(user => <li
-										key={user.id}
-										onClick={() => this.onClickUser(user)}
-										className="list-group-item user-edit-container__product-list-box__list-group__item">
-										<div>{`${user.name} ${user.lastName}`}</div>
-										<div>{`id: ${user.id}`}</div>
-									</li>)
-								}
-							</ul>
+							{this.renderNotFoundById()}
+							{this.renderNotFoundByName()}
+							{!this.state.isLoading && this.state.isLoaded ?
+								<ul className="list-group user-edit-container__product-list-box__list-group">
+									{
+										this.state.users.map(user => <li
+											key={user.id}
+											onClick={() => this.onClickUser(user)}
+											className="list-group-item user-edit-container__product-list-box__list-group__item">
+											<div>{`${user.name} ${user.lastName}`}</div>
+											<div>{`id: ${user.id}`}</div>
+										</li>)
+									}
+								</ul> : <Spinner/>}
 						</div>
 					</div> : this.renderEditPanel()
 				}
