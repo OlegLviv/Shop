@@ -17,10 +17,14 @@
 	&__check {
 	  display: flex;
 	  align-items: center;
+	  padding-bottom: 1rem;
 	}
 	&__check div {
 	  padding-left: .5rem;
 	}
+  }
+  &__form textarea {
+	max-height: 10rem;
   }
   &__form input::placeholder {
 	font-size: 13px;
