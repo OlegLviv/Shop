@@ -12,6 +12,7 @@ import UserPanel from "./Panels/UserPanel/UserPanel";
 import ProductCardPlace from './ProductCardPlace/ProductCardPlace';
 import FullInfoProductPlace from './FullInfoProductPlace/FullInfoProductPlace';
 import {NotFound} from "./common/NotFound/NotFound";
+import {Footer} from './Footer/Footer';
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -46,10 +47,11 @@ class Layout extends React.Component {
 						<Route path='/logIn' component={LogIn}/>
 						<Route path='/product/:productId'
 							   render={props => <FullInfoProductPlace user={user} isLogin={isLogIn} {...props}/>}/>
-						<Route path='/productsCard' render={props => <ProductCardPlace {...props}/>}/>
-						<Route path='/likedProducts' render={props => <div>{'prod'}</div>}/>
+						<Route path='/productsCard' render={() => <ProductCardPlace user={user} isLogIn={isLogIn}/>}/>
+						<Route path='/likedProducts' render={() => <div>{'prod'}</div>}/>
 						<Route component={NotFound}/>
 					</Switch>
+					<Footer/>
 				</div>
 			</Router>
 		);

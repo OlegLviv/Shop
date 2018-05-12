@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProductCardPlace.scss';
 import {Icon} from 'react-fa';
-import {getProductsCookies, setCookie} from "../../services/cookies";
+import {getProductsOutOfCookies, setCookie} from "../../services/cookies";
 import {apiWithoutRedirect} from "../../services/api";
 import {getProductsByIdsUrl} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
@@ -39,7 +39,7 @@ class ProductCardPlace extends React.Component {
 	}
 
 	initProductsCounts = products => {
-		const productCArr = getProductsCookies('productsCard');
+		const productCArr = getProductsOutOfCookies('productsCard');
 		let newProductsCounts = [];
 
 		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
@@ -53,7 +53,7 @@ class ProductCardPlace extends React.Component {
 	};
 
 	componentDidMount() {
-		const productCArr = getProductsCookies('productsCard');
+		const productCArr = getProductsOutOfCookies('productsCard');
 
 		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
 			this.setState({isNotProducts: true});
@@ -84,6 +84,11 @@ class ProductCardPlace extends React.Component {
 					isProductsLoaded: true
 				});
 			});
+	}
+
+	componentWillReceiveProps(nextProps) {
+		console.log(this.props);
+		console.log(nextProps);
 	}
 
 	getTotalPrice = () => {
@@ -149,7 +154,8 @@ class ProductCardPlace extends React.Component {
 	renderMakeOrderModal = () => <MakeOrderModal
 		isModalOpen={this.state.isMakeOrderModalOpen}
 		onCloseModal={this.onCloseMakeOrderModal}
-		onSubmitOrder={this.onSubmitOrder}/>;
+		onSubmitOrder={this.onSubmitOrder}
+		user={this.props.user}/>;
 
 	renderSwitchContent = () => {
 		const {isProductsLoading, isProductsLoaded, isNotProducts} = this.state;

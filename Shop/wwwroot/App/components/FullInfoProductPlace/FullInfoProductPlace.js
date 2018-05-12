@@ -1,10 +1,15 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductByIdUrl, getProductFeedbackByIdUrl} from "../../services/urls/productUrls";
+import {
+	getProductByIdUrl, getProductFeedbackByIdUrl, getProductImageCountUrl,
+	getProductImageUrl
+} from "../../services/urls/productUrls";
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
 import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
 import {getRandomArbitrary} from "../../utils/utils";
+import {addProductCookies} from "../../services/cookies";
+import {connect} from 'react-redux';
 
 const getProductId = (props) => props.match.params.productId;
 
@@ -13,30 +18,51 @@ class FullInfoProductPlace extends React.Component {
 		super(props);
 		this.state = {
 			product: null,
-			productFeedback: null,
+			productFeedbacks: [],
 			productCount: 1,
 			aboutProductNacCase: 'description',
-			feedbackValue: ''
+			feedbackValue: '',
+			isLoadingFeedbacks: false,
+			isLoadedFeedbacks: false,
+			selectedImgUrl: '',
+			addProductButText: 'В кошик'
 		}
 	}
 
 	// todo need add catch
 	componentDidMount() {
-		apiWithoutRedirect()
-			.get(getProductByIdUrl(getProductId(this.props)))
-			.then(resp => {
-				this.setState({product: resp.data});
-			});
+		this.updateProduct(this.props);
 	}
 
 	// todo need add catch
 	componentWillReceiveProps(nextProps) {
-		apiWithoutRedirect()
-			.get(getProductByIdUrl(getProductId(nextProps)))
-			.then(resp => {
-				this.setState({product: resp.data});
-			});
+		this.updateProduct(nextProps);
 	}
+
+	componentWillUpdate(nextProps, nextState) {
+		if (this.state.addProductButText !== nextState.addProductButText) {
+			setTimeout(() => this.setState({addProductButText: 'В кошик'}), 2500);
+		}
+	}
+
+	updateProduct = props => {
+		apiWithoutRedirect()
+			.get(getProductByIdUrl(getProductId(props)))
+			.then(resp => {
+				apiWithoutRedirect()
+					.get(getProductImageCountUrl(resp.data.id))
+					.then(imgCResp => {
+						const product = resp.data;
+						product.imgSources = [];
+
+						for (let i = 0; i < imgCResp.data; i++) {
+							product.imgSources.push(getProductImageUrl(product.id, i));
+						}
+						console.log('prod', product);
+						this.setState({product: product});
+					});
+			});
+	};
 
 	//todo need clean if added feedback
 	sendFeedback = () => {
@@ -50,15 +76,15 @@ class FullInfoProductPlace extends React.Component {
 				userId: user.id,
 				body: this.state.feedbackValue
 			};
-			apiWithoutRedirect
+			apiWithoutRedirect()
 				.post(SEND_FEEDBACK_URL, sendCommentObj)
 				.then(resp => {
 					if (resp.status === 200) {
-						const newFeedback = this.state.productFeedback;
+						const newFeedback = this.state.productFeedbacks;
 						newFeedback.push(resp.data);
 						this.setState({
 							feedbackValue: '',
-							productFeedback: newFeedback
+							productFeedbacks: newFeedback
 						});
 					}
 				})
@@ -68,6 +94,14 @@ class FullInfoProductPlace extends React.Component {
 					}
 				});
 		}
+	};
+
+	getMainImgSrc = () => {
+		if (this.state.product.imgSources.length > 0 && !this.state.selectedImgUrl)
+			return this.state.product.imgSources[0];
+		if (this.state.product.imgSources.length > 0 && this.state.selectedImgUrl)
+			return this.state.selectedImgUrl;
+		else return 'https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png';
 	};
 
 	onProductCountDec = () => {
@@ -90,6 +124,35 @@ class FullInfoProductPlace extends React.Component {
 			this.sendFeedback();
 		}
 	};
+
+	onFeedbackClick = () => {
+		this.setState({
+			aboutProductNacCase: 'feedback',
+			isLoadingFeedbacks: true,
+			isLoadedFeedbacks: false
+		});
+		apiWithoutRedirect()
+			.get(getProductFeedbackByIdUrl(this.state.product.id))
+			.then(resp => {
+				this.setState({
+					productFeedbacks: resp.data,
+					isLoadingFeedbacks: false,
+					isLoadedFeedbacks: true
+				})
+			})
+	};
+
+	onSmallImgClick = src => this.setState({selectedImgUrl: src});
+
+	onAddToBackedClick = () => {
+		if (this.state.addProductButText === 'Додано')
+			return;
+
+		addProductCookies('productsCard', this.state.product.id, this.state.productCount, 1);
+		this.props.onAddNewProduct(this.state.product.id, this.state.productCount);
+		this.setState({addProductButText: 'Додано'});
+	};
+
 	renderDescription = () => {
 		return (
 			<div className="card-body-text">
@@ -111,13 +174,13 @@ class FullInfoProductPlace extends React.Component {
 	//todo need add feedback logic
 	renderFeedback = () => {
 		const {user} = this.props;
-		if (!this.state.productFeedback) {
+		if (!this.state.isLoadedFeedbacks && this.state.isLoadingFeedbacks) {
 			return <Spinner/>
 		}
 		return (
 			<div className="container-c-b">
 				{
-					this.state.productFeedback.map(item => {
+					this.state.productFeedbacks.map(item => {
 						return (
 							<div className="container-c-b__card-body-content">
 								<div className="container-c-b__card-body-content__comment"
@@ -179,14 +242,7 @@ class FullInfoProductPlace extends React.Component {
 							<a className={`nav-link ${this.state.aboutProductNacCase === 'characteristics' ? 'active' : ''}`}>Характеристики</a>
 						</li>
 						<li className="nav-item nav-item-dev"
-							onClick={() => {
-								this.setState({aboutProductNacCase: 'feedback'});
-								apiWithoutRedirect()
-									.get(getProductFeedbackByIdUrl(this.state.product.id))
-									.then(resp => {
-										this.setState({productFeedback: resp.data})
-									})
-							}}>
+							onClick={this.onFeedbackClick}>
 							<a className={`nav-link ${this.state.aboutProductNacCase === 'feedback' ? 'active' : ''}`}>Відгуки</a>
 						</li>
 					</ul>
@@ -210,15 +266,13 @@ class FullInfoProductPlace extends React.Component {
 								<div className="container-product__row__product-img-container">
 									<div className="container-product__row__product-img-container__main-img">
 										<img
-											src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
+											src={this.getMainImgSrc()}/>
 									</div>
 									<div className="container-product__row__product-img-container__sm-img">
-										<img
-											src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
-										<img
-											src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
-										<img
-											src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
+										{
+											this.state.product.imgSources.map(src => <img
+												onClick={() => this.onSmallImgClick(src)} src={src}/>)
+										}
 									</div>
 								</div>
 							</div>
@@ -244,7 +298,11 @@ class FullInfoProductPlace extends React.Component {
 											</button>
 										</div>
 										<div className="container-product__row__info-container__to-card__btn-to-card">
-											<button className="btn btn-dark btn-lg">В кошик</button>
+											<button className="btn btn-dark btn-lg" onClick={this.onAddToBackedClick}>
+												{
+													this.state.addProductButText
+												}
+											</button>
 											<button className="btn btn-info btn-lg">В обране</button>
 										</div>
 									</div>
@@ -259,4 +317,6 @@ class FullInfoProductPlace extends React.Component {
 	}
 }
 
-export default FullInfoProductPlace;
+export default connect(state => ({}), dispatch => ({
+	onAddNewProduct: (id, count) => dispatch({type: 'ADD_NEW', id: id, count: count})
+}))(FullInfoProductPlace);

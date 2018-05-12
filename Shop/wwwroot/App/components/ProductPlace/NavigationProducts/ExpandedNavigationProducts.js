@@ -40,6 +40,10 @@ class ExpandedNavigationProducts extends React.Component {
 			.catch(err => console.error(err.response.data));
 	};
 
+	onBackClick = () => {
+		this.props.onBackClick();
+	};
+
 	onRangeChangeValue = (val) => {
 		this.props.onPriceRangeChangeValue(val);
 		this.setState({
@@ -59,6 +63,9 @@ class ExpandedNavigationProducts extends React.Component {
 	};
 
 	onSearchByFilter = () => {
+		if (!this.queryDictionary)
+			this.queryDictionary = {};
+		
 		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo, this.queryDictionary);
 	};
 
@@ -102,7 +109,12 @@ class ExpandedNavigationProducts extends React.Component {
 		const {isPriceExpanded} = this.state;
 		return (
 			<div className="expanded-nav">
-				<div className="expanded-nav__header">Фільтр товарів</div>
+				<div className="expanded-nav__header">
+					<div onClick={this.onBackClick}>
+						<Icon name="chevron-left" className="expanded-nav__header__chevron"/>
+					</div>
+					<div>Фільтр товарів</div>
+				</div>
 				<div className="expanded-nav__body">
 					<div className="expanded-nav__body__price">
 						<div className="expanded-nav__body__price__header"

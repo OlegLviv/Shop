@@ -4,7 +4,7 @@ import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} fr
 import {ADD_PROPERTY_URL, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
-import {toUpperFirstChar, toUpperFirstCharInArray} from "../../../../../utils/utils";
+import {toUpperFirstCharInArray} from "../../../../../utils/utils";
 
 class AddNewCharacteristic extends React.Component {
 	constructor(props) {
@@ -25,13 +25,20 @@ class AddNewCharacteristic extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.subCategory !== this.state.subCategory) {
+		if (prevState.subCategory !== this.state.subCategory)
 			this.updateSubCategoryState();
+
+		if (prevState.category !== this.state.category) {
+			this.onChangeOptionSubCategory({
+				target: {
+					value: getSubCategories(this.state.category)[0]
+				}
+			})
 		}
 	}
 
 	updateSubCategoryState = () => {
-		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), () => this.setState({subCategoryProps: []}))
 			.then(resp => {
 				console.log(resp.data);
 				const product = {...this.state.product};

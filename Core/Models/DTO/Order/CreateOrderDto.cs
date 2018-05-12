@@ -4,7 +4,7 @@ using Core.Models.DomainModels;
 
 namespace Core.Models.DTO.Order
 {
-    public class CreateAnonimOrderDto
+    public class CreateOrderDto
     {
         [Required]
         [EmailAddress]

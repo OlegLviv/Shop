@@ -16,7 +16,19 @@ class MakeOrderModal extends React.Component {
 			emailError: '',
 			phoneError: '',
 			nameLastNameError: '',
-			wayOfDelivery: 'Нова пошта'
+			wayOfDelivery: 'Нова пошта',
+			user: this.props.user
+		}
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.user) {
+			this.setState({
+				user: nextProps.user,
+				email: nextProps.user.email,
+				phone: nextProps.user.phoneNumber,
+				nameLastName: `${nextProps.user.name} ${nextProps.user.lastName}`
+			});
 		}
 	}
 

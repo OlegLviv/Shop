@@ -84,7 +84,7 @@ class AdminPanel extends React.Component {
 					<div className="col-xl-2 col-lg-3 container-adm-panel__navigation">
 						<Navigation items={navItems} navLink="/" navText="Navbar"/>
 					</div>
-					<div className="col-xl-10 col-lg-9">
+					<div className="col-xl-10 col-lg-9 panel-content">
 						<Switch>
 							<Route exact path="/adminPanel" render={() => <div>Admin Panel</div>}/>
 							<Route exact path="/adminPanel/action-on-products" component={ActionOnProducts}/>

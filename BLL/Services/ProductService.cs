@@ -49,7 +49,16 @@ namespace BLL.Services
             var prodProperty = await SelectProductPropertyAsync(subCategory);
 
             if (prodProperty == null)
-                return false;
+            {
+                prodProperty = new ProductProperty
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Properties = newProp,
+                    SubCategory = subCategory
+                };
+                return await _repositoryProdProp.InsertAsync(prodProperty) >= 1 && await _repositoryPosibleProductProp
+                    .InsertAsync(PossibleProductProperty.Empty(subCategory, newProp)) >= 1;
+            }
 
             if (prodProperty.Properties.Split(';').Contains(newProp))
                 return false;
@@ -58,12 +67,7 @@ namespace BLL.Services
 
             var updateResult = await _repositoryProdProp.UpdateAsync(prodProperty);
 
-            var inserResult = await _repositoryPosibleProductProp.InsertAsync(new PossibleProductProperty
-            {
-                Values = "",
-                PropertyName = newProp,
-                SubCategory = subCategory
-            });
+            var inserResult = await _repositoryPosibleProductProp.InsertAsync(PossibleProductProperty.Empty(subCategory, newProp));
 
             return updateResult >= 1 && inserResult >= 1;
         }

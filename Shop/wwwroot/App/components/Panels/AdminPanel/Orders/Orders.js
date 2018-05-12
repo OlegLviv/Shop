@@ -4,6 +4,8 @@ import {apiGet} from "../../../../services/api";
 import {getOrdersUrl} from "../../../../services/urls/orderUrls";
 import Pagination from 'react-js-pagination';
 import {Link} from 'react-router-dom';
+import {Spinner} from "../../../Spinner/Spinner";
+import {convertOrderStatus} from "../../../../utils/orderUtils";
 
 const itemPerPage = 5;
 
@@ -14,7 +16,9 @@ class Orders extends React.Component {
 			orders: [],
 			totalOrdersCount: 0,
 			activePage: 1,
-			orderStatus: 0
+			orderStatus: 0,
+			isLoaded: false,
+			isLoading: true
 		}
 	}
 
@@ -28,46 +32,79 @@ class Orders extends React.Component {
 	}
 
 	updateOrders = (pageNumber, pageSize, orderStatus) => {
+		this.setState({
+			isLoading: true,
+			isLoaded: false
+		});
 		apiGet(getOrdersUrl(pageNumber, pageSize, orderStatus))
 			.then(resp => {
 				console.log(resp);
 				this.setState({
 					orders: resp.data.data,
 					totalOrdersCount: resp.data.totalCount,
-					activePage: resp.data.pageNumber
+					activePage: resp.data.pageNumber,
+					isLoading: false,
+					isLoaded: true
 				});
 			});
 	};
+
+	onOrdersStatusChange = ({target}) => this.setState({orderStatus: Number(target.value)});
 
 	onPaginationChange = pageNumber => {
 		this.setState({activePage: pageNumber});
 	};
 
+	renderSwitchContent = () => {
+		if (this.state.isLoaded && !this.state.isLoading && this.state.orders.length > 0)
+			return (
+				<div>
+					<ul className="list-group orders-container__list-group">
+						{
+							this.state.orders.map(order =>
+								<li
+									className="list-group-item orders-container__list-group__list-group-item">
+									<Link to={`/adminPanel/orders/${order.id}`}>
+										<div>Ім'я прізвище: {order.nameLastName}</div>
+										<div>Email: {order.email}</div>
+										<div>Телефон: {order.phone}</div>
+									</Link>
+								</li>
+							)
+						}
+					</ul>
+					<div className="pagination-box">
+						<Pagination totalItemsCount={this.state.totalOrdersCount}
+									itemsCountPerPage={itemPerPage}
+									onChange={this.onPaginationChange}
+									activePage={this.state.activePage}
+									itemClass="page-item"
+									linkClass="page-link"
+									innerClass="pagination-box__pagination pagination"/>
+					</div>
+				</div>
+			);
+		if (this.state.isLoaded && !this.state.isLoading && this.state.orders.length === 0)
+			return (<div className="text-center my-5">
+				<h5>{`Нових замовлень з статусом *${convertOrderStatus(this.state.orderStatus)}* немає`}</h5>
+			</div>);
+		else return (<Spinner/>);
+	};
+
 	render() {
 		return (
 			<div className="orders-container">
-				<div className="orders-container__header">Список замовлень</div>
-				<ul className="list-group orders-container__list-group">
-					{
-						this.state.orders.map(order => <Link to={`/adminPanel/orders/${order.id}`}>
-							<li
-								className="list-group-item orders-container__list-group__list-group-item">
-								<div>Ім'я прізвище: {order.nameLastName}</div>
-								<div>Email: {order.email}</div>
-								<div>Телефон: {order.phone}</div>
-							</li>
-						</Link>)
-					}
-				</ul>
-				<div className="pagination-box">
-					<Pagination totalItemsCount={this.state.totalOrdersCount}
-								itemsCountPerPage={itemPerPage}
-								onChange={this.onPaginationChange}
-								activePage={this.state.activePage}
-								itemClass="page-item"
-								linkClass="page-link"
-								innerClass="pagination-box__pagination pagination"/>
+				<div className="orders-container__header">
+					<div>Список замовлень</div>
+					<select onChange={this.onOrdersStatusChange} value={this.state.orderStatus}>
+						<option value={0}>Нові</option>
+						<option value={1}>Переглянуті</option>
+						<option value={2}>Відіслані</option>
+						<option value={3}>Очікують на отримання</option>
+						<option value={4}>Закриті</option>
+					</select>
 				</div>
+				{this.renderSwitchContent()}
 			</div>
 		);
 	}

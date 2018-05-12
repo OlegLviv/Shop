@@ -1,6 +1,9 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductByCatSubCatUrl, getProductsByQueryUrl} from "../../services/urls/productUrls";
+import {
+	getProductByCatSubCatUrl, getProductImageCountUrl, getProductImageUrl,
+	getProductsByQueryUrl
+} from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addProductCookies} from "../../services/cookies";
@@ -10,6 +13,7 @@ import ExpandedNavigationProducts from "./NavigationProducts/ExpandedNavigationP
 import {Spinner} from "../Spinner/Spinner";
 import Pagination from 'react-js-pagination';
 import {priceRange} from "../../utils/productsUtils";
+import {connect} from 'react-redux';
 
 const getCategory = (props) => props.match.params.category;
 const getSubCategory = (props) => props.match.params.subCategory;
@@ -32,7 +36,9 @@ class ProductPlace extends React.Component {
 			priceRangeForPagination: {
 				minPrice: priceRange.minPrice,
 				maxPrice: priceRange.maxPrice
-			}
+			},
+			isExpandedNavProd: true,
+			productsImages: {}
 		}
 	}
 
@@ -58,7 +64,8 @@ class ProductPlace extends React.Component {
 					activePage: resp.data.pageNumber,
 					totalProductCount: resp.data.totalCount,
 					isProductsLoading: false,
-					isProductsLoaded: true
+					isProductsLoaded: true,
+					isExpandedNavProd: true
 				});
 			})
 			.catch(err => {
@@ -85,7 +92,8 @@ class ProductPlace extends React.Component {
 					activePage: resp.data.pageNumber,
 					totalProductCount: resp.data.totalCount,
 					isProductsLoading: false,
-					isProductsLoaded: true
+					isProductsLoaded: true,
+					isExpandedNavProd: true
 				});
 			})
 			.catch(err => {
@@ -93,9 +101,11 @@ class ProductPlace extends React.Component {
 			});
 	}
 
-	onProductCardButClick = (e, id) => {
-		// if (!this.props.isLogIn) {
-			addProductCookies('productsCard', id, 1);
+	onAddProductToShoppingCardButClick = (e, id) => {
+		// if (this.state.) {
+		console.log('click');
+		addProductCookies('productsCard', id, 1);
+		this.props.onAddProductToShoppingCard(id, 1);
 		// }
 	};
 
@@ -142,6 +152,8 @@ class ProductPlace extends React.Component {
 
 	onSearchByFilter = (priceFrom, priceTo, queryDictionary) => {
 		console.log('qd', queryDictionary);
+		if (!queryDictionary)
+			return;
 		this.renderLoadingSpinner();
 		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
 			getSubCategory(this.props),
@@ -181,6 +193,23 @@ class ProductPlace extends React.Component {
 		this.setState({howManyToShow: e.target.value});
 	};
 
+	onBackExpNavProdClick = () => this.setState({isExpandedNavProd: false});
+
+	fetchImgSrc = id => {
+		const GET_PRODUCT_IMG = getProductImageUrl(id, 0);
+		const GET_PRODUCT_IMG_COUNT = getProductImageCountUrl(id);
+
+		return Promise.resolve(apiWithoutRedirect()
+			.get(GET_PRODUCT_IMG_COUNT)
+			.then(resp => {
+				if (resp.data > 0) {
+					return GET_PRODUCT_IMG;
+				}
+				else
+					return 'https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png';
+			}));
+	};
+
 	renderLoadingSpinner = () => {
 		this.setState({isProductsLoading: true});
 		if (this.state.isProductsLoaded) {
@@ -190,8 +219,6 @@ class ProductPlace extends React.Component {
 
 
 	renderSwitchContent = () => {
-		console.log('loading', this.state.isProductsLoading);
-		console.log('loaded', this.state.isProductsLoaded);
 		if (!this.state.isProductsLoading && this.state.isProductsLoaded && (this.state.products ? this.state.products.length > 0 : false)) {
 			return (<div className="container-fluid container-products">
 				<div className="container-products__how-to-show">
@@ -211,12 +238,14 @@ class ProductPlace extends React.Component {
 					{this.state.products.map(item => {
 						return (
 							<div
-								className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 container-products__row__item">
+								className="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-6 container-products__row__item">
 								<ProductCard
+									imgSrcPromise={this.fetchImgSrc(item.id)}
+									defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
 									product={item}
 									key={item.id}
 									onLikeButClick={this.onLikeButClick}
-									onProductCardButClick={this.onProductCardButClick}/>
+									onAddProduct={this.onAddProductToShoppingCardButClick}/>
 							</div>
 						)
 					})}
@@ -243,16 +272,16 @@ class ProductPlace extends React.Component {
 		else return <div>Def content</div>;
 	};
 
-// todo need fix if products > 0. Closing expanded nav products and can't continue filtration
 	render() {
 		return (
 			<div className="row">
 				<div className="col-xl-3 col-lg-4">
 					{
-						this.state.products ? <ExpandedNavigationProducts
+						this.state.products && this.state.isExpandedNavProd ? <ExpandedNavigationProducts
 								products={this.state.products}
 								onPriceRangeChangeValue={this.onPriceRangeChangeValue}
-								onSearchByFilter={this.onSearchByFilter}/> :
+								onSearchByFilter={this.onSearchByFilter}
+								onBackClick={this.onBackExpNavProdClick}/> :
 							<NavigationProducts/>
 					}
 				</div>
@@ -264,4 +293,8 @@ class ProductPlace extends React.Component {
 	}
 }
 
-export default ProductPlace;
+export default connect(state => ({}), dispatch => ({
+	onAddProductToShoppingCard: (id, count) => {
+		dispatch({type: 'ADD_NEW', id: id, count: count})
+	}
+}))(ProductPlace);

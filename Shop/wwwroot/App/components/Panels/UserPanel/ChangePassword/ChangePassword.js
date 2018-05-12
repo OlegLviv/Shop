@@ -4,7 +4,6 @@ import {apiPost} from "../../../../services/api";
 import {CHANGE_USER_PASSWORD} from "../../../../services/urls/userUrls";
 import {isValidPassword, isValidWhiteSpace} from "../../../../utils/validationUtils";
 
-//	todo need to add validation
 class ChangePassword extends React.Component {
 	constructor(props) {
 		super(props);
