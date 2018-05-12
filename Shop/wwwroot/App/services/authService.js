@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {GET_TOKEN} from "./urls/tokenUrls";
-import {GET_USER_ROLE} from "./urls/userUrls";
-import {REGISTRATION_USER} from "./urls/userUrls";
+import {GET_USER_ROLE_URL} from "./urls/userUrls";
+import {REGISTRATION_USER_URL} from "./urls/userUrls";
 import {api} from "./api";
 
 export const logInToken = (userName, password) => {
@@ -18,7 +18,7 @@ export const logInToken = (userName, password) => {
 				console.log('setToken', token);
 			}
 			if (localStorage.getItem('access_token')) {
-				api().get(GET_USER_ROLE)
+				api().get(GET_USER_ROLE_URL)
 					.then(resp => {
 						const {role} = resp.data;
 						console.log('getUserROle', role);
@@ -50,5 +50,5 @@ export const singOutToken = (action) => {
 
 export const registerUser = (registerModel) => {
 	return axios
-		.post(REGISTRATION_USER, registerModel);
+		.post(REGISTRATION_USER_URL, registerModel);
 };

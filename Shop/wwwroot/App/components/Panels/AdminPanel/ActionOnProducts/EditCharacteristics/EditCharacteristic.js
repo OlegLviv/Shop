@@ -11,6 +11,8 @@ import {
 import {Icon} from 'react-fa';
 import {isValidPossibleProp} from "../../../../../utils/validationUtils";
 import {Link} from 'react-router-dom';
+import {SuccessAddedNewCharacteristicModal} from "./SuccessAddedNewCharacteristicModal";
+import {SuccessDeletedCharacteristicModal} from "./SuccessDeletedCharacteristicModal";
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -23,7 +25,9 @@ class EditCharacteristic extends React.Component {
 			isRenderAddPPField: [],
 			newPossibleProps: [],
 			isValidNewPossibleProps: [],
-			possiblePropsErrors: []
+			possiblePropsErrors: [],
+			isShowSuccessAddedNewCharacteristicModal: false,
+			isShowSuccessDeletedCharacteristicModal: false
 		}
 	}
 
@@ -122,7 +126,6 @@ class EditCharacteristic extends React.Component {
 		});
 	};
 
-	//	todo need to add normal alert
 	onSaveNewPossiblePropertyClick = (i, item) => {
 		const possibleProp = this.state.newPossibleProps[i];
 
@@ -134,30 +137,32 @@ class EditCharacteristic extends React.Component {
 		console.log('body', body);
 		this.validateNewPossiblePropsChange(i, this.state.newPossibleProps[i], () => {
 			console.log('work');
-			apiPost(ADD_POSSIBLE_PROPERTY_URL, body, err => {
-				alert(`Error: ${err.response.data}`);
-			})
+			apiPost(ADD_POSSIBLE_PROPERTY_URL, body)
 				.then(resp => {
 					if (resp.status === 200 && resp.data === 'Success') {
-						alert('Дані збережено успішно');
+						this.setState({isShowSuccessAddedNewCharacteristicModal: true});
 						this.updateSubCategoryState();
 					}
-				});
+				})
+				.catch(err => alert(`Error: ${JSON.stringify(err.response.data)}`))
 		});
 	};
 
 	onDeleteProperty = propName => {
 		apiDelete(getDeleteProductPropertyUrl(normalizeSubCategoryToRoute(this.state.subCategory),
-			propName), error => {
-			alert(`Error: ${error.response.data}`);
-		})
+			propName))
 			.then(resp => {
 				if (resp.status === 200 && resp.data === 'Success') {
-					alert('Властивість видалена успішно');
+					this.setState({isShowSuccessDeletedCharacteristicModal: true});
 					this.updateSubCategoryState();
 				}
-			});
+			})
+			.catch(err => alert(`Error: ${JSON.stringify(err.response.data)}`))
 	};
+
+	onCloseSuccessAddedNewCharacteristicModal = () => this.setState({isShowSuccessAddedNewCharacteristicModal: false});
+
+	onCloseSuccessDeletedCharacteristicModal = () => this.setState({isShowSuccessDeletedCharacteristicModal: false});
 
 	renderChooseCatSubCat = () => {
 		return (
@@ -208,9 +213,19 @@ class EditCharacteristic extends React.Component {
 
 	renderError = text => <small className="invalid-small">{text}</small>;
 
+	renderSuccessAddedNewCharacteristic = () => <SuccessAddedNewCharacteristicModal
+		isOpen={this.state.isShowSuccessAddedNewCharacteristicModal}
+		onClose={this.onCloseSuccessAddedNewCharacteristicModal}/>;
+
+	renderSuccessDeletedCharacteristic = () => <SuccessDeletedCharacteristicModal
+		isOpen={this.state.isShowSuccessDeletedCharacteristicModal}
+		onClose={this.onCloseSuccessDeletedCharacteristicModal}/>;
+
 	render() {
 		return (
 			<div className="ec-container">
+				{this.renderSuccessAddedNewCharacteristic()}
+				{this.renderSuccessDeletedCharacteristic()}
 				<div className="ec-container__header">
 					Редактор харктеристик товару
 				</div>
@@ -270,7 +285,8 @@ class EditCharacteristic extends React.Component {
 					}
 					</tbody>
 				</table>
-				{!this.state.subCategoryProps.length && <div className="text-center my-3">Властивостей для даного товару не знайдено. Ви може створити їх
+				{!this.state.subCategoryProps.length &&
+				<div className="text-center my-3">Властивостей для даного товару не знайдено. Ви може створити їх
 					<Link to="/adminPanel/action-on-products/add-new-characteristic">{' тут'}</Link></div>}
 			</div>
 		)

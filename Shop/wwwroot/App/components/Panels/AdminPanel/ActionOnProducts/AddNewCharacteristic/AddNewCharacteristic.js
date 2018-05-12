@@ -5,6 +5,7 @@ import {ADD_PROPERTY_URL, getProductPropsUrl} from "../../../../../services/urls
 import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
 import {toUpperFirstCharInArray} from "../../../../../utils/utils";
+import {SuccessSavedModal} from "./SuccessSavedModal";
 
 class AddNewCharacteristic extends React.Component {
 	constructor(props) {
@@ -15,7 +16,8 @@ class AddNewCharacteristic extends React.Component {
 			product: {},
 			subCategoryProps: [],
 			newPossibleProps: [''],
-			newPropValue: ''
+			newPropValue: '',
+			isShowSuccessSavedModal: false
 		}
 	}
 
@@ -94,9 +96,15 @@ class AddNewCharacteristic extends React.Component {
 		this.setState({newPossibleProps: newPossibleProps});
 	};
 
-	//	todo need normal catch and alert
+	onCloseSuccessSavedModal = () => this.setState({isShowSuccessSavedModal: false});
+
+	//	todo need normal catch
 	onSaveClick = () => {
 		let propName = this.state.newPropValue;
+
+		if (!propName)
+			return;
+
 		propName = `${propName[0].toUpperCase()}${propName.slice(1)}`;
 		const newPossibleProps = [...this.state.newPossibleProps];
 
@@ -106,13 +114,11 @@ class AddNewCharacteristic extends React.Component {
 			propValues: toUpperFirstCharInArray(newPossibleProps)
 		};
 		console.log('body', body);
-		apiPost(ADD_PROPERTY_URL, body, err => {
-			alert(`Error: ${err.response.data}`);
-		})
+		apiPost(ADD_PROPERTY_URL, body)
 			.then(resp => {
 				if (resp ? resp.status === 200 : false) {
 					this.updateSubCategoryState();
-					alert('Успішно');
+					this.setState({isShowSuccessSavedModal: true});
 				}
 			});
 	};
@@ -150,9 +156,13 @@ class AddNewCharacteristic extends React.Component {
 		)
 	};
 
+	renderSuccesSavedModal = () => <SuccessSavedModal isOpen={this.state.isShowSuccessSavedModal}
+													  onClose={this.onCloseSuccessSavedModal}/>;
+
 	render() {
 		return (
 			<div className="ec-container">
+				{this.renderSuccesSavedModal()}
 				<div className="ec-container__header">
 					Додати нові характеристики
 				</div>

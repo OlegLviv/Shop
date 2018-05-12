@@ -10,7 +10,8 @@ import {
 } from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
-import {arrayDiff} from "../../../../../utils/utils";
+import {SuccessDeletedModal} from "./SuccessDeletedModal";
+import {SuccessUpdatedModal} from "./SuccessUpdatedModal";
 
 const howProductsPerPage = 5;
 
@@ -28,7 +29,9 @@ class Edit extends React.Component {
 			isLoading: false,
 			isLoaded: true,
 			isDeleteConfirmed: false,
-			imgUrls: []
+			imgUrls: [],
+			isShowSuccessDeleted: false,
+			isShowSuccessUpdated: false
 		}
 	}
 
@@ -43,14 +46,16 @@ class Edit extends React.Component {
 			return;
 		}
 
-		this.setState({searchValue: e.target.value});
+		this.setState({searchValue: e.target.value, isLoading: true, isLoaded: false});
+
 		apiGet(getProductsByNameUrl(e.target.value, 1, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
 				this.setState({
 					products: resp.data.data,
 					activePage: resp.data.pageNumber,
-					totalProductCount: resp.data.totalCount
+					totalProductCount: resp.data.totalCount,
+					isLoading: false, isLoaded: true
 				});
 			})
 	};
@@ -91,31 +96,30 @@ class Edit extends React.Component {
 				console.log(resp.data);
 				this.setState({
 					isLoading: false,
-					isLoaded: true
+					isLoaded: true,
+					isShowSuccessUpdated: true
 				});
-				alert("Дані успішно оновлено");
 			})
 			.catch(err => {
 				console.error(err.response.data);
 			});
 	};
 
-	onDeletePruduct = () => {
+	onDeleteProduct = () => {
 		if (this.state.isLoaded) {
 			this.setState({isLoaded: false});
 		}
 		this.setState({isLoading: true});
 		apiDelete(getDeleteProductUrl(this.state.selectedProduct.id))
 			.then(resp => {
-				console.log('resp data', resp.data);
 				if (resp.data >= 1) {
 					this.setState({
 						isLoading: false,
 						isLoaded: true,
-						isDeleteConfirmed: false
+						isDeleteConfirmed: false,
+						isShowSuccessDeleted: true,
+						selectedProduct: null
 					});
-					this.onCloseEditPanel();
-					alert('Товар видалено успішно');
 				}
 			})
 			.catch(err => console.error(err.response.data));
@@ -138,6 +142,13 @@ class Edit extends React.Component {
 			.then(resp => console.log(resp));
 	};
 
+	onCloseSuccessDeletedModal = () => {
+		this.setState({isShowSuccessDeleted: false});
+		this.onCloseEditPanel();
+	};
+
+	onCloseSuccessUpdatedModal = () => this.setState({isShowSuccessUpdated: false});
+
 	setImagesUrl = () => {
 		Promise.all([this.getImageCount()])
 			.then(resp => {
@@ -147,7 +158,8 @@ class Edit extends React.Component {
 					imgUrls.push(`/api/Product/GetProductImage/${this.state.selectedProduct.id}/${i}`);
 				}
 				this.setState({imgUrls: imgUrls});
-			});
+			})
+			.catch(null);
 	};
 
 	renderImagesEdit = () => {
@@ -166,7 +178,7 @@ class Edit extends React.Component {
 		const {selectedProduct} = this.state;
 		return (
 			<div>
-				{this.state.isLoaded && !this.state.isLoading ? <table>
+				{this.state.isLoaded && !this.state.isLoading && selectedProduct ? <table>
 					<thead className="table-head">
 					<tr>
 						<th>Назва властивості</th>
@@ -205,7 +217,7 @@ class Edit extends React.Component {
 						<td>
 							<button className="btn btn-warning"
 									disabled={!this.state.isDeleteConfirmed}
-									onClick={this.onDeletePruduct}>Видалити
+									onClick={this.onDeleteProduct}>Видалити
 							</button>
 						</td>
 						<td>
@@ -220,9 +232,19 @@ class Edit extends React.Component {
 		);
 	};
 
+	renderNotFoundProducts = () => <div className="not-found"><h4>Нічого не знайдено</h4></div>;
+
+	renderSuccessDeletedModal = () => <SuccessDeletedModal isOpen={this.state.isShowSuccessDeleted}
+														   onClose={this.onCloseSuccessDeletedModal}/>;
+
+	renderSuccessUpdatedModal = () => <SuccessUpdatedModal isOpen={this.state.isShowSuccessUpdated}
+														   onClose={this.onCloseSuccessUpdatedModal}/>;
+
 	render() {
 		return (
 			<div className="edit-container">
+				{this.renderSuccessDeletedModal()}
+				{this.renderSuccessUpdatedModal()}
 				<div className="edit-container__header">
 					Редактор товару
 				</div>
@@ -233,20 +255,22 @@ class Edit extends React.Component {
 						   onChange={this.onChangeSearch}
 						   value={this.state.searchValue}/>
 				</div>
+				{!this.state.products.length && this.state.searchValue && this.renderNotFoundProducts()}
 				{!this.state.selectedProduct ? <div>
 					<div className="edit-container__product-list-box">
 						{this.state.products.length > 0 && <h6 className="text-center">Оберіть товар</h6>}
-						<ul className="list-group edit-container__product-list-box__list-group">
-							{
-								this.state.products.map(item => <li key={item.id}
-																	className="list-group-item list-group edit-container__product-list-box__list-group__item"
-																	onClick={() => this.onProductClick(item)}>
-									<div>{`Назва продукту: ${item.name}`}</div>
-									<div>{`Категорія: ${item.category}`}</div>
-									<div>{`Підкатегорія: ${item.subCategory}`}</div>
-								</li>)
-							}
-						</ul>
+						{!this.state.isLoading && this.state.isLoaded ?
+							<ul className="list-group edit-container__product-list-box__list-group">
+								{
+									this.state.products.map(item => <li key={item.id}
+																		className="list-group-item list-group edit-container__product-list-box__list-group__item"
+																		onClick={() => this.onProductClick(item)}>
+										<div>{`Назва продукту: ${item.name}`}</div>
+										<div>{`Категорія: ${item.category}`}</div>
+										<div>{`Підкатегорія: ${item.subCategory}`}</div>
+									</li>)
+								}
+							</ul> : <Spinner/>}
 					</div>
 					<div className="edit-container__pagin-box">
 						{this.state.products.length > 0 && <Pagination totalItemsCount={this.state.totalProductCount}

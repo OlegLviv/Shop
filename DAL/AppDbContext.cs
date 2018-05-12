@@ -19,6 +19,7 @@ namespace DAL
         public DbSet<UserOrder> UserOrders { get; set; }
         public DbSet<AnonimOrder> AnonimOrders { get; set; }
         public DbSet<BaseOrder> BaseOrders { get; set; }
+        public DbSet<Mailing> Mailings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

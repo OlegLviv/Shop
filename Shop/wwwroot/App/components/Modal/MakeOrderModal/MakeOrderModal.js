@@ -1,5 +1,5 @@
 import React from 'react';
-import {customStyles} from "../modalStyles";
+import {customModalStyle} from "../modalStyles";
 import Modal from 'react-modal';
 import {isValidEmail, isValidNameLastName, isValidPhoneNumber} from "../../../utils/validationUtils";
 
@@ -137,7 +137,7 @@ class MakeOrderModal extends React.Component {
 			<Modal isOpen={this.props.isModalOpen}
 				   onRequestClose={this.onCloseModal}
 				   shouldCloseOnEsc={true}
-				   style={customStyles}>
+				   style={customModalStyle}>
 				<div className="form-container">
 					<div className="form-group">
 						<label htmlFor="inputEmail">Email</label>

@@ -12,7 +12,7 @@ import UserPanel from "./Panels/UserPanel/UserPanel";
 import ProductCardPlace from './ProductCardPlace/ProductCardPlace';
 import FullInfoProductPlace from './FullInfoProductPlace/FullInfoProductPlace';
 import {NotFound} from "./common/NotFound/NotFound";
-import {Footer} from './Footer/Footer';
+import Footer from './Footer/Footer';
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -51,7 +51,7 @@ class Layout extends React.Component {
 						<Route path='/likedProducts' render={() => <div>{'prod'}</div>}/>
 						<Route component={NotFound}/>
 					</Switch>
-					<Footer/>
+					<Footer user={user} isLogIn={isLogIn}/>
 				</div>
 			</Router>
 		);

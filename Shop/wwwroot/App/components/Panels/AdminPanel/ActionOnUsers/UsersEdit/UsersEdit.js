@@ -1,7 +1,13 @@
 import React from 'react';
 import './UsersEdit.scss';
 import {apiGet, apiPut} from "../../../../../services/api";
-import {getUserByNameOrLastNameUrl, getUserByIdUrl, EDIT_USER_PERSONAL_DATA} from "../../../../../services/urls/userUrls";
+import {
+	getUserByNameOrLastNameUrl,
+	getUserByIdUrl,
+	EDIT_USER_PERSONAL_DATA_URL
+} from "../../../../../services/urls/userUrls";
+import {Spinner} from "../../../../Spinner/Spinner";
+import {SuccessUpdatedUserDataModal} from "./SuccessUpdatedUserDataModal";
 
 class UsersEdit extends React.Component {
 	constructor(props) {
@@ -13,27 +19,51 @@ class UsersEdit extends React.Component {
 			users: [],
 			selectedUser: null,
 			name: '',
-			lastName: ''
+			lastName: '',
+			isLoading: false,
+			isLoaded: true,
+			isShowSuccessUpdatedUserModal: false
 		}
 	}
 
+	trySetTrueLoadings = () => {
+		if (!this.state.isLoading)
+			this.setState({isLoading: true});
+		if (this.state.isLoaded)
+			this.setState({isLoaded: false});
+	};
+
 	setUsersByNameInState = name => {
+		this.trySetTrueLoadings();
 		apiGet(getUserByNameOrLastNameUrl(name, this.state.activePage))
 			.then(resp => this.setState({
 				users: resp.data.data,
 				activePage: resp.pageNumber,
-				totalProductCount: resp.totalCount
+				totalProductCount: resp.totalCount,
+				isLoaded: true,
+				isLoading: false
 			}));
 	};
 
 	setUsersByIdInState = id => {
+		this.trySetTrueLoadings();
 		apiGet(getUserByIdUrl(id))
-			.then(resp => this.setState({users: [resp.data]}));
+			.then(resp => {
+				this.setState({users: [resp.data], isLoaded: true, isLoading: false});
+			})
+			.catch(() => {
+				this.setState({users: [], isLoaded: true, isLoading: false});
+			});
 	};
 
 	onChangeSearch = e => {
 		const {value} = e.target;
-		if (value[0] === '@' && value.length > 1) {
+
+		if (value[0] === '@' && value.length < 2) {
+			this.setState({searchValue: value});
+			return;
+		}
+		if (value[0] === '@' && value.length > 2) {
 			this.setState({searchValue: value});
 			this.setUsersByIdInState(value.slice(1));
 		}
@@ -44,12 +74,12 @@ class UsersEdit extends React.Component {
 	};
 
 	onClickUser = user => {
+		console.log('sel user', user);
 		this.setState({
 			selectedUser: user,
 			name: user.name,
 			lastName: user.lastName
 		});
-		console.log('selected user', user);
 	};
 
 	onSave = () => {
@@ -59,14 +89,16 @@ class UsersEdit extends React.Component {
 			lastName: this.state.lastName
 		};
 
-		apiPut(EDIT_USER_PERSONAL_DATA, user)
+		this.trySetTrueLoadings();
+		apiPut(EDIT_USER_PERSONAL_DATA_URL, user)
 			.then(resp => {
-				if (resp.status === 200)
-					alert("Дані успішно оновлено");
+				if (resp.status === 200) {
+					this.setState({isLoaded: true, isLoading: false, isShowSuccessUpdatedUserModal: true});
+				}
 			})
 			.catch(err => {
-				alert(`Error:Сталась помилка`);
-				console.error(err.response.data);
+				alert(`Error: ${err}`);
+				this.setState({isLoaded: true, isLoading: false});
 			});
 	};
 
@@ -74,6 +106,8 @@ class UsersEdit extends React.Component {
 		this.setState({selectedUser: null});
 		this.onChangeSearch({target: {value: this.state.searchValue}});
 	};
+
+	onCloseSuccessUpdatedUserDataModal = () => this.setState({isShowSuccessUpdatedUserModal: false});
 
 	renderUserInfo = () => {
 		return (
@@ -102,7 +136,6 @@ class UsersEdit extends React.Component {
 		);
 	};
 
-	//todo need to add spinner
 	renderEditPanel = () => {
 		return (
 			<div>
@@ -153,6 +186,30 @@ class UsersEdit extends React.Component {
 		);
 	};
 
+	renderNotFoundById = () => {
+		if (!this.state.isLoading &&
+			this.state.isLoaded &&
+			!this.state.users.length &&
+			this.state.searchValue.length > 2 &&
+			this.state.searchValue[0] === '@')
+			return <div className="text-center"><h4>Нічого не знайдено</h4></div>;
+		else return null;
+	};
+
+	renderNotFoundByName = () => {
+		if (!this.state.isLoading &&
+			this.state.isLoaded &&
+			!this.state.users.length &&
+			this.state.searchValue.length &&
+			this.state.searchValue[0] !== '@')
+			return <div className="text-center"><h4>Нічого не знайдено</h4></div>;
+		else return null;
+	};
+
+	renderShowSuccessUpdatedUserModal = () => <SuccessUpdatedUserDataModal
+		isOpen={this.state.isShowSuccessUpdatedUserModal}
+		onClose={this.onCloseSuccessUpdatedUserDataModal}/>;
+
 	render() {
 		return (
 			<div className="user-edit-container">
@@ -168,23 +225,28 @@ class UsersEdit extends React.Component {
 								   value={this.state.searchValue}
 								   onChange={this.onChangeSearch}
 								   placeholder="Введіть ім'я або id користувача"/>
-							<small className="my-2">* Для того щоб знайти користувача по id втавте перед id знак @</small>
+							<small className="my-2">* Для того щоб знайти користувача по id втавте перед id знак @
+							</small>
 						</div>
 						<div className="user-edit-container__product-list-box">
-							<ul className="list-group user-edit-container__product-list-box__list-group">
-								{
-									this.state.users.map(user => <li
-										key={user.id}
-										onClick={() => this.onClickUser(user)}
-										className="list-group-item user-edit-container__product-list-box__list-group__item">
-										<div>{`${user.name} ${user.lastName}`}</div>
-										<div>{`id: ${user.id}`}</div>
-									</li>)
-								}
-							</ul>
+							{this.renderNotFoundById()}
+							{this.renderNotFoundByName()}
+							{!this.state.isLoading && this.state.isLoaded ?
+								<ul className="list-group user-edit-container__product-list-box__list-group">
+									{
+										this.state.users.map(user => <li
+											key={user.id}
+											onClick={() => this.onClickUser(user)}
+											className="list-group-item user-edit-container__product-list-box__list-group__item">
+											<div>{`${user.name} ${user.lastName}`}</div>
+											<div>{`id: ${user.id}`}</div>
+										</li>)
+									}
+								</ul> : <Spinner/>}
 						</div>
 					</div> : this.renderEditPanel()
 				}
+				{this.renderShowSuccessUpdatedUserModal()}
 			</div>
 		)
 	}

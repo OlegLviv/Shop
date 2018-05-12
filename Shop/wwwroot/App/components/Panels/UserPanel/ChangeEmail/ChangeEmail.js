@@ -2,12 +2,19 @@ import React from 'react';
 import './ChangeEmail.scss';
 import {apiGet, apiPost, apiPut} from "../../../../services/api";
 import {
-	GET_USER_INFO,
-	SEND_CHANGE_EMAIL_TOKEN,
-	CHANGE_USER_EMAIL,
+	GET_USER_INFO_URL,
+	SEND_CHANGE_EMAIL_TOKEN_URL,
+	CHANGE_USER_EMAIL_URL,
 	getIsExistUserUrl
 } from "../../../../services/urls/userUrls";
-import {isValidEmail, isValidWhiteSpace} from "../../../../utils/validationUtils";
+import {isValidEmail} from "../../../../utils/validationUtils";
+import {Spinner} from "../../../Spinner/Spinner";
+import {SuccessChangedEmailModal} from "./SuccessChangedEmailModal";
+
+const getChangeUserEmailBody = ({token, newEmail}) => ({
+	emailToken: token,
+	newEmail: newEmail
+});
 
 class ChangeEmail extends React.Component {
 	constructor(props) {
@@ -20,18 +27,28 @@ class ChangeEmail extends React.Component {
 			token: '',
 			isRenderConfirmTokenView: false,
 			isValidToken: true,
-			tokenError: ''
+			tokenError: '',
+			isLoading: false,
+			canShowSuccessChangedEmailModal: false
 		}
 	}
 
+	trySetLoading = () => {
+		if (!this.state.isLoading)
+			this.setState({isLoading: true});
+	};
+
 	componentDidMount() {
-		apiGet(GET_USER_INFO)
-			.then(resp => this.setState({oldEmail: resp.data.email}));
+		this.trySetLoading();
+
+		apiGet(GET_USER_INFO_URL)
+			.then(resp => this.setState({oldEmail: resp.data.email, isLoading: false}))
+			.catch(err => alert(`Error:${err}`));
 	}
 
 	isUserExist = (value) => apiGet(getIsExistUserUrl(value));
 
-	validateNewEmail = value => {
+	validateNewEmail = (value, successAction) => {
 		if (!isValidEmail(value)) {
 			this.setState({
 				isValidEmail: false,
@@ -48,21 +65,16 @@ class ChangeEmail extends React.Component {
 			return;
 		}
 
-		if (!isValidWhiteSpace(value)) {
-			this.setState({
-				isValidEmail: false,
-				emailError: 'Поле не повинне містити пробіли'
-			});
-			return;
-		}
-
 		this.isUserExist(value)
-			.then(resp => resp.data === true && this.setState({
-				isValidEmail: false,
-				emailError: 'Користувач з таким Email вже існує'
-			}));
+			.then(resp => {
+				resp.data === true && this.setState({
+					isValidEmail: false,
+					emailError: 'Користувач з таким Email вже існує'
+				});
+				isValidEmail(value) && !resp.data && successAction && successAction();
+			});
 
-		if (isValidEmail(value) && isValidWhiteSpace(value) && !this.state.isValidEmail)
+		if (isValidEmail(value) && !this.state.isValidEmail)
 			this.setState({
 				isValidEmail: true,
 				emailError: ''
@@ -76,33 +88,35 @@ class ChangeEmail extends React.Component {
 	};
 
 	onClickChangeEmail = () => {
-		this.validateNewEmail(this.state.newEmail);
+		this.validateNewEmail(this.state.newEmail, () => {
+			this.trySetLoading();
 
-		this.isUserExist(this.state.newEmail)
-			.then(({data}) => {
-				if (!isValidWhiteSpace(this.state.newEmail) ||
-					!isValidEmail(this.state.newEmail) ||
-					(this.state.newEmail === this.state.oldEmail) ||
-					data === true)
-					return;
+			this.isUserExist(this.state.newEmail)
+				.then(({data}) => {
+					if (!isValidEmail(this.state.newEmail) ||
+						(this.state.newEmail === this.state.oldEmail) ||
+						data === true)
+						return;
 
-				apiPost(SEND_CHANGE_EMAIL_TOKEN, {
-					newEmail: this.state.newEmail
+					apiPost(SEND_CHANGE_EMAIL_TOKEN_URL, {
+						newEmail: this.state.newEmail
+					})
+						.then(resp => {
+							console.log(resp);
+							if (resp.status === 200 && resp.data === 'Success') {
+								this.setState({isRenderConfirmTokenView: true, isLoading: false});
+							}
+						})
+						.catch(err => alert(`Error:${err}`));
 				})
-					.then(resp => {
-						console.log(resp);
-						if (resp.status === 200 && resp.data === 'Success') {
-							this.setState({isRenderConfirmTokenView: true});
-						}
-					});
-			})
+				.catch(err => alert(`Error:${err}`));
+		});
 	};
 
 	onConfirmTokenClick = () => {
-		apiPut(CHANGE_USER_EMAIL, {
-			emailToken: this.state.token,
-			newEmail: this.state.newEmail
-		}, error => {
+		this.trySetLoading();
+
+		apiPut(CHANGE_USER_EMAIL_URL, getChangeUserEmailBody(this.state), error => {
 			if (error.response.status === 400)
 				this.setState({
 					isValidToken: false,
@@ -110,19 +124,28 @@ class ChangeEmail extends React.Component {
 				});
 		})
 			.then(resp => {
-				alert(`Email успішно змінено на ${resp.data.email}`);
 				this.setState({
 					newEmail: '',
 					oldEmail: resp.data.email,
 					isRenderConfirmTokenView: false,
 					isValidEmail: true,
 					isValidToken: true,
-					tokenError: ''
-				});
-			});
+					tokenError: '',
+					isLoading: false,
+					canShowSuccessChangedEmailModal: true
+				})
+					.catch(() => this.setState({isLoading: false}));
+			})
+			.catch(() => this.setState({isLoading: false}));
 	};
 
+	onCloseSuccessChangedEmailModal = () => this.setState({canShowSuccessChangedEmailModal: false});
+
 	renderError = text => <small className="invalid-small">{text}</small>;
+
+	renderSuccessChangedEmailModal = () => <SuccessChangedEmailModal
+		isOpen={this.state.canShowSuccessChangedEmailModal}
+		onClose={this.onCloseSuccessChangedEmailModal}/>;
 
 	renderConfirmToken = () => {
 		return (
@@ -147,8 +170,9 @@ class ChangeEmail extends React.Component {
 	render() {
 		return (
 			<div className="ce-container">
+				{this.renderSuccessChangedEmailModal()}
 				<div className="ce-container__header">Зміна Email</div>
-				<div className="ce-container__form">
+				{!this.state.isLoading ? <div className="ce-container__form">
 					<div className="form-group">
 						<label htmlFor="inputOldEmail">Ваш Email</label>
 						<input className="form-control"
@@ -156,17 +180,19 @@ class ChangeEmail extends React.Component {
 							   value={this.state.oldEmail}
 							   readOnly/>
 					</div>
-					<div className="form-group">
-						<label htmlFor="inputNewEmail">Новий Email</label>
-						<input className={`form-control ${!this.state.isValidEmail && 'invalid-input'}`}
-							   id="inputNewEmail"
-							   placeholder="Введіть новий Email"
-							   onChange={this.onChangeEmail}/>
-						{!this.state.isValidEmail && this.renderError(this.state.emailError)}
-					</div>
-					<button className="btn btn-info" onClick={this.onClickChangeEmail}>Відправити</button>
+					{!this.state.isRenderConfirmTokenView && <div>
+						<div className="form-group">
+							<label htmlFor="inputNewEmail">Новий Email</label>
+							<input className={`form-control ${!this.state.isValidEmail && 'invalid-input'}`}
+								   id="inputNewEmail"
+								   placeholder="Введіть новий Email"
+								   onChange={this.onChangeEmail}/>
+							{!this.state.isValidEmail && this.renderError(this.state.emailError)}
+						</div>
+						<button className="btn btn-info" onClick={this.onClickChangeEmail}>Відправити</button>
+					</div>}
 					{this.state.isRenderConfirmTokenView && this.renderConfirmToken()}
-				</div>
+				</div> : <Spinner/>}
 			</div>
 		);
 	}

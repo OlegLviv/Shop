@@ -22,9 +22,11 @@ export const apiGet = (url, error) => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.error(err.response.data);
-			error(err);
+			console.log('Api log: ', err.response.data);
 		}
+		if (error)
+			error(err);
+		throw new Error(JSON.stringify(err));
 	});
 
 export const apiPost = (url, body, error) => api()
@@ -33,9 +35,11 @@ export const apiPost = (url, body, error) => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.error(err.response.data);
-			error(err);
+			console.log('Api log: ', err.response.data);
 		}
+		if (error)
+			error(err);
+		throw new Error(JSON.stringify(err));
 	});
 
 export const apiPut = (url, body, error) => api()
@@ -44,9 +48,11 @@ export const apiPut = (url, body, error) => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.error(err.response.data);
-			error(err);
+			console.log('Api log: ', err.response.data);
 		}
+		if (error)
+			error(err);
+		throw new Error(JSON.stringify(err));
 	});
 
 export const apiDelete = (url, error) => api()
@@ -55,9 +61,11 @@ export const apiDelete = (url, error) => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.error(err.response.data);
-			error(err);
+			console.log('Api log: ', err.response.data);
 		}
+		if (error)
+			error(err);
+		throw new Error(JSON.stringify(err));
 	});
 
 export const apiWithoutRedirect = () => {
