@@ -10,7 +10,6 @@ import {
 } from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
-import {arrayDiff} from "../../../../../utils/utils";
 
 const howProductsPerPage = 5;
 
@@ -220,6 +219,8 @@ class Edit extends React.Component {
 		);
 	};
 
+	renderNotFoundProducts = () => <div className="not-found"><h4>Нічого не знайдено</h4></div>;
+
 	render() {
 		return (
 			<div className="edit-container">
@@ -233,6 +234,7 @@ class Edit extends React.Component {
 						   onChange={this.onChangeSearch}
 						   value={this.state.searchValue}/>
 				</div>
+				{!this.state.products.length && this.state.searchValue && this.renderNotFoundProducts()}
 				{!this.state.selectedProduct ? <div>
 					<div className="edit-container__product-list-box">
 						{this.state.products.length > 0 && <h6 className="text-center">Оберіть товар</h6>}
