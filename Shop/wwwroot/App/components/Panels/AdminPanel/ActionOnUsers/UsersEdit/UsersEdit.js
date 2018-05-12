@@ -7,6 +7,7 @@ import {
 	EDIT_USER_PERSONAL_DATA
 } from "../../../../../services/urls/userUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
+import {SuccessUpdatedUserDataModal} from "./SuccessUpdatedUserDataModal";
 
 class UsersEdit extends React.Component {
 	constructor(props) {
@@ -20,7 +21,8 @@ class UsersEdit extends React.Component {
 			name: '',
 			lastName: '',
 			isLoading: false,
-			isLoaded: true
+			isLoaded: true,
+			isShowSuccessUpdatedUserModal: false
 		}
 	}
 
@@ -44,10 +46,11 @@ class UsersEdit extends React.Component {
 	};
 
 	setUsersByIdInState = id => {
-		console.log(id);
 		this.trySetTrueLoadings();
 		apiGet(getUserByIdUrl(id))
-			.then(resp => this.setState({users: [resp.data], isLoaded: true, isLoading: false}))
+			.then(resp => {
+				this.setState({users: [resp.data], isLoaded: true, isLoading: false});
+			})
 			.catch(() => {
 				this.setState({users: [], isLoaded: true, isLoading: false});
 			});
@@ -71,12 +74,12 @@ class UsersEdit extends React.Component {
 	};
 
 	onClickUser = user => {
+		console.log('sel user', user);
 		this.setState({
 			selectedUser: user,
 			name: user.name,
 			lastName: user.lastName
 		});
-		console.log('selected user', user);
 	};
 
 	onSave = () => {
@@ -90,12 +93,11 @@ class UsersEdit extends React.Component {
 		apiPut(EDIT_USER_PERSONAL_DATA, user)
 			.then(resp => {
 				if (resp.status === 200) {
-					alert("Дані успішно оновлено");
-					this.setState({isLoaded: true, isLoading: false});
+					this.setState({isLoaded: true, isLoading: false, isShowSuccessUpdatedUserModal: true});
 				}
 			})
-			.catch(() => {
-				alert(`Error:Сталась помилка`);
+			.catch(err => {
+				alert(`Error: ${err}`);
 				this.setState({isLoaded: true, isLoading: false});
 			});
 	};
@@ -104,6 +106,8 @@ class UsersEdit extends React.Component {
 		this.setState({selectedUser: null});
 		this.onChangeSearch({target: {value: this.state.searchValue}});
 	};
+
+	onCloseSuccessUpdatedUserDataModal = () => this.setState({isShowSuccessUpdatedUserModal: false});
 
 	renderUserInfo = () => {
 		return (
@@ -132,7 +136,6 @@ class UsersEdit extends React.Component {
 		);
 	};
 
-	//todo need to add spinner
 	renderEditPanel = () => {
 		return (
 			<div>
@@ -203,6 +206,10 @@ class UsersEdit extends React.Component {
 		else return null;
 	};
 
+	renderShowSuccessUpdatedUserModal = () => <SuccessUpdatedUserDataModal
+		isOpen={this.state.isShowSuccessUpdatedUserModal}
+		onClose={this.onCloseSuccessUpdatedUserDataModal}/>;
+
 	render() {
 		return (
 			<div className="user-edit-container">
@@ -239,6 +246,7 @@ class UsersEdit extends React.Component {
 						</div>
 					</div> : this.renderEditPanel()
 				}
+				{this.renderShowSuccessUpdatedUserModal()}
 			</div>
 		)
 	}

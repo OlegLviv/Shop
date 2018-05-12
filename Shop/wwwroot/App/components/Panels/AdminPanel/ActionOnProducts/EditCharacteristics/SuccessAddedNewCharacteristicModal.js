@@ -1,7 +1,7 @@
 import React from 'react';
 import {AlertModal} from "../../../../common/AlertModal/AlertModal";
 
-export const SuccessAddedNewCharacteristic = ({isOpen, onClose}) => {
+export const SuccessAddedNewCharacteristicModal = ({isOpen, onClose}) => {
 	return (
 		<AlertModal isOpen={isOpen}
 					onCloseAlertModal={onClose}

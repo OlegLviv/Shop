@@ -11,8 +11,8 @@ import {
 import {Icon} from 'react-fa';
 import {isValidPossibleProp} from "../../../../../utils/validationUtils";
 import {Link} from 'react-router-dom';
-import {SuccessAddedNewCharacteristic} from "./SuccessAddedNewCharacteristic";
-import {SuccessDeletedCharacteristic} from "./SuccessDeletedCharacteristic";
+import {SuccessAddedNewCharacteristicModal} from "./SuccessAddedNewCharacteristicModal";
+import {SuccessDeletedCharacteristicModal} from "./SuccessDeletedCharacteristicModal";
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -213,11 +213,11 @@ class EditCharacteristic extends React.Component {
 
 	renderError = text => <small className="invalid-small">{text}</small>;
 
-	renderSuccessAddedNewCharacteristic = () => <SuccessAddedNewCharacteristic
+	renderSuccessAddedNewCharacteristic = () => <SuccessAddedNewCharacteristicModal
 		isOpen={this.state.isShowSuccessAddedNewCharacteristicModal}
 		onClose={this.onCloseSuccessAddedNewCharacteristicModal}/>;
 
-	renderSuccessDeletedCharacteristic = () => <SuccessDeletedCharacteristic
+	renderSuccessDeletedCharacteristic = () => <SuccessDeletedCharacteristicModal
 		isOpen={this.state.isShowSuccessDeletedCharacteristicModal}
 		onClose={this.onCloseSuccessDeletedCharacteristicModal}/>;
 

@@ -22,7 +22,7 @@ export const apiGet = url => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.log(`Api log: ${err.response.data}`);
+			console.log('Api log: ', err.response.data);
 		}
 		throw new Error(err);
 	});
@@ -33,7 +33,7 @@ export const apiPost = (url, body) => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.log(`Api log: ${err.response.data}`);
+			console.log('Api log: ', err.response.data);
 		}
 		throw new Error(err);
 	});
@@ -44,9 +44,9 @@ export const apiPut = (url, body) => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.log(`Api log: ${err.response.data}`);
+			console.log('Api log: ', err.response.data);
 		}
-		throw new Error(err);
+		throw new Error(JSON.stringify(err));
 	});
 
 export const apiDelete = url => api()
@@ -55,7 +55,7 @@ export const apiDelete = url => api()
 		if (err.response.status === 401 || err.response.status === 403)
 			window.location.replace('/logIn');
 		else {
-			console.log(`Api log: ${err.response.data}`);
+			console.log('Api log: ', err.response.data);
 		}
 		throw new Error(err);
 	});

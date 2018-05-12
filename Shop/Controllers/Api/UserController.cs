@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BLL.Filters.ActionFilters;
@@ -9,7 +10,6 @@ using Common.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Core.Models.DomainModels;
 using Microsoft.Extensions.Configuration;
-using BLL.Services;
 using BLL.Services.Interfaces;
 using Common.Helpers;
 using Core.Interfaces;
@@ -79,10 +79,9 @@ namespace Shop.Controllers.Api
                 .Where(x => x.Name.ToLower().Contains(nameOrLastName)
                             || x.LastName.ToLower().Contains(nameOrLastName));
 
-            // todo need add automapper
-            var paginator = new Paginator<User>
+            var paginator = new Paginator<UserDto>
             {
-                Data = user.Page(pageNumber, pageSize),
+                Data = _mapper.Map<IEnumerable<UserDto>>(user.Page(pageNumber, pageSize)),
                 TotalCount = user.Count(),
                 PageSize = pageSize,
                 PageNumber = pageNumber
