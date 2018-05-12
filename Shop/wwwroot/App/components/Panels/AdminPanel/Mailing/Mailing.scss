@@ -25,6 +25,7 @@
   }
   &__form textarea {
 	max-height: 10rem;
+	min-height: 3rem;
   }
   &__form input::placeholder {
 	font-size: 13px;
