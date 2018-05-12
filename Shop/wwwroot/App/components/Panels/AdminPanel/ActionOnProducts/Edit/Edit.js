@@ -11,6 +11,7 @@ import {
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
 import {SuccessDeletedModal} from "./SuccessDeletedModal";
+import {SuccessUpdatedModal} from "./SuccessUpdatedModal";
 
 const howProductsPerPage = 5;
 
@@ -29,7 +30,8 @@ class Edit extends React.Component {
 			isLoaded: true,
 			isDeleteConfirmed: false,
 			imgUrls: [],
-			isShowSuccessDeleted: false
+			isShowSuccessDeleted: false,
+			isShowSuccessUpdated: false
 		}
 	}
 
@@ -44,14 +46,16 @@ class Edit extends React.Component {
 			return;
 		}
 
-		this.setState({searchValue: e.target.value});
+		this.setState({searchValue: e.target.value, isLoading: true, isLoaded: false});
+
 		apiGet(getProductsByNameUrl(e.target.value, 1, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
 				this.setState({
 					products: resp.data.data,
 					activePage: resp.data.pageNumber,
-					totalProductCount: resp.data.totalCount
+					totalProductCount: resp.data.totalCount,
+					isLoading: false, isLoaded: true
 				});
 			})
 	};
@@ -92,9 +96,9 @@ class Edit extends React.Component {
 				console.log(resp.data);
 				this.setState({
 					isLoading: false,
-					isLoaded: true
+					isLoaded: true,
+					isShowSuccessUpdated: true
 				});
-				alert("Дані успішно оновлено");
 			})
 			.catch(err => {
 				console.error(err.response.data);
@@ -139,10 +143,11 @@ class Edit extends React.Component {
 	};
 
 	onCloseSuccessDeletedModal = () => {
-		console.log('close');
 		this.setState({isShowSuccessDeleted: false});
 		this.onCloseEditPanel();
 	};
+
+	onCloseSuccessUpdatedModal = () => this.setState({isShowSuccessUpdated: false});
 
 	setImagesUrl = () => {
 		Promise.all([this.getImageCount()])
@@ -232,10 +237,14 @@ class Edit extends React.Component {
 	renderSuccessDeletedModal = () => <SuccessDeletedModal isOpen={this.state.isShowSuccessDeleted}
 														   onClose={this.onCloseSuccessDeletedModal}/>;
 
+	renderSuccessUpdatedModal = () => <SuccessUpdatedModal isOpen={this.state.isShowSuccessUpdated}
+														   onClose={this.onCloseSuccessUpdatedModal}/>;
+
 	render() {
 		return (
 			<div className="edit-container">
 				{this.renderSuccessDeletedModal()}
+				{this.renderSuccessUpdatedModal()}
 				<div className="edit-container__header">
 					Редактор товару
 				</div>
@@ -250,17 +259,18 @@ class Edit extends React.Component {
 				{!this.state.selectedProduct ? <div>
 					<div className="edit-container__product-list-box">
 						{this.state.products.length > 0 && <h6 className="text-center">Оберіть товар</h6>}
-						<ul className="list-group edit-container__product-list-box__list-group">
-							{
-								this.state.products.map(item => <li key={item.id}
-																	className="list-group-item list-group edit-container__product-list-box__list-group__item"
-																	onClick={() => this.onProductClick(item)}>
-									<div>{`Назва продукту: ${item.name}`}</div>
-									<div>{`Категорія: ${item.category}`}</div>
-									<div>{`Підкатегорія: ${item.subCategory}`}</div>
-								</li>)
-							}
-						</ul>
+						{!this.state.isLoading && this.state.isLoaded ?
+							<ul className="list-group edit-container__product-list-box__list-group">
+								{
+									this.state.products.map(item => <li key={item.id}
+																		className="list-group-item list-group edit-container__product-list-box__list-group__item"
+																		onClick={() => this.onProductClick(item)}>
+										<div>{`Назва продукту: ${item.name}`}</div>
+										<div>{`Категорія: ${item.category}`}</div>
+										<div>{`Підкатегорія: ${item.subCategory}`}</div>
+									</li>)
+								}
+							</ul> : <Spinner/>}
 					</div>
 					<div className="edit-container__pagin-box">
 						{this.state.products.length > 0 && <Pagination totalItemsCount={this.state.totalProductCount}
