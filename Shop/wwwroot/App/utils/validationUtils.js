@@ -1,5 +1,9 @@
 export const isValidWhiteSpace = s => new RegExp('^\\S+$').test(s);
 
+export const isValidMailingSubject = s => new RegExp('[A-zА-яіІёЁ1-9]{4,64}').test(s);
+
+export const isValidMailingBody = s => new RegExp('[A-zА-яіІёЁ1-9 ]{16,512}').test(s);
+
 export const isValidEmail = s => new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$').test(s);
 
 export const isValidPassword = s => new RegExp('^(?=(?:.*[A-Z]))\\S{6,20}$').test(s);

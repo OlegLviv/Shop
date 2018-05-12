@@ -16,6 +16,7 @@ import {GET_USER_ROLE_URL} from "../../../services/urls/userUrls";
 import EditCharacteristic from './ActionOnProducts/EditCharacteristics/EditCharacteristic';
 import Orders from './Orders/Orders';
 import FullOrder from './Orders/FullOrder/FullOrder';
+import Mailing from './Mailing/Mailing';
 
 const navItems = [
 	{
@@ -42,6 +43,11 @@ const navItems = [
 		link: '/adminPanel/orders',
 		icon: 'folder-open',
 		text: 'Замовлення'
+	},
+	{
+		link: '/adminPanel/mailing',
+		icon: 'envelope',
+		text: 'Розсилки'
 	}
 
 ];
@@ -103,6 +109,7 @@ class AdminPanel extends React.Component {
 							<Route path="/adminPanel/site-settings" render={() => <div>site settings</div>}/>
 							<Route path="/adminPanel/owner-settings" render={() => <div>owner settings</div>}/>
 							<Route exact path="/adminPanel/orders" component={Orders}/>
+							<Route exact path="/adminPanel/mailing" component={Mailing}/>
 							<Route path="/adminPanel/orders/:orderId" render={props => <FullOrder {...props}/>}/>
 							<Route component={NotFound}/>
 						</Switch>
