@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
-import {customStyles} from "../modalStyles";
+import {customModalStyle} from "../modalStyles";
 
 class SuccessRegisterModal extends React.Component {
 	constructor(props) {
@@ -16,7 +16,7 @@ class SuccessRegisterModal extends React.Component {
 			<Modal
 				isOpen={true}
 				onRequestClose={this.closeModal}
-				style={customStyles}>
+				style={customModalStyle}>
 				<h3>Успішно</h3>
 				<hr/>
 				<h6>На вашу пошту надіслано повідомнення для підтвердження вашого email</h6>

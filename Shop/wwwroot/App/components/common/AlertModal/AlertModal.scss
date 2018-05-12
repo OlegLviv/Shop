@@ -1,0 +1,13 @@
+.modal-body {
+  &__header {
+	text-align: center;
+  }
+  &__main {
+	text-align: center;
+  }
+  &__footer {
+	display: flex;
+	justify-content: center;
+	padding-top: 1rem;
+  }
+}

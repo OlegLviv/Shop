@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
-import {customStyles} from "../modalStyles";
+import {customModalStyle} from "../modalStyles";
 import './LogInModal.scss';
 import {logInToken} from "../../../services/authService";
 import {isValidWhiteSpace} from "../../../utils/validationUtils";
@@ -97,7 +97,7 @@ class LogInModal extends React.Component {
 			<Modal isOpen={this.props.isModalOpen}
 				   onRequestClose={this.onCloseModal}
 				   shouldCloseOnEsc={true}
-				   style={customStyles}>
+				   style={customModalStyle}>
 				<div className="form-container">
 					<form onSubmit={this.onLogin} method=''>
 						<h3 className="text-center">Вхід</h3>

@@ -1,7 +1,14 @@
 import React from 'react';
 import './Footer.scss';
 import {Icon} from 'react-fa';
-import {Link} from 'react-router-dom';
+import {AlertModal} from '../common/AlertModal/AlertModal';
+
+{/*<AlertModal isOpen={true}*/}
+			{/*onCloseAlertModal={() => {*/}
+			{/*}}*/}
+			{/*headerText="Text"*/}
+			{/*subjectText="Subject"*/}
+			{/*body="asdmk aksdjk jkalsd"/>*/}
 
 export const Footer = () => {
 	return (
@@ -33,7 +40,8 @@ export const Footer = () => {
 					</div>
 				</div>
 				<div className="footer-cont__main__mailing">
-					<div className="footer-cont__main__mailing__text">Підпишіться на розсилку новинок та акційних пропозицій
+					<div className="footer-cont__main__mailing__text">Підпишіться на розсилку новинок та акційних
+						пропозицій
 					</div>
 					<div className="input-group mb-3">
 						<input type="text" className="form-control" placeholder="Введіть свій Email"
@@ -45,7 +53,9 @@ export const Footer = () => {
 				</div>
 			</div>
 			<div className="footer-cont__sub-footer">
-				<div className="footer-cont__sub-footer__text">Інтернет магазин канцтоварів Name © 2018 Всі права захищені</div>
+				<div className="footer-cont__sub-footer__text">Інтернет магазин канцтоварів Name © 2018 Всі права
+					захищені
+				</div>
 				<div className="footer-cont__sub-footer__text">Створення сайту:
 					<a href="https://vk.com/id105586528">{' Oleh Kokhan'}</a>
 				</div>

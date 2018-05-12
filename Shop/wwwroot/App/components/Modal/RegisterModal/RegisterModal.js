@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
-import {customStyles} from "../modalStyles";
+import {customModalStyle} from "../modalStyles";
 import './RegisterModal.scss';
 import {registerUser} from "../../../services/authService";
 import SuccessRegisterModal from './SuccessRegisterModal';
@@ -237,7 +237,7 @@ class RegisterModal extends React.Component {
 			<div>
 				{!isShowSuccessModal ? <Modal isOpen={this.props.isModalOpen}
 											  onRequestClose={this.onCloseModal}
-											  style={customStyles}
+											  style={customModalStyle}
 											  shouldCloseOnEsc={true}>
 					<div className="text-center">
 						<h3>Реєстрація</h3>
