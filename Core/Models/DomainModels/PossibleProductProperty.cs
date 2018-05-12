@@ -17,5 +17,12 @@ namespace Core.Models.DomainModels
         [MinLength(2)]
         [StringList]
         public string Values { get; set; }
+
+        public static PossibleProductProperty Empty(string subCat, string propName) => new PossibleProductProperty
+        {
+            SubCategory = subCat,
+            PropertyName = propName,
+            Values = string.Empty
+        };
     }
 }

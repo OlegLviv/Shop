@@ -4,7 +4,7 @@ import {getSubCategories, NAVIGATION_CATEGORIES, normalizeSubCategoryToRoute} fr
 import {ADD_PROPERTY_URL, getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
-import {toUpperFirstChar, toUpperFirstCharInArray} from "../../../../../utils/utils";
+import {toUpperFirstCharInArray} from "../../../../../utils/utils";
 
 class AddNewCharacteristic extends React.Component {
 	constructor(props) {
