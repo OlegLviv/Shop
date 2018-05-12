@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Models.DomainModels;
 using Core.Models.DomainModels.Base;
 using Core.Models.DTO;
+using Core.Models.DTO.Mailing;
 using Core.Models.DTO.Order;
 
 namespace Core.Mapper
@@ -19,6 +19,8 @@ namespace Core.Mapper
             CreateMap<CreateOrderDto, UserOrder>();
             CreateMap<AnonimOrder, OrderDto>();
             CreateMap<UserOrder, OrderDto>();
+            CreateMap<SubscribeMailDto, Mailing>();
+            CreateMap<Mailing, SubscribeMailDto>();
         }
     }
 }

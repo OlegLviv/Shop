@@ -31,11 +31,7 @@ namespace Common.Extensions
         {
             if (@params == null)
                 throw new ArgumentNullException(nameof(@params));
-            if (@params.Any())
-            {
-                return @params[0].Split(',');
-            }
-            return null;
+            return @params.Any() ? @params[0].Split(',') : null;
         }
     }
 }
