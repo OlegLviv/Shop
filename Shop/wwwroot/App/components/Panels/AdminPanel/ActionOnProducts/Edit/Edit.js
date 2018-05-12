@@ -10,6 +10,7 @@ import {
 } from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
+import {SuccessDeletedModal} from "./SuccessDeletedModal";
 
 const howProductsPerPage = 5;
 
@@ -27,7 +28,8 @@ class Edit extends React.Component {
 			isLoading: false,
 			isLoaded: true,
 			isDeleteConfirmed: false,
-			imgUrls: []
+			imgUrls: [],
+			isShowSuccessDeleted: false
 		}
 	}
 
@@ -99,22 +101,21 @@ class Edit extends React.Component {
 			});
 	};
 
-	onDeletePruduct = () => {
+	onDeleteProduct = () => {
 		if (this.state.isLoaded) {
 			this.setState({isLoaded: false});
 		}
 		this.setState({isLoading: true});
 		apiDelete(getDeleteProductUrl(this.state.selectedProduct.id))
 			.then(resp => {
-				console.log('resp data', resp.data);
 				if (resp.data >= 1) {
 					this.setState({
 						isLoading: false,
 						isLoaded: true,
-						isDeleteConfirmed: false
+						isDeleteConfirmed: false,
+						isShowSuccessDeleted: true,
+						selectedProduct: null
 					});
-					this.onCloseEditPanel();
-					alert('Товар видалено успішно');
 				}
 			})
 			.catch(err => console.error(err.response.data));
@@ -137,6 +138,12 @@ class Edit extends React.Component {
 			.then(resp => console.log(resp));
 	};
 
+	onCloseSuccessDeletedModal = () => {
+		console.log('close');
+		this.setState({isShowSuccessDeleted: false});
+		this.onCloseEditPanel();
+	};
+
 	setImagesUrl = () => {
 		Promise.all([this.getImageCount()])
 			.then(resp => {
@@ -146,7 +153,8 @@ class Edit extends React.Component {
 					imgUrls.push(`/api/Product/GetProductImage/${this.state.selectedProduct.id}/${i}`);
 				}
 				this.setState({imgUrls: imgUrls});
-			});
+			})
+			.catch(null);
 	};
 
 	renderImagesEdit = () => {
@@ -165,7 +173,7 @@ class Edit extends React.Component {
 		const {selectedProduct} = this.state;
 		return (
 			<div>
-				{this.state.isLoaded && !this.state.isLoading ? <table>
+				{this.state.isLoaded && !this.state.isLoading && selectedProduct ? <table>
 					<thead className="table-head">
 					<tr>
 						<th>Назва властивості</th>
@@ -204,7 +212,7 @@ class Edit extends React.Component {
 						<td>
 							<button className="btn btn-warning"
 									disabled={!this.state.isDeleteConfirmed}
-									onClick={this.onDeletePruduct}>Видалити
+									onClick={this.onDeleteProduct}>Видалити
 							</button>
 						</td>
 						<td>
@@ -221,9 +229,13 @@ class Edit extends React.Component {
 
 	renderNotFoundProducts = () => <div className="not-found"><h4>Нічого не знайдено</h4></div>;
 
+	renderSuccessDeletedModal = () => <SuccessDeletedModal isOpen={this.state.isShowSuccessDeleted}
+														   onClose={this.onCloseSuccessDeletedModal}/>;
+
 	render() {
 		return (
 			<div className="edit-container">
+				{this.renderSuccessDeletedModal()}
 				<div className="edit-container__header">
 					Редактор товару
 				</div>
