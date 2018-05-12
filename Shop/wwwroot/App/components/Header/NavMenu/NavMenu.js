@@ -71,7 +71,6 @@ class NavMenu extends React.Component {
 	};
 
 	render() {
-		console.log(this.props.products);
 		const likeProdCount = getLikeProductsCount();
 		const productCardItemsCount = getProductCardItemCount(this.props);
 		return (

@@ -25,13 +25,20 @@ class AddNewCharacteristic extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.subCategory !== this.state.subCategory) {
+		if (prevState.subCategory !== this.state.subCategory)
 			this.updateSubCategoryState();
+
+		if (prevState.category !== this.state.category) {
+			this.onChangeOptionSubCategory({
+				target: {
+					value: getSubCategories(this.state.category)[0]
+				}
+			})
 		}
 	}
 
 	updateSubCategoryState = () => {
-		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), () => this.setState({subCategoryProps: []}))
 			.then(resp => {
 				console.log(resp.data);
 				const product = {...this.state.product};

@@ -17,14 +17,6 @@ export const addObjectQueryToProducts = (products) => {
 	return products;
 };
 
-export const productColors = () => [
-	'#ff2020',
-	'#20ff20',
-	'#2020ff',
-	'#111',
-	'#fff'
-];
-
 export const priceRange = {
 	minPrice: 0,
 	maxPrice: 10000
@@ -32,6 +24,7 @@ export const priceRange = {
 
 export const normalizeSubCategoryToRoute = (subCategory) => {
 	switch (subCategory) {
+		//	Stationery
 		case 'Папки шкільні':
 			return 'schoolFolders';
 		case 'Папки офісні':
@@ -59,16 +52,21 @@ export const normalizeSubCategoryToRoute = (subCategory) => {
 		case 'ЗНО':
 			return 'zno';
 
+			//	Gifts
 		case 'Шкатулки':
 			return 'casket';
 		case 'Декоративні коробочки':
 			return 'decorativeBoxes';
 		case 'Статуетки':
 			return 'figures';
+
+			//	Books
+		case 'Енциклопедії':
+			return 'encyclopedias';
 	}
 };
 
-export const normalizecategoryToRoute = (category) => {
+export const normalizeCategoryToRoute = (category) => {
 	switch (category) {
 		case 'Рюкзаки. Сумочки':
 			return 'Backpacks Handbags';

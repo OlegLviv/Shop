@@ -10,6 +10,7 @@ import {
 } from "../../../../../services/urls/productUrls";
 import {Icon} from 'react-fa';
 import {isValidPossibleProp} from "../../../../../utils/validationUtils";
+import {Link} from 'react-router-dom';
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -31,8 +32,15 @@ class EditCharacteristic extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.subCategory !== this.state.subCategory) {
+		if (prevState.subCategory !== this.state.subCategory)
 			this.updateSubCategoryState();
+
+		if (this.state.category !== prevState.category) {
+			this.onChangeOptionSubCategory({
+				target: {
+					value: getSubCategories(this.state.category)[0]
+				}
+			})
 		}
 	}
 
@@ -66,7 +74,9 @@ class EditCharacteristic extends React.Component {
 	};
 
 	updateSubCategoryState = () => {
-		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), () => {
+			this.setState({subCategoryProps: []})
+		})
 			.then(resp => {
 				const product = {...this.state.product};
 				clearObjectProps(product);
@@ -260,6 +270,8 @@ class EditCharacteristic extends React.Component {
 					}
 					</tbody>
 				</table>
+				{!this.state.subCategoryProps.length && <div className="text-center my-3">Властивостей для даного товару не знайдено. Ви може створити їх
+					<Link to="/adminPanel/action-on-products/add-new-characteristic">{' тут'}</Link></div>}
 			</div>
 		)
 	}

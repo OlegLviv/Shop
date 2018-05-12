@@ -22,11 +22,13 @@
 	  }
 	}
   }
-  &__sub-footer{
+  &__sub-footer {
 	background: $dark-background;
 	color: $dark-grey-color;
 	display: flex;
 	padding: 1rem 5rem;
-	justify-content: space-between;
+	flex-direction: column;
+	align-items: center;
+	font-size: 13px;
   }
 }
