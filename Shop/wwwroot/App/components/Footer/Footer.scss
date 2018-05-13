@@ -6,11 +6,13 @@
 	justify-content: center;
 	padding: 1rem 5rem;
 	background: $light-background;
+	font-size: 13px !important;
 	&__contacts {
 	  padding: 0 3rem;
 	  &__main-text {
 		font-weight: bold;
 		font-size: 16px;
+		text-align: center;
 	  }
 	  &__contact {
 		display: flex;
@@ -21,6 +23,19 @@
 		padding-left: .3rem;
 	  }
 	}
+	&__mailing {
+	  &__text {
+		font-size: 16px;
+		font-weight: bold;
+		text-align: center;
+	  }
+	}
+	&__mailing button {
+	  min-height: 100%;
+	}
+	&__mailing input {
+	  font-size: 13px;
+	}
   }
   &__sub-footer {
 	background: $dark-background;
@@ -30,5 +45,14 @@
 	flex-direction: column;
 	align-items: center;
 	font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 990px) {
+  .footer-cont {
+	&__main {
+	  flex-direction: column;
+	  align-items: center;
+	}
   }
 }
