@@ -132,7 +132,7 @@ namespace Shop.Controllers.Api
                 .Select(_productsRepository.Table.Include(x => x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
 
-            return this.JsonResult(products);
+            return this.JsonResult(_mapper.Map<IEnumerable<ProductDto>>(products));
         }
 
         [HttpGet("GetProducts/{name}/{pageNumber:int?}/{pageSize:int?}")]
@@ -264,15 +264,7 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> AddProduct([FromForm] AddProductDto model)
         {
-            var product = new Product
-            {
-                Category = model.Category,
-                SubCategory = model.SubCategory,
-                Name = model.Name,
-                Price = model.Price,
-                Description = model.Description,
-                Query = model.Query
-            };
+            var product = _mapper.Map<Product>(model);
 
             var productImages = new List<ProductImage>();
 
@@ -299,6 +291,7 @@ namespace Shop.Controllers.Api
                 product.ProductImages = productImages;
 
             var insertRes = await _productsRepository.InsertAsync(product);
+
             return Ok(insertRes);
         }
 

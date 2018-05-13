@@ -53,6 +53,7 @@ namespace Shop.Controllers.Api
 
             if (user == null)
                 return BadRequest("User don't exist");
+
             return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 
@@ -67,6 +68,7 @@ namespace Shop.Controllers.Api
 
             if (user == null)
                 return BadRequest("Incorrent user id or user don't found");
+
             return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 
@@ -86,6 +88,7 @@ namespace Shop.Controllers.Api
                 PageSize = pageSize,
                 PageNumber = pageNumber
             };
+
             return this.JsonResult(paginator);
         }
 
@@ -94,6 +97,7 @@ namespace Shop.Controllers.Api
         public async Task<IActionResult> IfUserExist(string userNameOrEmail)
         {
             var user = await _userManager.FindByEmailAsync(userNameOrEmail) ?? await _userManager.FindByNameAsync(userNameOrEmail);
+
             return Ok(user != null);
         }
 
@@ -119,6 +123,7 @@ namespace Shop.Controllers.Api
 
             if (roleName == null)
                 return BadRequest("User don't exist");
+
             return Ok(new { Role = roleName });
         }
 
@@ -139,6 +144,7 @@ namespace Shop.Controllers.Api
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, code);
+
             return Ok(result.Succeeded ? "Email confirmed" : "Error: can't confirm email");
         }
         #endregion
@@ -166,6 +172,7 @@ namespace Shop.Controllers.Api
 
             if (!sendRes)
                 return BadRequest("Ups, we can't to send message to your email");
+
             return Ok(new { IsSuccess = true });
         }
 
@@ -223,7 +230,8 @@ namespace Shop.Controllers.Api
             user.Name = model.Name;
             user.LastName = model.LastName;
             await _userRepository.UpdateAsync(user);
-            return this.JsonResult(user);
+
+            return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 
         [HttpPut("ChangeEmail")]

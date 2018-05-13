@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -7,8 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
 using Core.Models.DTO.Token;
-using Core.Models.DTO.User;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +17,6 @@ namespace Shop.Controllers.Api
     [Route("api/Token")]
     public class TokenController : Controller
     {
-        private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -34,7 +30,6 @@ namespace Shop.Controllers.Api
             SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleManager)
         {
-            _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
@@ -48,23 +43,28 @@ namespace Shop.Controllers.Api
         [Route("getToken")]
         public async Task<IActionResult> GetToken([FromBody]LoginDto model)
         {
-            var user = await _userManager.FindByEmailAsync(model.UserName);
-            if (user == null)
-                user = await _userManager.FindByNameAsync(model.UserName);
+            var user = await _userManager.FindByEmailAsync(model.UserName) ?? await _userManager.FindByNameAsync(model.UserName);
+
             if (user == null)
                 return BadRequest("Incorrect user name or email");
+
             var singInRes = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
             if (!singInRes.Succeeded)
                 return BadRequest("Incorrect password");
+
             string roleName = null;
             var roles = _roleManager.Roles.ToList();
+
             foreach (var role in roles)
             {
                 if (await _userManager.IsInRoleAsync(user, role.Name))
                     roleName = role.Name;
             }
+
             if (roleName == null)
                 return StatusCode(400, "User havn't role");
+
             var jwt = new JwtSecurityToken(
                     issuer: _tokenIssuer,
                     audience: _tokenAudience,
@@ -73,6 +73,7 @@ namespace Shop.Controllers.Api
                     expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(double.Parse(_tokenLifetime))),
                     signingCredentials: new SigningCredentials(
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenKey)), SecurityAlgorithms.HmacSha256));
+
             return Ok(new { Token = new JwtSecurityTokenHandler().WriteToken(jwt) });
         }
 
@@ -82,16 +83,17 @@ namespace Shop.Controllers.Api
         /// <param name="userName">name of user</param>
         /// <param name="roleName">role of user</param>
         /// <returns>New ClaimsIdentity by user name and role name of user</returns>
-        private ClaimsIdentity GetIdentity(string userName, string roleName)
+        private static ClaimsIdentity GetIdentity(string userName, string roleName)
         {
             var claims = new[]
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType,roleName )
             };
-            ClaimsIdentity claimsIdentity =
+            var claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
+
             return claimsIdentity;
         }
     }

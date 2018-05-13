@@ -19,10 +19,11 @@ namespace Core.Models.DTO.Product
         public string Query { get; set; }
 
         [Required]
-        [Range(0.1,double.MaxValue)]
+        [Range(0.1, double.MaxValue)]
         public double Price { get; set; }
 
         public string Description { get; set; }
+
         public IFormFile[] Images { get; set; }
     }
 }
