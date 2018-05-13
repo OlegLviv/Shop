@@ -20,3 +20,5 @@ export const SEND_CHANGE_EMAIL_TOKEN_URL = '/api/User/SendChangeEmailToken';
 export const EDIT_USER_PERSONAL_DATA_URL = `/api/User/EditPersonalData`;
 
 export const CHANGE_USER_EMAIL_URL = '/api/User/ChangeEmail';
+
+export const CHANGE_USER_PHONE_URL = '/api/User/ChangePhone';

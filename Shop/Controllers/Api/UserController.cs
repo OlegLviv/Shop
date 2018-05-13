@@ -249,6 +249,31 @@ namespace Shop.Controllers.Api
             return Ok(_mapper.Map<UserDto>(user));
         }
 
+        [HttpPut("ChangePhone")]
+        public async Task<IActionResult> ChangePhone([FromBody] ChangePhoneDto model)
+        {
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            if (user.PhoneNumber == model.Phone)
+                return BadRequest("This phone number is the same as yours");
+
+            user.PhoneNumber = model.Phone;
+
+            var changePhoneRes = await _userManager.UpdateAsync(user);
+
+            if(!changePhoneRes.Succeeded)
+                return BadRequest(new
+                {
+                    Message = "Can't change phone",
+                    changePhoneRes.Errors
+                });
+
+            return Ok(_mapper.Map<UserDto>(user));
+        }
+
         #endregion
     }
 }
