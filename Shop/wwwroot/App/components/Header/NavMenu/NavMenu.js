@@ -7,6 +7,7 @@ import Autocomplete from 'react-autocomplete';
 import {apiWithoutRedirect} from "../../../services/api";
 import {getProductsByNameUrl} from "../../../services/urls/productUrls";
 import {connect} from 'react-redux';
+import {SITE_NAME} from "../../constants/siteConstants";
 
 const getLikeProductsCount = () => {
 	const prodCookie = getCookie('likeProducts');
@@ -76,7 +77,7 @@ class NavMenu extends React.Component {
 		return (
 			<div className="menu-container">
 				<nav className="navbar navbar-expand-lg navbar-light menu-container__navbar">
-					<Link to="/" className="navbar-brand">Navbar</Link>
+					<Link to="/" className="navbar-brand">{SITE_NAME}</Link>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 							aria-expanded="false" aria-label="Toggle navigation">
