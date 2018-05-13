@@ -10,5 +10,6 @@
         public string PhoneNumber { get; set; }
         public string EmailConfirmed { get; set; }
         public string PhoneNumberConfirmed { get; set; }
+        public bool IsSubscribedToMailing { get; set; }
     }
 }

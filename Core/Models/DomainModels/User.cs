@@ -10,5 +10,7 @@ namespace Core.Models.DomainModels
         public string LastName { get; set; }
 
         public ShopingCard ShopingCard { get; set; }
+
+        public bool IsSubscribedToMailing { get; set; }
     }
 }

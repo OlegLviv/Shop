@@ -8,6 +8,8 @@ using Common.Extensions;
 using Core.Interfaces;
 using Core.Models.DomainModels;
 using Core.Models.DTO.Mailing;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,12 +51,21 @@ namespace Shop.Controllers.Api
 
             var inserResult = await _mailingRepository.InsertAsync(_mapper.Map<Mailing>(model));
 
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user != null)
+            {
+                user.IsSubscribedToMailing = true;
+                await _userManager.UpdateAsync(user);
+            }
+
             if (inserResult >= 1)
                 return Ok("Success");
 
             return BadRequest("Can't subscribe");
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpPost("send")]
         public async Task<IActionResult> Send([FromBody] SendMailDto model)
         {
@@ -78,6 +89,31 @@ namespace Shop.Controllers.Api
             }
 
             return Ok("Success");
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("unsubscribeUser")]
+        public async Task<IActionResult> Unsubscribe()
+        {
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            if (!user.IsSubscribedToMailing)
+                return BadRequest("User is unsubscribed");
+
+            user.IsSubscribedToMailing = false;
+
+            var mailing = await _mailingRepository.Table.FirstOrDefaultAsync(x => x.Email == user.Email);
+
+            var unsubRes = await _mailingRepository.DeleteAsync(mailing) >= 1 &&
+                           (await _userManager.UpdateAsync(user)).Succeeded;
+
+            if (unsubRes)
+                return Ok("Success");
+
+            return BadRequest("Can't unsubscribe");
         }
     }
 }
