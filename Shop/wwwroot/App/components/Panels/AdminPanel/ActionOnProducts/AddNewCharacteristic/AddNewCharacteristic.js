@@ -6,6 +6,13 @@ import {clearObjectProps} from "../../../../../utils/utils";
 import {apiGet, apiPost} from "../../../../../services/api";
 import {toUpperFirstCharInArray} from "../../../../../utils/utils";
 import {SuccessSavedModal} from "./SuccessSavedModal";
+import {Spinner} from "../../../../Spinner/Spinner";
+
+const getNewCharacteristicBody = ({subCategory, newPossibleProps, newPropValue}) => ({
+	propName: `${newPropValue[0].toUpperCase()}${newPropValue.slice(1)}`,
+	subCategory: normalizeSubCategoryToRoute(subCategory),
+	propValues: toUpperFirstCharInArray([...newPossibleProps])
+});
 
 class AddNewCharacteristic extends React.Component {
 	constructor(props) {
@@ -17,7 +24,8 @@ class AddNewCharacteristic extends React.Component {
 			subCategoryProps: [],
 			newPossibleProps: [''],
 			newPropValue: '',
-			isShowSuccessSavedModal: false
+			isShowSuccessSavedModal: false,
+			isLoading: false
 		}
 	}
 
@@ -39,8 +47,16 @@ class AddNewCharacteristic extends React.Component {
 		}
 	}
 
+	trySetLoading = () => !this.state.isLoading && this.setState({isLoading: true});
+
 	updateSubCategoryState = () => {
-		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), () => this.setState({subCategoryProps: []}))
+		this.trySetLoading();
+
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), (err) => {
+			if (err.response.data === 'Icorrect sub category or properties not found')
+				this.setState({subCategoryProps: []});
+			else alert(`Error: ${JSON.stringify(err.response)}`)
+		})
 			.then(resp => {
 				console.log(resp.data);
 				const product = {...this.state.product};
@@ -48,21 +64,18 @@ class AddNewCharacteristic extends React.Component {
 				for (let i in resp.data) {
 					product[resp.data[i].propValue] = resp.data[i].possiblePropsValues[0];
 				}
-				console.log('prod', product);
 				this.setState({
 					subCategoryProps: resp.data,
-					product: product
+					product: product,
+					isLoading: false
 				});
-			});
+			})
+			.catch(() => this.setState({isLoading: false}));
 	};
 
-	onChangeOptionCategory = (e) => {
-		this.setState({category: e.target.value})
-	};
+	onChangeOptionCategory = (e) => this.setState({category: e.target.value});
 
-	onChangeOptionSubCategory = (e) => {
-		this.setState({subCategory: e.target.value})
-	};
+	onChangeOptionSubCategory = (e) => this.setState({subCategory: e.target.value});
 
 	onChangePropsValue = (propName, {target}) => {
 		const product = {...this.state.product};
@@ -82,8 +95,7 @@ class AddNewCharacteristic extends React.Component {
 	};
 
 	onAddNewPossiblePropClick = () => {
-		const possibleProps = [...this.state.newPossibleProps];
-		possibleProps.push('');
+		const possibleProps = [...this.state.newPossibleProps, ''];
 		this.setState({newPossibleProps: possibleProps});
 	};
 
@@ -98,28 +110,24 @@ class AddNewCharacteristic extends React.Component {
 
 	onCloseSuccessSavedModal = () => this.setState({isShowSuccessSavedModal: false});
 
-	//	todo need normal catch
+	//	todo need fix if many props and its empty
 	onSaveClick = () => {
-		let propName = this.state.newPropValue;
-
-		if (!propName)
+		if (!this.state.newPropValue)
 			return;
 
-		propName = `${propName[0].toUpperCase()}${propName.slice(1)}`;
-		const newPossibleProps = [...this.state.newPossibleProps];
+		this.trySetLoading();
 
-		const body = {
-			propName: propName,
-			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
-			propValues: toUpperFirstCharInArray(newPossibleProps)
-		};
-		console.log('body', body);
-		apiPost(ADD_PROPERTY_URL, body)
+		console.log('body', getNewCharacteristicBody(this.state));
+		apiPost(ADD_PROPERTY_URL, getNewCharacteristicBody(this.state))
 			.then(resp => {
 				if (resp ? resp.status === 200 : false) {
 					this.updateSubCategoryState();
-					this.setState({isShowSuccessSavedModal: true});
+					this.setState({isShowSuccessSavedModal: true, isLoading: false});
 				}
+			})
+			.catch(err => {
+				this.setState({isLoading: false});
+				alert(`Error: ${err}`);
 			});
 	};
 
@@ -156,16 +164,12 @@ class AddNewCharacteristic extends React.Component {
 		)
 	};
 
-	renderSuccesSavedModal = () => <SuccessSavedModal isOpen={this.state.isShowSuccessSavedModal}
-													  onClose={this.onCloseSuccessSavedModal}/>;
+	renderSuccessSavedModal = () => <SuccessSavedModal isOpen={this.state.isShowSuccessSavedModal}
+													   onClose={this.onCloseSuccessSavedModal}/>;
 
-	render() {
+	renderMainContent = () => {
 		return (
-			<div className="ec-container">
-				{this.renderSuccesSavedModal()}
-				<div className="ec-container__header">
-					Додати нові характеристики
-				</div>
+			<div>
 				{this.renderChooseCatSubCat()}
 				<table className="ec-container__table">
 					<thead className="ec-container__table__thead">
@@ -224,6 +228,18 @@ class AddNewCharacteristic extends React.Component {
 					</tr>
 					</tbody>
 				</table>
+			</div>
+		)
+	};
+
+	render() {
+		return (
+			<div className="ec-container">
+				{this.renderSuccessSavedModal()}
+				<div className="ec-container__header">
+					Додати нові характеристики
+				</div>
+				{!this.state.isLoading ? this.renderMainContent() : <Spinner/>}
 			</div>
 		);
 	}
