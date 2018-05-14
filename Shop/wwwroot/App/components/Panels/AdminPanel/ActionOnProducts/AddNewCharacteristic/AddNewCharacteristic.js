@@ -14,6 +14,7 @@ const getNewCharacteristicBody = ({subCategory, newPossibleProps, newPropValue})
 	propValues: toUpperFirstCharInArray([...newPossibleProps])
 });
 
+//	todo need add validation
 class AddNewCharacteristic extends React.Component {
 	constructor(props) {
 		super(props);

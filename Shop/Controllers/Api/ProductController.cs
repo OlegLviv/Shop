@@ -309,6 +309,8 @@ namespace Shop.Controllers.Api
                 }
             }
 
+            product.ProductImages = productImages;
+
             var insertRes = await _productsRepository.InsertAsync(product);
 
             return Ok(insertRes);
