@@ -287,27 +287,27 @@ namespace Shop.Controllers.Api
 
             var productImages = new List<ProductImage>();
 
-            foreach (var im in model.Images)
+            if (model.Images != null)
             {
-                if (im.Length > 3000000)
-                    return BadRequest("Еhe image can't be larger than 3MB");
-
-                using (var stream = im.OpenReadStream())
+                foreach (var im in model.Images)
                 {
-                    var imgBuff = new byte[(int)stream.Length];
-                    await stream.ReadAsync(imgBuff, 0, (int)stream.Length);
-                    productImages.Add(new ProductImage
+                    if (im.Length > 3000000)
+                        return BadRequest("Еhe image can't be larger than 3MB");
+
+                    using (var stream = im.OpenReadStream())
                     {
-                        Product = product,
-                        ProductId = product.Id,
-                        Image = imgBuff,
-                        ContentType = im.ContentType
-                    });
+                        var imgBuff = new byte[(int)stream.Length];
+                        await stream.ReadAsync(imgBuff, 0, (int)stream.Length);
+                        productImages.Add(new ProductImage
+                        {
+                            Product = product,
+                            ProductId = product.Id,
+                            Image = imgBuff,
+                            ContentType = im.ContentType
+                        });
+                    }
                 }
             }
-
-            if (productImages.Count != 0)
-                product.ProductImages = productImages;
 
             var insertRes = await _productsRepository.InsertAsync(product);
 

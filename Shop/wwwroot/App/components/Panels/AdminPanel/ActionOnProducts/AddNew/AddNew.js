@@ -12,8 +12,19 @@ import {getProductPropsUrl} from "../../../../../services/urls/productUrls";
 import {clearObjectProps} from "../../../../../utils/utils";
 import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
-import {Alert} from "../../../../common/Alert/Alert";
 import {Link} from 'react-router-dom';
+import {SuccessSavedProductModal} from "./SuccessSavedProductModal";
+import {isValidProductDescription, isValidProductName, isValidProductPrice} from "../../../../../utils/validationUtils";
+import {MaxImageAlertModal} from "./MaxImageAlertModal";
+import {MaxSizeFileAlertModal} from "./MaxSizeFileAlertModal";
+
+const MAX_IMAGE_SIZE = 3000000;
+
+const addImageToForm = (form, {files}) => {
+	for (let i in files) {
+		form.append('images', files[i]);
+	}
+};
 
 class AddNew extends React.Component {
 	constructor(props) {
@@ -22,18 +33,18 @@ class AddNew extends React.Component {
 			category: NAVIGATION_CATEGORIES[1],
 			subCategory: getSubCategories(NAVIGATION_CATEGORIES[1])[0],
 			subCategoryProps: [],
-			productName: '',
+			name: '',
 			price: 0,
+			description: '',
 			product: {},
 			files: [],
 			isLoading: false,
-			isLoaded: false,
-			alert: {
-				isShow: false,
-				subject: '',
-				body: '',
-				type: ''
-			}
+			isShowSuccessSavedProductModal: false,
+			isValidName: true,
+			isValidPrice: true,
+			isValidDescription: true,
+			isShowMaxImageAlertModal: false,
+			isShowMaxSizeFileAlertModal: false
 		}
 	}
 
@@ -54,11 +65,14 @@ class AddNew extends React.Component {
 		}
 	}
 
-	setSubCategoryState = () => {
-		if (this.state.isLoaded)
-			this.setState({isLoaded: false});
+	trySetLoading = () => {
+		if (!this.state.isLoading)
+			this.setState({isLoading: true});
+	};
 
-		this.setState({isLoading: true});
+	setSubCategoryState = () => {
+		this.trySetLoading();
+
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
 			.then(resp => {
 				console.log('resp', resp.data);
@@ -70,81 +84,107 @@ class AddNew extends React.Component {
 				this.setState({
 					subCategoryProps: resp.data,
 					product: product,
-					isLoaded: true,
 					isLoading: false
 				});
-			});
+			})
+			.catch(err => alert(`Error: ${err}`));
 	};
 
 	createFormData = () => {
 		const query = createProductQueryByObject(this.state.product);
 		const form = new FormData();
+
 		form.append('category', normalizeCategoryToRoute(this.state.category));
 		form.append('subCategory', normalizeSubCategoryToRoute(this.state.subCategory));
-		form.append('name', this.state.productName);
+		form.append('name', this.state.name);
 		form.append('price', this.state.price);
 		form.append('query', query);
+		form.append('description', this.state.description);
+
 		return form;
 	};
 
-	showAlert = (subject, body, type) => {
-		const alert = {
-			isShow: true,
-			subject: subject,
-			body: body,
-			type: type
-		};
-		this.setState({alert: alert});
-	};
-
-	tryHideAlert = () => {
-		const {alert} = this.state;
-		if (!alert.isShow) {
-			alert.isShow = false;
-			this.setState({alert: alert});
-		}
-	};
-
-	onChangeOptionCategory = (e) => {
-		this.setState({category: e.target.value})
-	};
-
-	onChangeOptionSubCategory = (e) => {
-		this.setState({subCategory: e.target.value})
-	};
-
-	onChangeProductName = (e) => {
-		this.setState({productName: e.target.value});
-	};
-
-	onChangePrice = (e) => {
-		const numValue = Number(e.target.value);
-		if (this.state.price > 10000) {
-			this.setState({price: 10000});
+	validateName = value => {
+		if (!isValidProductName(value)) {
+			this.setState({isValidName: false});
 			return;
 		}
-		if (!isNaN(numValue)) {
-			this.setState({price: numValue});
-		}
+		if (isValidProductName(value) && !this.state.isValidName)
+			this.setState({isValidName: true});
 	};
 
-	onChangeFile = (e) => {
-		this.tryHideAlert();
+	validatePrice = value => {
+		if (!isValidProductPrice(value)) {
+			this.setState({isValidPrice: false});
+			return;
+		}
+		if (isValidProductPrice(value) && !this.state.isValidPrice)
+			this.setState({isValidPrice: true});
+	};
+
+	validateDescription = value => {
+		if (!isValidProductDescription(value)) {
+			this.setState({isValidDescription: false});
+			return;
+		}
+		if (isValidProductDescription(value) && !this.state.isValidDescription)
+			this.setState({isValidDescription: true});
+	};
+
+	validateAllFields = successAction => {
+		const {name, price, description} = this.state;
+		if (!isValidProductName(name)) {
+			this.setState({isValidName: false});
+		}
+		if (!isValidProductPrice(price)) {
+			this.setState({isValidPrice: false});
+		}
+		if (!isValidProductDescription(description)) {
+			this.setState({isValidDescription: false});
+		}
+		if (isValidProductName(name) && isValidProductPrice(price) && isValidProductDescription(description) && successAction)
+			successAction();
+	};
+
+	onChangeOptionCategory = e => this.setState({category: e.target.value});
+
+	onChangeOptionSubCategory = e => this.setState({subCategory: e.target.value});
+
+	onChangeProductName = ({target}) => {
+		this.validateName(target.value);
+		this.setState({name: target.value});
+	};
+
+	onChangePrice = ({target}) => {
+		this.validatePrice(target.value);
+		this.setState({price: target.value});
+	};
+
+	onChangeDescription = ({target}) => {
+		this.validateDescription(target.value);
+		this.setState({description: target.value});
+	};
+
+	onChangeFile = e => {
 		const {files} = e.target;
+
 		if (files.length > 3) {
-			this.showAlert('Помилка', 'Ви можете обрати не більше 3-х файлів', 'warning');
 			e.target.value = null;
+			this.setState({isShowMaxImageAlertModal: true});
 			return;
 		}
+
 		const newFiles = [];
+
 		for (const i in files) {
-			if (files[i].size > 3000000) {
-				this.showAlert('Помилка', 'Розмір файлу не повинен перевищувати 3 MB', 'warning');
+			if (files[i].size > MAX_IMAGE_SIZE) {
 				e.target.value = null;
+				this.setState({isShowMaxSizeFileAlertModal: true});
 				return;
 			}
 			newFiles.push(files[i]);
 		}
+
 		this.setState({files: files});
 	};
 
@@ -155,30 +195,33 @@ class AddNew extends React.Component {
 		this.setState({product: product});
 	};
 
-	// todo to will add normal validation
 	onSave = () => {
-		this.tryHideAlert();
-		if (this.state.productName.length === 0 || this.state.price <= 0) {
-			console.log(this.state.alert.type);
-			this.showAlert('Помилка', 'Будь ласка введіть назву продукту або ціна нижча ніж 0', 'warning');
-			return;
-		}
-		if (this.state.files.length === 0) {
-			this.showAlert('Помилка', 'Будь ласка додайте фотографію продукту', 'warning');
-			return;
-		}
+		this.validateAllFields(() => {
+			this.trySetLoading();
 
-		const form = this.createFormData();
-		for (let i in this.state.files) {
-			form.append('images', this.state.files[i]);
-		}
-		console.log('form', form.get('images'));
-		apiPost(ADD_PRODUCT_URL, form, err => alert("Error"))
-			.then(resp => {
-				if (resp.data >= 1) {
-					this.showAlert('Успішно', 'Товар успішно збережено', 'success');
-				}
-			});
+			const form = this.createFormData();
+
+			addImageToForm(form, this.state);
+
+			console.log('form', form.get('images'));
+			apiPost(ADD_PRODUCT_URL, form)
+				.then(resp => {
+					if (resp.data >= 1) {
+						this.setState({
+							isShowSuccessSavedProductModal: true,
+							isLoading: false,
+							price: '',
+							name: '',
+							description: '',
+							files: []
+						});
+					}
+				})
+				.catch(err => {
+					alert(`Error: ${err}`);
+					this.setState({isLoading: false});
+				});
+		});
 	};
 
 	onClear = () => {
@@ -187,13 +230,14 @@ class AddNew extends React.Component {
 		})
 	};
 
-	renderAlert = () => {
-		return (
-			<Alert subject={this.state.alert.subject}
-				   body={this.state.alert.body}
-				   alertType={this.state.alert.type}/>
-		);
-	};
+	renderSuccessSavedModal = () => <SuccessSavedProductModal isOpen={this.state.isShowSuccessSavedProductModal}
+															  onClose={() => this.setState({isShowSuccessSavedProductModal: false})}/>;
+
+	renderMaxImageAlertModal = () => <MaxImageAlertModal isOpen={this.state.isShowMaxImageAlertModal}
+														 onClose={() => this.setState({isShowMaxImageAlertModal: false})}/>;
+
+	renderMaxSizeFileAlertModal = () => <MaxSizeFileAlertModal isOpen={this.state.isShowMaxSizeFileAlertModal}
+															   onClose={() => this.setState({isShowMaxSizeFileAlertModal: false})}/>;
 
 	renderSelectedImages = () => {
 		return (
@@ -208,10 +252,15 @@ class AddNew extends React.Component {
 		)
 	};
 
+	renderError = text => <small className="form-text text-muted invalid-small">{text}</small>;
+
 	render() {
+		const {isValidPrice, isValidDescription, isValidName} = this.state;
 		return (
-			this.state.isLoaded ? <div className="container-add-new">
-				{this.state.alert.isShow && this.renderAlert()}
+			!this.state.isLoading ? <div className="container-add-new">
+				{this.renderSuccessSavedModal()}
+				{this.renderMaxImageAlertModal()}
+				{this.renderMaxSizeFileAlertModal()}
 				<div className="row container-add-new__row">
 					<div className="col-6 container-add-new__row__item" border-right="true">
 						<div>Оберіть карегорію</div>
@@ -252,6 +301,7 @@ class AddNew extends React.Component {
 						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
 							 border-bottom="true">
 							<input className="form-control" onChange={this.onChangeProductName}/>
+							{!isValidName && this.renderError('Мінімальна кількість символів 2, максимальна 64')}
 						</div>
 					</div>
 
@@ -287,6 +337,19 @@ class AddNew extends React.Component {
 						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
 							 border-bottom="true">
 							<input className="form-control" value={this.state.price} onChange={this.onChangePrice}/>
+							{!isValidPrice && this.renderError('Поле може містити тільки цифри. Максимальна ціна 99999')}
+						</div>
+					</div>
+					<div className="container-add-new__props">
+						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+							 border-bottom="true" border-left="true">
+							<div className="container-add-new__props__item--inverse__text">Опис товару</div>
+						</div>
+						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+							 border-bottom="true">
+							<input className="form-control" value={this.state.description}
+								   onChange={this.onChangeDescription}/>
+							{!isValidDescription && this.renderError('Максимальна кількість символів 512')}
 						</div>
 					</div>
 				</div>
@@ -308,7 +371,7 @@ class AddNew extends React.Component {
 							onClick={this.onSave}>Зберегти товар
 					</button>
 					<button className="btn btn-danger container-add-new__action-box__clear"
-							onClick={this.onClear}>Очистити
+							onClick={this.onClear}>Очистити фото
 					</button>
 				</div>
 			</div> : <Spinner/>

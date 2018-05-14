@@ -84,3 +84,17 @@
 	margin: 1rem;
   }
 }
+
+.selected-images-box {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selected-images-box img {
+  border-radius: 5px;
+  max-height: 25rem;
+  max-width: 20rem;
+  margin: .5rem 0;
+}
