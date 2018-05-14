@@ -24,6 +24,8 @@ namespace Core.Models.DomainModels
         [Required]
         public double Price { get; set; }
 
+        public long Review { get; set; }
+
         public string Description { get; set; }
 
         public List<Feedback> Feedbacks { get; set; }

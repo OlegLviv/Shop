@@ -21,6 +21,10 @@ namespace Core.Models.DTO
 
         [Required]
         public string Name { get; set; }
+
+        public long Review { get; set; }
+
+        //  todo maybe need delete
         public int ProductCount { get; set; }
     }
 }

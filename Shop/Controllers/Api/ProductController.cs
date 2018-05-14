@@ -55,11 +55,30 @@ namespace Shop.Controllers.Api
         {
             if (string.IsNullOrEmpty(productId))
                 return BadRequest("Incorrect productId");
+
             var product = await _productsRepository
                 .GetByIdAsync(productId);
+
             if (product == null)
                 return NotFound("Product with this id not found");
+
+            product.Review += 1;
+            await _productsRepository.UpdateAsync(product);
+
             return this.JsonResult(_mapper.Map<ProductDto>(product));
+        }
+
+        [HttpGet("GetMostPopularProducts/{count:int?}")]
+        public IActionResult GetMostPopularProducts(int count = 16)
+        {
+            var products = _productsRepository
+                .Table
+                .OrderBy(x => x.Review)
+                .Skip(_productsRepository.Table.Count() - count)
+                .AsEnumerable()
+                .Reverse();
+
+            return this.JsonResult(_mapper.Map<IEnumerable<ProductDto>>(products));
         }
 
         [HttpGet("GetProducts/{category}/{subCategory}/{size:int?}")]
