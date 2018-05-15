@@ -23,22 +23,22 @@ namespace Shop.Controllers.Api
     public class OrderController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IRepositoryAsync<AnonimOrder> _anonimOrderRepositoryAsync;
-        private readonly IRepositoryAsync<UserOrder> _userOrderRepositoryAsync;
+        private readonly IRepositoryAsync<Order> _orderRepository;
         private readonly IOrderService _orderService;
         private readonly UserManager<User> _userManager;
+        private readonly IRepositoryAsync<Product> _productRepository;
 
         public OrderController(IMapper mapper,
-            IRepositoryAsync<AnonimOrder> anonimOrderRepositoryAsync,
-            IRepositoryAsync<UserOrder> userOrderRepositoryAsync,
+            IRepositoryAsync<Order> orderRepository,
             IOrderService orderService,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            IRepositoryAsync<Product> productRepository)
         {
             _mapper = mapper;
-            _anonimOrderRepositoryAsync = anonimOrderRepositoryAsync;
-            _userOrderRepositoryAsync = userOrderRepositoryAsync;
+            _orderRepository = orderRepository;
             _orderService = orderService;
             _userManager = userManager;
+            _productRepository = productRepository;
         }
 
         #region GET
@@ -50,48 +50,27 @@ namespace Shop.Controllers.Api
             if (string.IsNullOrWhiteSpace(id))
                 return BadRequest("Incorrect id");
 
-            var anonimOrder = await _anonimOrderRepositoryAsync.Table.Include(x => x.Orders)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var order = await _orderRepository.GetByIdAsync(id);
 
-            if (anonimOrder != null)
-                return this.JsonResult(_mapper.Map<OrderDto>(anonimOrder));
+            if (order == null)
+                return BadRequest("Order don't exist or incorrect id");
 
-            var userOrder = await _userOrderRepositoryAsync
-                .Table
-                .Include(u => u.User)
-                .Include(x => x.Orders)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (userOrder == null)
-                return BadRequest("Incorrect id or can't find order");
-
-            return this.JsonResult(_mapper.Map<OrderDto>(userOrder));
+            return this.JsonResult(_mapper.Map<OrderDto>(order));
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        [HttpGet("GetAllOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
-        public IActionResult GetAllOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
+        [HttpGet("GetOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
+        public IActionResult GetOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
         {
+            var orders = _orderRepository.Table.Where(x => x.OrderStatus == orderStatus);
+
             var paginator = new Paginator<OrderDto>
             {
+                Data = _mapper.Map<IEnumerable<OrderDto>>(orders.Page(pageNumber, pageSize)),
                 PageNumber = pageNumber,
-                PageSize = pageSize
+                PageSize = pageSize,
+                TotalCount = orders.Count()
             };
-
-            var anonOrders = _anonimOrderRepositoryAsync
-                .Table
-                .Include(x => x.Orders)
-                .Where(x => x.OrderStatus == orderStatus);
-
-            var userOrders = _userOrderRepositoryAsync
-                .Table
-                .Include(x=>x.Orders)
-                .Where(x => x.OrderStatus == orderStatus);
-
-            paginator.TotalCount = anonOrders.Count() + userOrders.Count();
-            paginator.Data = _mapper.Map<IEnumerable<OrderDto>>(anonOrders)
-                .Concat(_mapper.Map<IEnumerable<OrderDto>>(userOrders))
-                .Page(pageNumber, pageSize);
 
             return this.JsonResult(paginator);
         }
@@ -105,9 +84,9 @@ namespace Shop.Controllers.Api
             if (user == null)
                 return Unauthorized();
 
-            var orders = _userOrderRepositoryAsync
+            var orders = _orderRepository
                 .Table
-                .Include(x=>x.Orders)
+                .Include(x => x.ProductsContainers)
                 .Where(x => x.UserId == user.Id);
 
             return this.JsonResult(new Paginator<OrderDto>
@@ -123,34 +102,53 @@ namespace Shop.Controllers.Api
 
         #region POST
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("CreateUserOrder")]
+        public async Task<IActionResult> CreateUserOrder([FromBody] CreateOrderDto model)
+        {
+            var order = _mapper.Map<Order>(model);
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            order.User = user;
+            order.UserId = user.Id;
+            order.ProductsContainers.ForEach(async x =>
+            {
+                x.OrderId = order.Id;
+                x.Order = order;
+                x.Product = await _productRepository.GetByIdAsync(x.ProductId);
+            });
+            order.TotalPrice = _orderService.CalculateTotalPriceAsync(order);
+
+            var insertResult = await _orderRepository.InsertAsync(order);
+
+            if (insertResult >= 1)
+                return Ok("Success");
+
+            return BadRequest("Can't insert order");
+        }
+
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            var order = _mapper.Map<Order>(model);
+
+            order.ProductsContainers.ForEach(async x =>
             {
-                var anonimOrder = _mapper.Map<AnonimOrder>(model);
-                anonimOrder.Orders.ForEach(c => c.OrderId = anonimOrder.Id);
-                anonimOrder.TotalPrice = await _orderService.CalculateTotalPriceAsync(anonimOrder.Orders);
-                var inserResult = await _anonimOrderRepositoryAsync.InsertAsync(anonimOrder);
+                x.OrderId = order.Id;
+                x.Order = order;
+                x.Product = await _productRepository.GetByIdAsync(x.ProductId);
+            });
+            order.TotalPrice = _orderService.CalculateTotalPriceAsync(order);
 
-                if (inserResult <= 1)
-                    return BadRequest("Can't create order");
-            }
-            else
-            {
-                var userOrder = _mapper.Map<UserOrder>(model);
-                userOrder.User = user;
-                userOrder.UserId = user.Id;
-                userOrder.Orders.ForEach(c => c.OrderId = userOrder.Id);
-                userOrder.TotalPrice = await _orderService.CalculateTotalPriceAsync(userOrder.Orders);
-                var inserResult = await _userOrderRepositoryAsync.InsertAsync(userOrder);
+            var insertResult = await _orderRepository.InsertAsync(order);
 
-                if (inserResult <= 1)
-                    return BadRequest("Can't create order");
-            }
+            if (insertResult >= 1)
+                return Ok("Success");
 
-            return Ok("Success");
+            return BadRequest("Can't insert order");
         }
         #endregion
 
@@ -163,29 +161,22 @@ namespace Shop.Controllers.Api
             if (string.IsNullOrWhiteSpace(id))
                 return BadRequest("Incorrect id");
 
-            var anonimOrder = await _anonimOrderRepositoryAsync.Table.Include(x => x.Orders)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var order = await _orderRepository.GetByIdAsync(id);
 
-            if (anonimOrder != null)
-            {
-                anonimOrder.OrderStatus = orderStatus;
-                await _anonimOrderRepositoryAsync.UpdateAsync(anonimOrder);
-                return this.JsonResult(_mapper.Map<OrderDto>(anonimOrder));
-            }
+            if (order == null)
+                return BadRequest("Order don't exist or incorrect id");
 
-            var userOrder = await _userOrderRepositoryAsync
-                .Table
-                .Include(u => u.User)
-                .Include(x => x.Orders)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            if (order.OrderStatus == orderStatus)
+                return BadRequest($"Order allready have status {order.OrderStatus.ToString()}");
 
-            if (userOrder == null)
-                return BadRequest("Incorrect id or can't find order");
+            order.OrderStatus = orderStatus;
 
-            userOrder.OrderStatus = orderStatus;
-            await _userOrderRepositoryAsync.UpdateAsync(userOrder);
+            var updateRes = await _orderRepository.UpdateAsync(order);
 
-            return Ok(_mapper.Map<OrderDto>(userOrder));
+            if (updateRes >= 1)
+                return Ok(_mapper.Map<OrderDto>(order));
+
+            return BadRequest("Can't update order");
         }
 
         #endregion

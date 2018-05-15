@@ -11,26 +11,8 @@ class OrderList extends Component {
 		}
 	}
 
-	componentWillReceiveProps({ordersContainers}) {
-		if (!this.props.ordersContainers.length && ordersContainers.length) {
-			console.log('yes', ordersContainers);
-			this.updateProductsState(ordersContainers
-				.map(ordersContainer => ordersContainer.orders.map(order => order.productId)));
-		}
-	}
-
 	trySetLoading = () => !this.state.loading && this.setState({loading: true});
 
-	updateProductsState = ids => {
-		console.log('ids', ids);
-		this.trySetLoading();
-		apiGet(getProductsByIdsUrl(ids))
-			.then(resp => this.setState({loading: false, products: resp.data}))
-			.catch(err => {
-				alert(`Error: ${err}`);
-				this.setState({loading: false});
-			});
-	};
 
 	render() {
 		return (

@@ -4,10 +4,11 @@ using Core.Models.DomainModels.Base;
 
 namespace Core.Models.DomainModels
 {
-    public class UserOrder : BaseEntity
+    public class Order : BaseEntity
     {
-        public User User { get; set; }
         public string UserId { get; set; }
+
+        public User User { get; set; }
 
         [Required]
         [EmailAddress]
@@ -15,22 +16,21 @@ namespace Core.Models.DomainModels
 
         [Required]
         [Phone]
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
+        
+        [Required]
+        public string Name { get; set; }
 
         [Required]
-        [RegularExpression("^(([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+)((\\s?)([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+))?){1,20}$")]
-        public string NameLastName { get; set; }
+        public string LastName { get; set; }
 
-        [Required]
-        public List<BaseOrder> Orders { get; set; }
-
-        [Required]
-        [Range(0.1, double.MaxValue)]
-        public double TotalPrice { get; set; }
+        public List<ProductOrderContainer> ProductsContainers { get; set; }
 
         [Required]
         public string WayOfDelivery { get; set; }
 
         public OrderStatus OrderStatus { get; set; } = OrderStatus.New;
+
+        public double TotalPrice { get; set; }
     }
 }
