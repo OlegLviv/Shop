@@ -69,8 +69,8 @@ namespace Shop.Controllers.Api
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        [HttpGet("GetOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
-        public IActionResult GetOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
+        [HttpGet("GetAllOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
+        public IActionResult GetAllOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
         {
             var paginator = new Paginator<OrderDto>
             {
@@ -85,6 +85,7 @@ namespace Shop.Controllers.Api
 
             var userOrders = _userOrderRepositoryAsync
                 .Table
+                .Include(x=>x.Orders)
                 .Where(x => x.OrderStatus == orderStatus);
 
             paginator.TotalCount = anonOrders.Count() + userOrders.Count();
@@ -93,6 +94,29 @@ namespace Shop.Controllers.Api
                 .Page(pageNumber, pageSize);
 
             return this.JsonResult(paginator);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("GetOwnOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
+        public async Task<IActionResult> GetOwnOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
+        {
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            var orders = _userOrderRepositoryAsync
+                .Table
+                .Include(x=>x.Orders)
+                .Where(x => x.UserId == user.Id);
+
+            return this.JsonResult(new Paginator<OrderDto>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = _mapper.Map<IEnumerable<OrderDto>>(orders.Page(pageNumber, pageSize)),
+                TotalCount = orders.Count()
+            });
         }
 
         #endregion

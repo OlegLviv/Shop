@@ -1,7 +1,7 @@
 import React from 'react';
 import './Orders.scss';
 import {apiGet} from "../../../../services/api";
-import {getOrdersUrl} from "../../../../services/urls/orderUrls";
+import {getAllOrdersUrl} from "../../../../services/urls/orderUrls";
 import Pagination from 'react-js-pagination';
 import {Link} from 'react-router-dom';
 import {Spinner} from "../../../Spinner/Spinner";
@@ -36,7 +36,7 @@ class Orders extends React.Component {
 			isLoading: true,
 			isLoaded: false
 		});
-		apiGet(getOrdersUrl(pageNumber, pageSize, orderStatus))
+		apiGet(getAllOrdersUrl(pageNumber, pageSize, orderStatus))
 			.then(resp => {
 				console.log(resp);
 				this.setState({
@@ -63,6 +63,7 @@ class Orders extends React.Component {
 						{
 							this.state.orders.map(order =>
 								<li
+									key={order.id}
 									className="list-group-item orders-container__list-group__list-group-item">
 									<Link to={`/adminPanel/orders/${order.id}`}>
 										<div>Ім'я прізвище: {order.nameLastName}</div>
