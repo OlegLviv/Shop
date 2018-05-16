@@ -14,7 +14,8 @@ class FullOrder extends React.Component {
 			productsContainer: [],
 			isOrderStatusExpanded: false,
 			isShowSuccessOrderStatusChangedModal: false,
-			orderStatus: 0
+			orderStatus: 0,
+			order: {}
 		}
 	}
 
@@ -96,6 +97,7 @@ class FullOrder extends React.Component {
 	};
 
 	renderProductsInfo = () => {
+		console.log('order', this.state.order);
 		if (!this.state.isLoading && this.state.order)
 			return (
 				<div className="info-products-container">

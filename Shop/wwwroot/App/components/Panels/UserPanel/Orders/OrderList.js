@@ -15,7 +15,6 @@ class OrderList extends Component {
 	trySetLoading = () => !this.state.loading && this.setState({loading: true});
 
 	render() {
-		console.log('orders', this.props.isLoading);
 		if (!this.props.isLoading)
 			return (
 				<ul className="list-group order-list">

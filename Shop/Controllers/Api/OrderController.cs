@@ -53,10 +53,16 @@ namespace Shop.Controllers.Api
 
             var order = await _orderRepository
                 .Table
+                .Include(x=>x.ProductsContainers)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
                 return BadRequest("Order don't exist or incorrect id");
+
+            foreach (var container in order.ProductsContainers)
+            {
+                container.Product = await _productRepository.GetByIdAsync(container.ProductId);
+            }
 
             return this.JsonResult(_mapper.Map<OrderDto>(order));
         }
