@@ -30,13 +30,11 @@ namespace Shop.Controllers.Api
 
         public OrderController(IMapper mapper,
             IRepositoryAsync<Order> orderRepository,
-            IOrderService orderService,
             UserManager<User> userManager,
             IRepositoryAsync<Product> productRepository)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
-            _orderService = orderService;
             _userManager = userManager;
             _productRepository = productRepository;
         }
@@ -50,7 +48,9 @@ namespace Shop.Controllers.Api
             if (string.IsNullOrWhiteSpace(id))
                 return BadRequest("Incorrect id");
 
-            var order = await _orderRepository.GetByIdAsync(id);
+            var order = await _orderRepository
+                .Table
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
                 return BadRequest("Order don't exist or incorrect id");
@@ -60,13 +60,28 @@ namespace Shop.Controllers.Api
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet("GetOrders/{pageNumber:int?}/{pageSize:int?}/{orderStatus:int?}")]
-        public IActionResult GetOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
+        public async Task<IActionResult> GetOrders(int pageNumber = 1, int pageSize = 16, OrderStatus orderStatus = OrderStatus.New)
         {
-            var orders = _orderRepository.Table.Where(x => x.OrderStatus == orderStatus);
+            var orders = _orderRepository
+                .Table
+                .Where(x => x.OrderStatus == orderStatus);
+
+            var page = orders
+                .Page(pageNumber, pageSize)
+                .Include(x => x.User)
+                .Include(x => x.ProductsContainers);
+
+            foreach (var order in page)
+            {
+                foreach (var container in order.ProductsContainers)
+                {
+                    container.Product = await _productRepository.GetByIdAsync(container.ProductId);
+                }
+            }
 
             var paginator = new Paginator<OrderDto>
             {
-                Data = _mapper.Map<IEnumerable<OrderDto>>(orders.Page(pageNumber, pageSize)),
+                Data = _mapper.Map<IEnumerable<OrderDto>>(page),
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = orders.Count()
@@ -86,14 +101,23 @@ namespace Shop.Controllers.Api
 
             var orders = _orderRepository
                 .Table
-                .Include(x => x.ProductsContainers)
                 .Where(x => x.UserId == user.Id);
+
+            var page = orders.Page(pageNumber, pageSize).Include(x => x.ProductsContainers);
+
+            foreach (var order in page)
+            {
+                foreach (var container in order.ProductsContainers)
+                {
+                    container.Product = await _productRepository.GetByIdAsync(container.ProductId);
+                }
+            }
 
             return this.JsonResult(new Paginator<OrderDto>
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                Data = _mapper.Map<IEnumerable<OrderDto>>(orders.Page(pageNumber, pageSize)),
+                Data = _mapper.Map<IEnumerable<OrderDto>>(page),
                 TotalCount = orders.Count()
             });
         }
