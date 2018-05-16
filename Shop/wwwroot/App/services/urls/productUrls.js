@@ -19,6 +19,8 @@ export const getProductImageCountUrl = productId => `/api/product/GetProductImag
 
 export const getMostPopularProductsUrl = (count = 16) => `/api/product/GetMostPopularProducts/${count}`;
 
+export const getWithDiscountProductsUrl = (pageNumber = 1, pageSize = 16) => `/api/product/GetWithDiscount/${pageNumber}/${pageSize}`;
+
 //	POST
 export const ADD_PRODUCT_URL = '/api/product/AddProduct';
 

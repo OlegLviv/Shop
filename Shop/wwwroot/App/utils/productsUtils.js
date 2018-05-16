@@ -52,7 +52,7 @@ export const normalizeSubCategoryToRoute = (subCategory) => {
 		case 'ЗНО':
 			return 'zno';
 
-			//	Gifts
+		//	Gifts
 		case 'Шкатулки':
 			return 'casket';
 		case 'Декоративні коробочки':
@@ -60,7 +60,7 @@ export const normalizeSubCategoryToRoute = (subCategory) => {
 		case 'Статуетки':
 			return 'figures';
 
-			//	Books
+		//	Books
 		case 'Енциклопедії':
 			return 'encyclopedias';
 	}

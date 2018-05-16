@@ -81,6 +81,22 @@ namespace Shop.Controllers.Api
             return this.JsonResult(_mapper.Map<IEnumerable<ProductDto>>(products));
         }
 
+        [HttpGet("GetWithDiscount/{pageNumber:int?}/{pageSize:int?}")]
+        public IActionResult GetWithDiscount(int pageNumber = 1, int pageSize = 16)
+        {
+            var products = _productsRepository
+                .Table
+                .Where(x => x.Discount > 0);
+
+            return this.JsonResult(new Paginator<ProductDto>
+            {
+                Data = _mapper.Map<IEnumerable<ProductDto>>(products.Page(pageNumber, pageSize)),
+                TotalCount = products.Count(),
+                PageSize = pageSize,
+                PageNumber = pageNumber
+            });
+        }
+
         [HttpGet("GetProducts/{category}/{subCategory}/{size:int?}")]
         public IActionResult GetProducts(string category, string subCategory, int size = 16)
         {

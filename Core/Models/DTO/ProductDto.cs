@@ -20,6 +20,8 @@ namespace Core.Models.DTO
 
         public string Description { get; set; }
 
+        public int Discount { get; set; }
+
         //  todo maybe need delete
         public int ProductCount { get; set; }
     }

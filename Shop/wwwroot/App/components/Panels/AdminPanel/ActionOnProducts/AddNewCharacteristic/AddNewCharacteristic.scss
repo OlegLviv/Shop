@@ -4,13 +4,13 @@
   padding: 2rem;
   &__header {
 	padding: 1rem;
-	background: $dark-background;
+	background: $dark;
 	color: $dark-grey-color;
   }
   &__table {
 	margin-top: 3rem;
 	&__thead {
-	  background: $dark-background;
+	  background: $dark;
 	  color: $dark-grey-color;
 	}
 	&__tbody {

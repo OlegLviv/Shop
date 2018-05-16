@@ -1,3 +1,5 @@
+@import "../../../main";
+
 .card-dev {
   box-shadow: 1px 1px 10px 10px rgba(0, 0, 0, 0.05);
   transition-property: all;
@@ -27,19 +29,30 @@
   overflow-y: hidden;
   height: 3rem;
   max-height: 3rem;
-  color: #252525;
-  text-shadow: 1px 2px 5px #aaa
+  color: $dark;
 }
 
 .card-body h4 {
-  color: #10498A;
+  color: $dark-blue-color;
   font-weight: 700;
-  text-shadow: 1px 2px 5px #aaa
+  text-shadow: 1px 2px 5px $dark-grey-color
 }
 
 .card-img-top {
   min-height: 15rem;
   max-height: 15rem;
+}
+
+.discount-box {
+  position: absolute;
+  top: 1rem;
+  left: -1rem;
+  font-size: 18px;
+  background: $red;
+  border-radius: 5px;
+  padding: .4rem 2rem;
+  color: white;
+  transform: rotate(-45deg);
 }
 
 @media (max-width: 1230px) {

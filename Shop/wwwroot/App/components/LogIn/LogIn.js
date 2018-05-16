@@ -24,7 +24,6 @@ class LogIn extends React.Component {
 		e.preventDefault();
 		logInToken(this.state.userName, this.state.password)
 			.catch(err => {
-				console.log('err', err);
 				normalizeLogInResponse(err.response, userName => {
 						this.setState({
 							userNameError: userName,

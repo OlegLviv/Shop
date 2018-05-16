@@ -31,5 +31,14 @@ namespace Core.Models.DomainModels
         public List<Feedback> Feedbacks { get; set; }
 
         public List<ProductImage> ProductImages { get; set; }
+
+        [Range(0, 100)]
+        public int Discount { get; set; }
+
+        public Product()
+        {
+            if (Discount > 0)
+                Price = Price * Discount;
+        }
     }
 }

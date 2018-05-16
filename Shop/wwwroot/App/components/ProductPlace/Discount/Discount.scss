@@ -1,13 +1,13 @@
-@import '../../../main';
+@import "../../../main";
 
-.main {
+.discount {
+  min-height: 100vh;
   &__header {
 	background: $dark;
 	color: $dark-grey-color;
 	padding: 1rem;
 	border-radius: 5px;
-  }
-  &__products-box {
-	padding: 2rem 0;
+	font-size: 20px;
+	text-align: center;
   }
 }
