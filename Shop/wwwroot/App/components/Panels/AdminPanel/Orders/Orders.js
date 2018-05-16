@@ -48,9 +48,7 @@ class Orders extends React.Component {
 
 	onOrdersStatusChange = ({target}) => this.setState({orderStatus: Number(target.value)});
 
-	onPaginationChange = pageNumber => {
-		this.setState({activePage: pageNumber});
-	};
+	onPaginationChange = pageNumber => this.setState({activePage: pageNumber});
 
 	renderSwitchContent = () => {
 		if (!this.state.isLoading && this.state.orders.length > 0)

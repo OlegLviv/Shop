@@ -20,5 +20,7 @@ namespace Core.Models.DTO.Order
         public string WayOfDelivery { get; set; }
 
         public OrderStatus OrderStatus { get; set; } = OrderStatus.New;
+
+        public long CreateDate { get; set; }
     }
 }

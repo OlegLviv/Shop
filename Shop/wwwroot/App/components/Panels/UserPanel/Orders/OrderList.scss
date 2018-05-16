@@ -1,0 +1,18 @@
+@import "../../../../main";
+
+.order-list {
+  &__item:hover {
+	cursor: pointer;
+	background: $light-background;
+  }
+  &__item {
+	&__text-items {
+	  display: flex;
+	  padding: .3rem 0;
+	  &__label {
+		font-weight: bold;
+		padding-right: .5rem;
+	  }
+	}
+  }
+}

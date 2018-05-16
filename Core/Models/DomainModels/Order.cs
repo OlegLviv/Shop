@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Core.Models.DomainModels.Base;
 
@@ -32,5 +33,7 @@ namespace Core.Models.DomainModels
         public OrderStatus OrderStatus { get; set; } = OrderStatus.New;
 
         public double TotalPrice { get; set; }
+
+        public long CreateDate { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
     }
 }

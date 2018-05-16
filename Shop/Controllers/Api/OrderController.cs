@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -31,12 +32,14 @@ namespace Shop.Controllers.Api
         public OrderController(IMapper mapper,
             IRepositoryAsync<Order> orderRepository,
             UserManager<User> userManager,
-            IRepositoryAsync<Product> productRepository)
+            IRepositoryAsync<Product> productRepository,
+            IOrderService orderService)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _userManager = userManager;
             _productRepository = productRepository;
+            _orderService = orderService;
         }
 
         #region GET
