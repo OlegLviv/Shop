@@ -38,7 +38,7 @@ class LogInModal extends React.Component {
 		}
 	};
 
-	onLogin = (e) => {
+	onLogin = e => {
 		e.preventDefault();
 		if (isValidWhiteSpace(this.state.userName) && isValidWhiteSpace(this.state.password)) {
 			logInToken(this.state.userName, this.state.password)
@@ -89,8 +89,7 @@ class LogInModal extends React.Component {
 		}
 	};
 
-	renderError = (text) =>
-		<small id="emailHelp" className="form-text text-muted invalid-small">{text}</small>;
+	renderError = text => <small className="form-text text-muted invalid-small">{text}</small>;
 
 	render() {
 		return (
@@ -99,7 +98,7 @@ class LogInModal extends React.Component {
 				   shouldCloseOnEsc={true}
 				   style={customModalStyle}>
 				<div className="form-container">
-					<form onSubmit={this.onLogin} method=''>
+					<form onSubmit={this.onLogin} method="">
 						<h3 className="text-center">Вхід</h3>
 						<hr/>
 

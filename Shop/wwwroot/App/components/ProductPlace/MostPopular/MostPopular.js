@@ -8,6 +8,8 @@ import {
 import {apiWithoutRedirect} from "../../../services/api";
 import ProductCard from '../ProductCard/ProductCard';
 import {Spinner} from "../../Spinner/Spinner";
+import {addProductCookies} from "../../../services/cookies";
+import {connect} from "react-redux";
 
 class MostPopular extends Component {
 	constructor(props) {
@@ -52,7 +54,15 @@ class MostPopular extends Component {
 			}));
 	};
 
-	//	todo need implement handler of ProductCard
+	onAddProductToShoppingCardButClick = (e, id) => {
+		addProductCookies('productsCard', id, 1);
+		this.props.onAddProductToShoppingCard(id, 1);
+	};
+
+	//	todo need implement like product
+	onLikeButClick = () => {
+	};
+
 	render() {
 		return (
 			<div className="main">
@@ -80,4 +90,8 @@ class MostPopular extends Component {
 	}
 }
 
-export default MostPopular;
+export default connect(state => ({}), dispatch => ({
+	onAddProductToShoppingCard: (id, count) => {
+		dispatch({type: 'ADD_NEW', id: id, count: count})
+	}
+}))(MostPopular);
