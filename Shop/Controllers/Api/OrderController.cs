@@ -114,13 +114,15 @@ namespace Shop.Controllers.Api
 
             order.User = user;
             order.UserId = user.Id;
-            order.ProductsContainers.ForEach(async x =>
+
+            foreach (var container in order.ProductsContainers)
             {
-                x.OrderId = order.Id;
-                x.Order = order;
-                x.Product = await _productRepository.GetByIdAsync(x.ProductId);
-            });
-            order.TotalPrice = _orderService.CalculateTotalPriceAsync(order);
+                container.OrderId = order.Id;
+                container.Order = order;
+                container.Product = await _productRepository.GetByIdAsync(container.ProductId);
+            }
+
+            order.TotalPrice = _orderService.CalculateTotalPrice(order);
 
             var insertResult = await _orderRepository.InsertAsync(order);
 
@@ -135,13 +137,14 @@ namespace Shop.Controllers.Api
         {
             var order = _mapper.Map<Order>(model);
 
-            order.ProductsContainers.ForEach(async x =>
+            foreach (var container in order.ProductsContainers)
             {
-                x.OrderId = order.Id;
-                x.Order = order;
-                x.Product = await _productRepository.GetByIdAsync(x.ProductId);
-            });
-            order.TotalPrice = _orderService.CalculateTotalPriceAsync(order);
+                container.OrderId = order.Id;
+                container.Order = order;
+                container.Product = await _productRepository.GetByIdAsync(container.ProductId);
+            }
+
+            order.TotalPrice = _orderService.CalculateTotalPrice(order);
 
             var insertResult = await _orderRepository.InsertAsync(order);
 

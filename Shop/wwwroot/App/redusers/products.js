@@ -12,6 +12,8 @@ export const products = (state = initialState, action) => {
 					count: Number(action.count)
 				}
 			];
+		case 'CLEAN':
+			return [];
 		default:
 			return state;
 	}

@@ -1,42 +1,76 @@
 import React from 'react';
 import {customModalStyle} from "../modalStyles";
 import Modal from 'react-modal';
-import {isValidEmail, isValidNameLastName, isValidPhoneNumber} from "../../../utils/validationUtils";
+import {isValidEmail, isValidNameAndLastName, isValidPhoneNumber} from "../../../utils/validationUtils";
+import {Spinner} from "../../Spinner/Spinner";
 
 class MakeOrderModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			email: '',
-			phone: '',
-			nameLastName: '',
 			isValidEmail: true,
 			isValidPhone: true,
-			isValidNameLastName: true,
-			emailError: '',
-			phoneError: '',
-			nameLastNameError: '',
-			wayOfDelivery: 'Нова пошта',
-			user: this.props.user
+			isValidName: true,
+			isValidLastName: true,
+			email: '',
+			name: '',
+			lastName: '',
+			phone: '',
+			wayOfDelivery: 'Нова пошта'
 		}
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.user) {
+	componentWillReceiveProps({user}) {
+		if (user) {
 			this.setState({
-				user: nextProps.user,
-				email: nextProps.user.email,
-				phone: nextProps.user.phoneNumber,
-				nameLastName: `${nextProps.user.name} ${nextProps.user.lastName}`
+				user: user,
+				email: user.email,
+				phone: user.phoneNumber,
+				name: user.name,
+				lastName: user.lastName
 			});
 		}
 	}
 
+
+	validateName = value => {
+		if (!isValidNameAndLastName(value)) {
+			this.setState({
+				isValidName: false
+			});
+			return false;
+		}
+		if (isValidNameAndLastName(value) && !this.state.isValidName) {
+			this.setState({
+				isValidName: true
+			});
+			return false;
+		}
+		if (isValidNameAndLastName(value) && this.state.isValidName)
+			return true;
+	};
+
+	validateLastName = value => {
+		if (!isValidNameAndLastName(value)) {
+			this.setState({
+				isValidLastName: false
+			});
+			return false;
+		}
+		if (isValidNameAndLastName(value) && !this.state.isValidLastName) {
+			this.setState({
+				isValidLastName: true
+			});
+			return false;
+		}
+		if (isValidNameAndLastName(value) && this.state.isValidLastName)
+			return true;
+	};
+
 	validateEmail = value => {
 		if (!isValidEmail(value)) {
 			this.setState({
-				isValidEmail: false,
-				emailError: 'Некоректний Email'
+				isValidEmail: false
 			});
 			return false;
 		}
@@ -54,8 +88,7 @@ class MakeOrderModal extends React.Component {
 	validatePhone = value => {
 		if (!isValidPhoneNumber(value)) {
 			this.setState({
-				isValidPhone: false,
-				phoneError: 'Некоректний номер телефону'
+				isValidPhone: false
 			});
 			return false;
 		}
@@ -70,31 +103,23 @@ class MakeOrderModal extends React.Component {
 			return true;
 	};
 
-	validateNameLastName = value => {
-		if (!isValidNameLastName(value)) {
-			this.setState({
-				isValidNameLastName: false,
-				nameLastNameError: 'Будь ласка введіть імя і прізвище, або просто ім\'я'
-			});
-			return false;
-		}
-		if (isValidNameLastName(value) && !this.state.isValidNameLastName) {
-			this.setState({
-				isValidNameLastName: true,
-				nameLastNameError: ''
-			});
-			return false;
-		}
-		if (isValidNameLastName(value) && this.state.isValidNameLastName)
-			return true;
-	};
-
 	isValidAllFields = () => {
+		const isValidName = this.validateName(this.state.name);
+		const isValidLastName = this.validateLastName(this.state.lastName);
 		const isValidEmail = this.validateEmail(this.state.email);
 		const isValidPhone = this.validatePhone(this.state.phone);
-		const isValidNameLastName = this.validateNameLastName(this.state.nameLastName);
 
-		return isValidEmail && isValidPhone && isValidNameLastName;
+		return isValidName && isValidLastName && isValidEmail && isValidPhone;
+	};
+
+	onChangeName = ({target}) => {
+		this.validateName(target.value);
+		this.setState({name: target.value});
+	};
+
+	onChangeLastName = ({target}) => {
+		this.validateLastName(target.value);
+		this.setState({lastName: target.value});
 	};
 
 	onChangeEmail = (e) => {
@@ -107,38 +132,51 @@ class MakeOrderModal extends React.Component {
 		this.setState({phone: e.target.value});
 	};
 
-	onChangeNameLastName = ({target}) => {
-		this.validateNameLastName(target.value);
-		this.setState({nameLastName: target.value});
-	};
-
-	onWayOfDeliveryChange = ({target}) => {
-		this.setState({wayOfDelivery: target.value});
-	};
+	onWayOfDeliveryChange = ({target}) => this.setState({wayOfDelivery: target.value});
 
 	onSubmitOrder = () => {
 		if (this.isValidAllFields())
 			this.props.onSubmitOrder({
+				name: this.state.name,
+				lastName: this.state.lastName,
 				email: this.state.email,
-				phone: this.state.phone,
-				nameLastName: this.state.nameLastName,
+				phoneNumber: this.state.phone,
 				wayOfDelivery: this.state.wayOfDelivery
 			});
 	};
 
-	onCloseModal = () => {
-		this.props.onCloseModal();
-	};
+	onCloseModal = () => this.props.onCloseModal();
 
 	renderError = text => <small className="invalid-small">{text}</small>;
 
 	render() {
+		const {email, name, lastName, phone} = this.state;
 		return (
 			<Modal isOpen={this.props.isModalOpen}
 				   onRequestClose={this.onCloseModal}
 				   shouldCloseOnEsc={true}
 				   style={customModalStyle}>
-				<div className="form-container">
+				{!this.props.loading ? <div className="form-container">
+					<div className="form-group">
+						<label htmlFor="inputName">Ім'я</label>
+						<input type="text"
+							   className={`form-control ${!this.state.isValidName && 'invalid-input'}`}
+							   id="inputName"
+							   placeholder="Введіть своє ім'я"
+							   value={name}
+							   onChange={this.onChangeName}/>
+						{!this.state.isValidName && this.renderError('Некоректне ім\'я')}
+					</div>
+					<div className="form-group">
+						<label htmlFor="inputLastName">Прізвище</label>
+						<input type="text"
+							   className={`form-control ${!this.state.isValidLastName && 'invalid-input'}`}
+							   id="inputLastName"
+							   placeholder="Введіть своє прізвище"
+							   value={lastName}
+							   onChange={this.onChangeLastName}/>
+						{!this.state.isValidLastName && this.renderError('Некоректне прізвище')}
+					</div>
 					<div className="form-group">
 						<label htmlFor="inputEmail">Email</label>
 						<input type="text"
@@ -146,9 +184,9 @@ class MakeOrderModal extends React.Component {
 							   id="inputEmail"
 							   aria-describedby="emailHelp"
 							   placeholder="Введіть email"
-							   value={this.state.email}
+							   value={email}
 							   onChange={this.onChangeEmail}/>
-						{!this.state.isValidEmail && this.renderError(this.state.emailError)}
+						{!this.state.isValidEmail && this.renderError('Некоректний Email')}
 					</div>
 					<div className="form-group">
 						<label htmlFor="inputPhone">Телефон</label>
@@ -156,19 +194,9 @@ class MakeOrderModal extends React.Component {
 							   className={`form-control ${!this.state.isValidPhone && 'invalid-input'}`}
 							   id="inputPhone"
 							   placeholder="Введіть свій номер телефону..."
-							   value={this.state.phone}
+							   value={phone}
 							   onChange={this.onChangePhone}/>
-						{!this.state.isValidPhone && this.renderError(this.state.phoneError)}
-					</div>
-					<div className="form-group">
-						<label htmlFor="inputNameLastName">Ім'я і прізвище</label>
-						<input type="text"
-							   className={`form-control ${!this.state.isValidNameLastName && 'invalid-input'}`}
-							   id="inputNameLastName"
-							   placeholder="Введіть своє ім'я і прізвище"
-							   value={this.state.nameLastName}
-							   onChange={this.onChangeNameLastName}/>
-						{!this.state.isValidNameLastName && this.renderError(this.state.nameLastNameError)}
+						{!this.state.isValidPhone && this.renderError('Некоректний номер телефону')}
 					</div>
 					<div className="form-group">
 						<label htmlFor="selectPay">Оберіть спосіб доставки</label>
@@ -186,7 +214,7 @@ class MakeOrderModal extends React.Component {
 						</button>
 						<button className="btn btn-danger" onClick={this.onCloseModal}>Закрити</button>
 					</div>
-				</div>
+				</div> : <Spinner/>}
 			</Modal>
 		)
 	}

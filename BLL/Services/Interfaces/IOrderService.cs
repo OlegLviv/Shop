@@ -4,6 +4,6 @@ namespace BLL.Services.Interfaces
 {
     public interface IOrderService
     {
-        double CalculateTotalPriceAsync(Order orders);
+        double CalculateTotalPrice(Order orders);
     }
 }

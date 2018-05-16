@@ -19,6 +19,7 @@ class LogInModal extends React.Component {
 		};
 	}
 
+
 	onCloseModal = () => {
 		this.props.onCloseModal();
 	};

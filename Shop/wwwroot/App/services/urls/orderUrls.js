@@ -8,5 +8,7 @@ export const getOrderUrl = id => `/api/order/getOrder/${id}`;
 //	POST
 export const CREATE_ORDER_URL = '/api/order/createOrder';
 
+export const CREATE_USER_ORDER_URL = '/api/order/CreateUserOrder';
+
 //	PUT
 export const getChangeOrderStatusUrl = (id, orderStatus) => `/api/order/ChangeOrderStatus/${id}/${orderStatus}`;

@@ -9,8 +9,10 @@ import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
 import {Spinner} from "../Spinner/Spinner";
 import MakeOrderModal from '../Modal/MakeOrderModal/MakeOrderModal';
-import {createOrders} from "../../utils/orderUtils";
-import {CREATE_ORDER_URL} from "../../services/urls/orderUrls";
+import {createProductsContainerForOrders} from "../../utils/orderUtils";
+import {CREATE_ORDER_URL, CREATE_USER_ORDER_URL} from "../../services/urls/orderUrls";
+import {SuccessReceivedOrderModal} from "./SuccessReceivedOrderModal";
+import {connect} from 'react-redux';
 
 const renderNoProducts = () => {
 	return (
@@ -34,23 +36,11 @@ class ProductCardPlace extends React.Component {
 			isProductsLoading: false,
 			isProductsLoaded: false,
 			isNotProducts: false,
-			isMakeOrderModalOpen: false
+			isMakeOrderModalOpen: false,
+			loading: false,
+			canSuccessReceivedOrderModal: false
 		}
 	}
-
-	initProductsCounts = products => {
-		const productCArr = getProductsOutOfCookies('productsCard');
-		let newProductsCounts = [];
-
-		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
-			for (let i = 0; i < products.length; i++) {
-				newProductsCounts[i] = 1;
-			}
-		}
-		else
-			newProductsCounts = getProductCounts(productCArr);
-		this.setState({productsCounts: newProductsCounts});
-	};
 
 	componentDidMount() {
 		const productCArr = getProductsOutOfCookies('productsCard');
@@ -86,10 +76,21 @@ class ProductCardPlace extends React.Component {
 			});
 	}
 
-	componentWillReceiveProps(nextProps) {
-		console.log(this.props);
-		console.log(nextProps);
-	}
+	trySetLoading = () => !this.state.loading && this.setState({loading: true});
+
+	initProductsCounts = products => {
+		const productCArr = getProductsOutOfCookies('productsCard');
+		let newProductsCounts = [];
+
+		if (!productCArr || productCArr ? productCArr.length === 0 : false) {
+			for (let i = 0; i < products.length; i++) {
+				newProductsCounts[i] = 1;
+			}
+		}
+		else
+			newProductsCounts = getProductCounts(productCArr);
+		this.setState({productsCounts: newProductsCounts});
+	};
 
 	getTotalPrice = () => {
 		const {products, productsCounts} = this.state;
@@ -130,32 +131,37 @@ class ProductCardPlace extends React.Component {
 
 	//	todo maybe need validate this order because it hard object
 	onSubmitOrder = orderObj => {
-		const orders = createOrders(this.state.products.map(item => item.id), this.state.productsCounts);
-		orderObj.orders = orders;
-		orderObj.totalPrice = this.getTotalPrice();
+		const productsContainers = createProductsContainerForOrders(this.state.products.map(item => item.id), this.state.productsCounts);
+		orderObj.productsContainers = productsContainers;
 		console.log(orderObj);
 
+		this.trySetLoading();
+
 		apiWithoutRedirect()
-			.post(CREATE_ORDER_URL, orderObj)
+			.post(this.props.isLogIn ? CREATE_USER_ORDER_URL : CREATE_ORDER_URL, orderObj)
 			.then(resp => {
 				if (resp.status === 200 && resp.data === 'Success') {
-					alert('Заказ успішно відправлено');
 					this.onCleanProductsCard();
 					this.onCloseMakeOrderModal();
+					this.setState({loading: false, canSuccessReceivedOrderModal: true});
+					this.props.onCleanProducts();
 				}
 			})
 			.catch(err => {
-				console.log(err.response.data)
-				alert("error");
+				alert(`Error: ${JSON.stringify(err.response.data)}`);
+				this.setState({loading: false});
 			});
 	};
 
-	// todo maybe need create page for this, not modal
 	renderMakeOrderModal = () => <MakeOrderModal
 		isModalOpen={this.state.isMakeOrderModalOpen}
 		onCloseModal={this.onCloseMakeOrderModal}
 		onSubmitOrder={this.onSubmitOrder}
+		loading={this.state.loading}
 		user={this.props.user}/>;
+
+	renderSuccessReceivedOrderModal = () => <SuccessReceivedOrderModal isOpen={this.state.canSuccessReceivedOrderModal}
+																	   onClose={() => this.setState({canSuccessReceivedOrderModal: false})}/>;
 
 	renderSwitchContent = () => {
 		const {isProductsLoading, isProductsLoaded, isNotProducts} = this.state;
@@ -242,6 +248,7 @@ class ProductCardPlace extends React.Component {
 	render() {
 		return (
 			<div className="container-p-card-place">
+				{this.renderSuccessReceivedOrderModal()}
 				{this.renderSwitchContent()}
 				{this.renderMakeOrderModal()}
 			</div>
@@ -249,4 +256,9 @@ class ProductCardPlace extends React.Component {
 	}
 }
 
-export default ProductCardPlace;
+export default connect(
+	state => ({}),
+	dispatch => ({
+		onCleanProducts: () => dispatch({type: 'CLEAN'})
+	})
+)(ProductCardPlace);
