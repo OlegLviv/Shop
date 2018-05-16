@@ -24,10 +24,21 @@ namespace Core.Models.DomainModels
         [Required]
         public double Price { get; set; }
 
+        public long Review { get; set; }
+
         public string Description { get; set; }
 
         public List<Feedback> Feedbacks { get; set; }
 
         public List<ProductImage> ProductImages { get; set; }
+
+        [Range(0, 100)]
+        public int Discount { get; set; }
+
+        public Product()
+        {
+            if (Discount > 0)
+                Price = Price * Discount;
+        }
     }
 }

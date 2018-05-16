@@ -150,8 +150,7 @@ namespace Shop
             services.AddTransient(impl => new ProductService(impl.GetService<IRepositoryAsync<ProductProperty>>(),
                 impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
 
-            services.AddTransient<IOrderService, OrderService>(impl =>
-                new OrderService(impl.GetService<IRepositoryAsync<Product>>()));
+            services.AddTransient<IOrderService, OrderService>();
         }
     }
 }

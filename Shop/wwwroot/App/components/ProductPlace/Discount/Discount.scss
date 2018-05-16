@@ -1,0 +1,13 @@
+@import "../../../main";
+
+.discount {
+  min-height: 100vh;
+  &__header {
+	background: $dark;
+	color: $dark-grey-color;
+	padding: 1rem;
+	border-radius: 5px;
+	font-size: 20px;
+	text-align: center;
+  }
+}

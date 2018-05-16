@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Core.Models.DomainModels.Base;
+﻿using Core.Models.DomainModels;
 
 namespace BLL.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task<double> CalculateTotalPriceAsync(IEnumerable<IBaseOrder> orders);
+        double CalculateTotalPrice(Order orders);
     }
 }

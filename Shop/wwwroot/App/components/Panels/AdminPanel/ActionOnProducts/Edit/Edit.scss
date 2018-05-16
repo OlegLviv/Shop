@@ -4,7 +4,7 @@
   padding: 2rem;
   &__header {
 	padding: 1rem;
-	background: $dark-background;
+	background: $dark;
 	color: $dark-grey-color;
   }
   &__search-box {
@@ -27,7 +27,7 @@
 	  }
 	  &__item:hover {
 		background: $light-background;
-		color: $dark-background;
+		color: $dark;
 	  }
 	}
   }
@@ -39,7 +39,7 @@
 }
 
 .table-head {
-  background: $dark-background;
+  background: $dark;
   color: $dark-grey-color;
 }
 
@@ -47,19 +47,7 @@
   width: 10rem;
 }
 
-.selected-images-box {
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-.selected-images-box img {
-  border-radius: 5px;
-  max-height: 25rem;
-  max-width: 20rem;
-}
-
 .not-found {
   text-align: center;
-  color: $dark-background;
+  color: $dark;
 }

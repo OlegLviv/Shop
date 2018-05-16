@@ -1,4 +1,4 @@
-export const createOrders = (productIds, counts) => {
+export const createProductsContainerForOrders = (productIds, counts) => {
 	if (productIds.length !== counts.length)
 		throw new Error('Product ids array length not equals product counts array length');
 

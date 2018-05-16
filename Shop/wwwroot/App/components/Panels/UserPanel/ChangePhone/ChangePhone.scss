@@ -7,12 +7,15 @@
   padding: 2rem;
   &__header {
 	width: 100%;
-	background: $dark-background;
+	background: $dark;
 	padding: 1rem;
 	color: $dark-grey-color;
   }
   &__form {
 	padding-top: 2rem;
 	width: 55%;
+  }
+  &__form input {
+	font-size: 13px;
   }
 }

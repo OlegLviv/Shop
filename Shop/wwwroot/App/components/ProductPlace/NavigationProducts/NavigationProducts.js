@@ -74,6 +74,14 @@ class NavigationProducts extends React.Component {
 						</div>
 					</div>
 				</li>
+				<li className="list-group-item home-container__list-group-item">
+					<div className="btn-group dropright home-container__list-group-item__dropright">
+						<Link to="/products/discount"
+							  className="home-container__list-group-item__dropright__dropdown-toggle">
+							Товари зі знижками
+						</Link>
+					</div>
+				</li>
 			</ul>
 		)
 	};

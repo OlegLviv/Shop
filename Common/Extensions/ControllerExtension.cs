@@ -13,8 +13,10 @@ namespace Common.Extensions
         public static async Task<TIdentityUser> GetUserByIdentityAsync<TIdentityUser>(this ControllerBase controller, UserManager<TIdentityUser> userManager) where TIdentityUser : IdentityUser
         {
             var identityName = controller.User.Identity.Name;
+
             if (identityName == null)
                 return null;
+
             return await userManager.FindByNameAsync(identityName) ?? await userManager.FindByEmailAsync(identityName);
         }
 

@@ -42,6 +42,7 @@ class ProductCard extends React.Component {
 	};
 
 	render() {
+		console.log(this.props.product.discount);
 		return (
 			<div className="card card-dev">
 				<img className="card-img-top"
@@ -51,6 +52,8 @@ class ProductCard extends React.Component {
 					<Link to={`/product/${this.props.product.id}`}>
 						<h5 className="card-title text-center">{this.props.product.name}</h5>
 					</Link>
+					{this.props.product.discount > 0 &&
+					<div className="discount-box">{`${this.props.product.discount}%`}</div>}
 					<h4 className="text-center">{`${this.props.product.price} грн`}</h4>
 					<div className="card-dev__footer">
 						<button className="btn btn-dark"

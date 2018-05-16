@@ -6,6 +6,8 @@ import {NotFound} from "../../common/NotFound/NotFound";
 import ChangePassword from './ChangePassword/ChangePassword';
 import ChangeEmail from './ChangeEmail/ChangeEmail';
 import ChangePhone from './ChangePhone/ChangePhone';
+import Mailing from './Mailing/Mailing';
+import Orders from './Orders/Orders';
 
 const navItems = [
 	{
@@ -27,6 +29,11 @@ const navItems = [
 		link: '/userPanel/mailing',
 		icon: 'envelope',
 		text: 'Розсилки',
+	},
+	{
+		link: '/userPanel/orders',
+		icon: 'folder-open',
+		text: 'Мої замовлення',
 	}
 ];
 
@@ -45,7 +52,8 @@ class UserPanel extends React.Component {
 						<Route exact path="/userPanel/change-phone-number" component={ChangePhone}/>
 						<Route exact path="/userPanel/change-phone-number"
 							   render={() => <div>change-phone-number</div>}/>
-						<Route exact path="/userPanel/mailing" render={() => <div>mailing</div>}/>
+						<Route exact path="/userPanel/mailing" component={Mailing}/>
+						<Route exact path="/userPanel/orders" component={Orders}/>
 						<Route component={NotFound}/>
 					</Switch>
 				</div>

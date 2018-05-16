@@ -55,11 +55,46 @@ namespace Shop.Controllers.Api
         {
             if (string.IsNullOrEmpty(productId))
                 return BadRequest("Incorrect productId");
+
             var product = await _productsRepository
                 .GetByIdAsync(productId);
+
             if (product == null)
                 return NotFound("Product with this id not found");
+
+            product.Review += 1;
+            await _productsRepository.UpdateAsync(product);
+
             return this.JsonResult(_mapper.Map<ProductDto>(product));
+        }
+
+        [HttpGet("GetMostPopularProducts/{count:int?}")]
+        public IActionResult GetMostPopularProducts(int count = 16)
+        {
+            var products = _productsRepository
+                .Table
+                .OrderBy(x => x.Review)
+                .Skip(_productsRepository.Table.Count() - count)
+                .AsEnumerable()
+                .Reverse();
+
+            return this.JsonResult(_mapper.Map<IEnumerable<ProductDto>>(products));
+        }
+
+        [HttpGet("GetWithDiscount/{pageNumber:int?}/{pageSize:int?}")]
+        public IActionResult GetWithDiscount(int pageNumber = 1, int pageSize = 16)
+        {
+            var products = _productsRepository
+                .Table
+                .Where(x => x.Discount > 0);
+
+            return this.JsonResult(new Paginator<ProductDto>
+            {
+                Data = _mapper.Map<IEnumerable<ProductDto>>(products.Page(pageNumber, pageSize)),
+                TotalCount = products.Count(),
+                PageSize = pageSize,
+                PageNumber = pageNumber
+            });
         }
 
         [HttpGet("GetProducts/{category}/{subCategory}/{size:int?}")]
@@ -132,7 +167,7 @@ namespace Shop.Controllers.Api
                 .Select(_productsRepository.Table.Include(x => x.ProductImages),
                     this.ArrayParamsToNormalArray(productIds));
 
-            return this.JsonResult(products);
+            return this.JsonResult(_mapper.Map<IEnumerable<ProductDto>>(products));
         }
 
         [HttpGet("GetProducts/{name}/{pageNumber:int?}/{pageSize:int?}")]
@@ -264,41 +299,36 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> AddProduct([FromForm] AddProductDto model)
         {
-            var product = new Product
-            {
-                Category = model.Category,
-                SubCategory = model.SubCategory,
-                Name = model.Name,
-                Price = model.Price,
-                Description = model.Description,
-                Query = model.Query
-            };
+            var product = _mapper.Map<Product>(model);
 
             var productImages = new List<ProductImage>();
 
-            foreach (var im in model.Images)
+            if (model.Images != null)
             {
-                if (im.Length > 3000000)
-                    return BadRequest("Еhe image can't be larger than 3MB");
-
-                using (var stream = im.OpenReadStream())
+                foreach (var im in model.Images)
                 {
-                    var imgBuff = new byte[(int)stream.Length];
-                    await stream.ReadAsync(imgBuff, 0, (int)stream.Length);
-                    productImages.Add(new ProductImage
+                    if (im.Length > 3000000)
+                        return BadRequest("Еhe image can't be larger than 3MB");
+
+                    using (var stream = im.OpenReadStream())
                     {
-                        Product = product,
-                        ProductId = product.Id,
-                        Image = imgBuff,
-                        ContentType = im.ContentType
-                    });
+                        var imgBuff = new byte[(int)stream.Length];
+                        await stream.ReadAsync(imgBuff, 0, (int)stream.Length);
+                        productImages.Add(new ProductImage
+                        {
+                            Product = product,
+                            ProductId = product.Id,
+                            Image = imgBuff,
+                            ContentType = im.ContentType
+                        });
+                    }
                 }
             }
 
-            if (productImages.Count != 0)
-                product.ProductImages = productImages;
+            product.ProductImages = productImages;
 
             var insertRes = await _productsRepository.InsertAsync(product);
+
             return Ok(insertRes);
         }
 

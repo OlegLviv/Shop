@@ -15,6 +15,7 @@ import {SuccessUpdatedModal} from "./SuccessUpdatedModal";
 
 const howProductsPerPage = 5;
 
+//	todo need fix spinner and deleting images
 class Edit extends React.Component {
 	constructor(props) {
 		super(props);

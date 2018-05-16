@@ -6,7 +6,7 @@
 	display: flex;
 	justify-content: space-between;
 	padding: 1rem;
-	background: $dark-background;
+	background: $dark;
 	color: $dark-grey-color;
   }
   &__list-group {
@@ -17,10 +17,10 @@
 	  cursor: pointer;
 	}
 	&__list-group-item a {
-	  color: $dark-background;
+	  color: $dark;
 	}
 	&__list-group-item a:hover {
-	  color: $dark-background;
+	  color: $dark;
 	  text-decoration: none;
 	}
 	&__list-group-item:hover {

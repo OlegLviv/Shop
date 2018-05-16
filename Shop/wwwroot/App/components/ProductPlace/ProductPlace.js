@@ -14,6 +14,7 @@ import {Spinner} from "../Spinner/Spinner";
 import Pagination from 'react-js-pagination';
 import {priceRange} from "../../utils/productsUtils";
 import {connect} from 'react-redux';
+import MostPopular from './MostPopular/MostPopular';
 
 const getCategory = (props) => props.match.params.category;
 const getSubCategory = (props) => props.match.params.subCategory;
@@ -269,7 +270,7 @@ class ProductPlace extends React.Component {
 		if (this.state.isProductsLoading && !this.state.isProductsLoaded) {
 			return <Spinner/>
 		}
-		else return <div>Def content</div>;
+		else return <MostPopular/>;
 	};
 
 	render() {

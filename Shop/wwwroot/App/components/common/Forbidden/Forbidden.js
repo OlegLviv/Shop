@@ -3,7 +3,7 @@ import './Forbidden.scss';
 
 export const Forbidden = () => {
 	return (
-		<div className="container">
+		<div className="container-forbidden">
 			<h1>403 Forbidden</h1>
 			<h3>Заборонено</h3>
 		</div>

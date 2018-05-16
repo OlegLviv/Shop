@@ -12,18 +12,15 @@ namespace Core.Models.DTO.Order
 
         [Required]
         [Phone]
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
         [Required]
-        [RegularExpression("^(([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+)((\\s?)([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+))?){1,20}$")]
-        public string NameLastName { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public List<BaseOrderDto> Orders { get; set; }
+        public string LastName { get; set; }
 
-        [Required]
-        [Range(0.1, double.MaxValue)]
-        public double TotalPrice { get; set; }
+        public List<ProductOrderContainer> ProductsContainers { get; set; }
 
         [Required]
         public string WayOfDelivery { get; set; }

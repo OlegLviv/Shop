@@ -5,6 +5,7 @@ import {SuccessSubscribedModal} from "./SuccessSubscribedModal";
 import {apiWithoutRedirect} from "../../services/api";
 import {SUBSCRIBE_EMAIL_TO_MAILING_URL} from "../../services/urls/mailingUrls";
 import {isValidEmail} from "../../utils/validationUtils";
+import {SITE_NAME} from "../constants/siteConstants";
 
 class Footer extends React.Component {
 	constructor(props) {
@@ -112,9 +113,10 @@ class Footer extends React.Component {
 					</div>
 				</div>
 				<div className="footer-cont__sub-footer">
-					<div className="footer-cont__sub-footer__text">Інтернет магазин канцтоварів Name © 2018 Всі права
-						захищені
+					<div className="footer-cont__sub-footer__text">
+						{`Інтернет магазин канцтоварів ${SITE_NAME}`}
 					</div>
+					<div className="footer-cont__sub-footer__text">© 2018 Всі права захищені</div>
 					<div className="footer-cont__sub-footer__text">Створення сайту:
 						<a href="https://vk.com/id105586528">{' Oleh Kokhan'}</a>
 					</div>

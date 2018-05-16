@@ -1,36 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BLL.Services.Interfaces;
-using Core.Interfaces;
 using Core.Models.DomainModels;
-using Core.Models.DomainModels.Base;
 
 namespace BLL.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepositoryAsync<Product> _productRepositoryAsync;
-
-        public OrderService(IRepositoryAsync<Product> productRepositoryAsync)
+        public double CalculateTotalPrice(Order order)
         {
-            _productRepositoryAsync = productRepositoryAsync;
-        }
-        public async Task<double> CalculateTotalPriceAsync(IEnumerable<IBaseOrder> orders)
-        {
-            if(orders == null)
+            if (order == null)
                 throw new ArgumentNullException();
 
             var totalPrice = 0.0d;
+            var productContainers = order.ProductsContainers;
 
-            foreach (var order in orders)
+            foreach (var container in productContainers)
             {
-                var product = await _productRepositoryAsync.GetByIdAsync(order.ProductId);
-
-                if(product == null)
-                    throw new Exception($"Can't find product with this id: {order.ProductId}");
-
-                totalPrice += order.Count * product.Price;
+                totalPrice += container.Product.Price * container.Count;
             }
 
             return totalPrice;

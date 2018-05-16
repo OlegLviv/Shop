@@ -1,0 +1,11 @@
+@import '../../../../main';
+
+.orders-cont {
+  padding: 2rem;
+  &__header {
+	width: 100%;
+	background: $dark;
+	padding: 1rem;
+	color: $dark-grey-color;
+  }
+}
