@@ -54,7 +54,10 @@ class ProductCard extends React.Component {
 					</Link>
 					{this.props.product.discount > 0 &&
 					<div className="discount-box">{`${this.props.product.discount}%`}</div>}
-					<h4 className="text-center">{`${this.props.product.price} грн`}</h4>
+					<div className={`${this.props.product.discount > 0 ? 'prices-box' : ''}`}>
+						<h4 className={`${this.props.product.discount > 0 ? 'price-with-discount' : ''}`}>{`${this.props.product.price} грн`}</h4>
+						{this.props.product.discount > 0 && <h6>{`${this.props.product.priceWithDiscount} грн`}</h6>}
+					</div>
 					<div className="card-dev__footer">
 						<button className="btn btn-dark"
 								onClick={this.onProductCardButClick}>{this.state.inProductCardTextBut}</button>

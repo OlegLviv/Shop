@@ -25,17 +25,39 @@
   padding: .5rem;
 }
 
+.card-body h4 {
+  color: $dark-blue-color;
+  font-weight: 700;
+  text-shadow: 1px 2px 5px $dark-grey-color;
+  background: $light-background;
+  border: 1px $dark-grey-transparent-color solid;
+  border-radius: 5px;
+  text-align: center;
+}
+
 .card-body h5 {
   overflow-y: hidden;
   height: 3rem;
   max-height: 3rem;
   color: $dark;
+  font-weight: 400;
 }
 
-.card-body h4 {
-  color: $dark-blue-color;
-  font-weight: 700;
-  text-shadow: 1px 2px 5px $dark-grey-color
+.card-body h6 {
+  border-radius: 5px;
+  background: $yellow-transparent-color;
+  border: 1px $dark-yellow-transparent-color solid;
+  padding: .3rem;
+  text-align: center;
+}
+
+.prices-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price-with-discount {
+  text-decoration: line-through;
 }
 
 .card-img-top {

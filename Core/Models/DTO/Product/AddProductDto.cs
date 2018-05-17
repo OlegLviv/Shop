@@ -19,8 +19,10 @@ namespace Core.Models.DTO.Product
         public string Query { get; set; }
 
         [Required]
-        [Range(0.1, double.MaxValue)]
+        [Range(0.1, 9999)]
         public double Price { get; set; }
+
+        public int Discount { get; set; }
 
         public string Description { get; set; }
 

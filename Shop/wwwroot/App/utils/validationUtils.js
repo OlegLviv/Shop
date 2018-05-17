@@ -17,8 +17,11 @@ export const isValidPhoneNumber = s => new RegExp('^((\\+7|\\+3)[\\- ]?)?(\\(?\\
 export const isValidNameLastName = s => new RegExp('^(([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+)((\\s?)([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+))?){1,20}$').test(s);
 
 //	Products
-export const isValidProductName = s => new RegExp('^[A-zА-яіІёЁ1-9 ]{2,64}$').test(s);
+export const isValidProductName = s => new RegExp('^[A-zА-яіІёЁ0-9 ]{2,64}$').test(s);
 
-export const isValidProductPrice = s => new RegExp('^[1-9]{1,5}$').test(s);
+export const isValidProductPrice = s => new RegExp('^[0-9]{1,5}$').test(s);
 
-export const isValidProductDescription = s => new RegExp('^[A-zА-яіІёЁ1-9 ]{0,512}$').test(s);
+export const isValidProductDiscount = s => new RegExp('^[0-9]{1,3}$').test(s) && Number(s) <= 100;
+
+//	todo need fix white space
+export const isValidProductDescription = s => new RegExp('^[A-zА-яіІёЁ0-9\\S\\n ]{0,512}$').test(s);

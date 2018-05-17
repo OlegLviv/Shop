@@ -14,7 +14,12 @@ import {ADD_PRODUCT_URL} from "../../../../../services/urls/productUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {Link} from 'react-router-dom';
 import {SuccessSavedProductModal} from "./SuccessSavedProductModal";
-import {isValidProductDescription, isValidProductName, isValidProductPrice} from "../../../../../utils/validationUtils";
+import {
+	isValidProductDescription,
+	isValidProductDiscount,
+	isValidProductName,
+	isValidProductPrice
+} from "../../../../../utils/validationUtils";
 import {MaxImageAlertModal} from "./MaxImageAlertModal";
 import {MaxSizeFileAlertModal} from "./MaxSizeFileAlertModal";
 
@@ -35,6 +40,7 @@ class AddNew extends React.Component {
 			subCategoryProps: [],
 			name: '',
 			price: 0,
+			discount: 0,
 			description: '',
 			product: {},
 			files: [],
@@ -42,6 +48,7 @@ class AddNew extends React.Component {
 			isShowSuccessSavedProductModal: false,
 			isValidName: true,
 			isValidPrice: true,
+			isValidDiscount: true,
 			isValidDescription: true,
 			isShowMaxImageAlertModal: false,
 			isShowMaxSizeFileAlertModal: false
@@ -98,6 +105,7 @@ class AddNew extends React.Component {
 		form.append('subCategory', normalizeSubCategoryToRoute(this.state.subCategory));
 		form.append('name', this.state.name);
 		form.append('price', this.state.price);
+		form.append('discount', this.state.discount);
 		form.append('query', query);
 		form.append('description', this.state.description);
 
@@ -122,6 +130,15 @@ class AddNew extends React.Component {
 			this.setState({isValidPrice: true});
 	};
 
+	validateDiscount = value => {
+		if (!isValidProductDiscount(value)) {
+			this.setState({isValidDiscount: false});
+			return;
+		}
+		if (isValidProductDiscount(value) && !this.state.isValidDiscount)
+			this.setState({isValidDiscount: true});
+	};
+
 	validateDescription = value => {
 		if (!isValidProductDescription(value)) {
 			this.setState({isValidDescription: false});
@@ -132,7 +149,7 @@ class AddNew extends React.Component {
 	};
 
 	validateAllFields = successAction => {
-		const {name, price, description} = this.state;
+		const {name, price, description, discount} = this.state;
 		if (!isValidProductName(name)) {
 			this.setState({isValidName: false});
 		}
@@ -142,7 +159,11 @@ class AddNew extends React.Component {
 		if (!isValidProductDescription(description)) {
 			this.setState({isValidDescription: false});
 		}
-		if (isValidProductName(name) && isValidProductPrice(price) && isValidProductDescription(description) && successAction)
+		if (isValidProductName(name) &&
+			isValidProductPrice(price) &&
+			isValidProductDescription(description) &&
+			isValidProductDiscount(discount) &&
+			successAction)
 			successAction();
 	};
 
@@ -158,6 +179,11 @@ class AddNew extends React.Component {
 	onChangePrice = ({target}) => {
 		this.validatePrice(target.value);
 		this.setState({price: target.value});
+	};
+
+	onChangeDiscount = ({target}) => {
+		this.validateDiscount(target.value);
+		this.setState({discount: target.value});
 	};
 
 	onChangeDescription = ({target}) => {
@@ -255,7 +281,7 @@ class AddNew extends React.Component {
 	renderError = text => <small className="form-text text-muted invalid-small">{text}</small>;
 
 	render() {
-		const {isValidPrice, isValidDescription, isValidName} = this.state;
+		const {isValidPrice, isValidDescription, isValidName, isValidDiscount} = this.state;
 		return (
 			!this.state.isLoading ? <div className="container-add-new">
 				{this.renderSuccessSavedModal()}
@@ -300,7 +326,7 @@ class AddNew extends React.Component {
 						</div>
 						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
 							 border-bottom="true">
-							<input className="form-control" onChange={this.onChangeProductName}/>
+							<input className={`form-control ${!isValidName && 'invalid-input'}`} onChange={this.onChangeProductName}/>
 							{!isValidName && this.renderError('Мінімальна кількість символів 2, максимальна 64')}
 						</div>
 					</div>
@@ -336,8 +362,22 @@ class AddNew extends React.Component {
 						</div>
 						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
 							 border-bottom="true">
-							<input className="form-control" value={this.state.price} onChange={this.onChangePrice}/>
+							<input className={`form-control ${!isValidPrice && 'invalid-input'}`}
+								   value={this.state.price} onChange={this.onChangePrice}/>
 							{!isValidPrice && this.renderError('Поле може містити тільки цифри. Максимальна ціна 99999')}
+						</div>
+					</div>
+					<div className="container-add-new__props">
+						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+							 border-bottom="true" border-left="true">
+							<div className="container-add-new__props__item--inverse__text">Знижка %</div>
+						</div>
+						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+							 border-bottom="true">
+							<input className={`form-control ${!isValidDiscount && 'invalid-input'}`}
+								   value={this.state.discount}
+								   onChange={this.onChangeDiscount}/>
+							{!isValidDiscount && this.renderError('Поле може містити тільки цифри. 0-100 без знаку %')}
 						</div>
 					</div>
 					<div className="container-add-new__props">
@@ -347,8 +387,9 @@ class AddNew extends React.Component {
 						</div>
 						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
 							 border-bottom="true">
-							<input className="form-control" value={this.state.description}
-								   onChange={this.onChangeDescription}/>
+							<textarea className={`form-control ${!isValidDescription && 'invalid-input'}`}
+									  value={this.state.description}
+									  onChange={this.onChangeDescription}/>
 							{!isValidDescription && this.renderError('Максимальна кількість символів 512')}
 						</div>
 					</div>

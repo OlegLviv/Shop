@@ -300,8 +300,9 @@ namespace Shop.Controllers.Api
         public async Task<IActionResult> AddProduct([FromForm] AddProductDto model)
         {
             var product = _mapper.Map<Product>(model);
-
             var productImages = new List<ProductImage>();
+
+            product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
 
             if (model.Images != null)
             {

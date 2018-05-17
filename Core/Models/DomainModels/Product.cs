@@ -24,6 +24,9 @@ namespace Core.Models.DomainModels
         [Required]
         public double Price { get; set; }
 
+        [Required]
+        public double PriceWithDiscount { get; set; }
+
         public long Review { get; set; }
 
         public string Description { get; set; }
@@ -34,11 +37,5 @@ namespace Core.Models.DomainModels
 
         [Range(0, 100)]
         public int Discount { get; set; }
-
-        public Product()
-        {
-            if (Discount > 0)
-                Price = Price * Discount;
-        }
     }
 }
