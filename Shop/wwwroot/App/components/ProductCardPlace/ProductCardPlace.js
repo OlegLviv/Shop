@@ -96,19 +96,19 @@ class ProductCardPlace extends React.Component {
 		const {products, productsCounts} = this.state;
 		let total = 0;
 		for (let i = 0; i < products.length; i++) {
-			total += products[i].price * productsCounts[i];
+			total += (products[i].priceWithDiscount > 0 ? products[i].priceWithDiscount : products[i].price) * productsCounts[i];
 		}
-		return total;
+		return +total.toFixed(1);
 	};
 
 	onIncProductsCount(i) {
-		const productsCounts = this.state.productsCounts;
+		const productsCounts = [...this.state.productsCounts];
 		productsCounts[i] = this.state.productsCounts[i] + 1;
 		this.setState({productsCounts: productsCounts});
 	}
 
 	onDecProductsCount(i) {
-		const productsCounts = this.state.productsCounts;
+		const productsCounts = [...this.state.productsCounts];
 		if (this.state.productsCounts[i] === 0) {
 			return;
 		}
@@ -200,7 +200,9 @@ class ProductCardPlace extends React.Component {
 												</div>
 											</div>
 										</td>
-										<td data-label="Ціна"><h5>{item.price}</h5></td>
+										<td data-label="Ціна">
+											<h5>{item.priceWithDiscount > 0 ? item.priceWithDiscount : item.price}</h5>
+										</td>
 										<td data-label="Кількість">
 											<div className="btn-group">
 												<button type="button" className="btn btn-dark"
@@ -213,7 +215,7 @@ class ProductCardPlace extends React.Component {
 											</div>
 										</td>
 										<td data-label="Вартість">
-											<h5>{`${item.price * this.state.productsCounts[i]} грн`}</h5>
+											<h5>{`${item.priceWithDiscount > 0 ? item.priceWithDiscount : item.price * this.state.productsCounts[i]} грн`}</h5>
 										</td>
 									</tr>
 								)

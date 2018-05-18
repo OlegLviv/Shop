@@ -8,6 +8,8 @@ import {
 } from "../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import ProductCard from '../ProductCard/ProductCard';
+import {addProductCookies} from "../../../services/cookies";
+import {connect} from "react-redux";
 
 const ITEMS_PER_PAGE = 16;
 
@@ -23,10 +25,14 @@ class Discount extends Component {
 	}
 
 	componentDidMount() {
+		this.updateProductsState(this.state.activePage);
+	}
+
+	updateProductsState = activePage => {
 		this.trySetLoading();
 
 		apiWithoutRedirect()
-			.get(getWithDiscountProductsUrl(this.state.activePage, ITEMS_PER_PAGE))
+			.get(getWithDiscountProductsUrl(activePage, ITEMS_PER_PAGE))
 			.then(resp => {
 				this.setState({
 					products: resp.data.data,
@@ -39,7 +45,7 @@ class Discount extends Component {
 				this.setState({loading: false});
 				alert(`Error: ${JSON.stringify(err)}`);
 			});
-	}
+	};
 
 	trySetLoading = () => !this.state.loading && this.setState({loading: true});
 
@@ -58,6 +64,19 @@ class Discount extends Component {
 			}));
 	};
 
+	onAddProductToShoppingCardButClick = (e, id) => {
+		addProductCookies('productsCard', id, 1);
+		this.props.onAddProductToShoppingCard(id, 1);
+	};
+
+	//	todo need implement
+	onLikeButClick = () => {
+	};
+
+	onPaginationChange = pageNumber => {
+		this.updateProductsState(pageNumber);
+	};
+
 	render() {
 		return (
 			<div className="discount">
@@ -66,7 +85,7 @@ class Discount extends Component {
 				</div>
 				<div className="row">
 					{
-						this.state.products.map(product => <div className="col-4">
+						this.state.products.map(product => <div className="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
 							<ProductCard
 								imgSrcPromise={this.fetchImgSrc(product.id)}
 								defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
@@ -79,7 +98,7 @@ class Discount extends Component {
 				</div>
 				<div className="pagination-box">
 					<Pagination totalItemsCount={this.state.totalProductCount}
-								itemsCountPerPage={this.state.howManyToShow}
+								itemsCountPerPage={ITEMS_PER_PAGE}
 								onChange={this.onPaginationChange}
 								activePage={this.state.activePage}
 								itemClass="page-item"
@@ -91,4 +110,8 @@ class Discount extends Component {
 	}
 }
 
-export default Discount;
+export default connect(state => ({}), dispatch => ({
+	onAddProductToShoppingCard: (id, count) => {
+		dispatch({type: 'ADD_NEW', id: id, count: count})
+	}
+}))(Discount);

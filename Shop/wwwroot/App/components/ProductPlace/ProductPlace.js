@@ -125,7 +125,7 @@ class ProductPlace extends React.Component {
 		});
 	};
 
-	onPaginationChange = (pageNumber) => {
+	onPaginationChange = pageNumber => {
 		this.renderLoadingSpinner();
 		console.log(this.state.priceRangeForPagination);
 		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
