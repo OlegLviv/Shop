@@ -92,6 +92,8 @@ class ProductCardPlace extends React.Component {
 		this.setState({productsCounts: newProductsCounts});
 	};
 
+	getCost = (i, price) => +(price * this.state.productsCounts[i]).toFixed(1);
+
 	getTotalPrice = () => {
 		const {products, productsCounts} = this.state;
 		let total = 0;
@@ -215,7 +217,7 @@ class ProductCardPlace extends React.Component {
 											</div>
 										</td>
 										<td data-label="Вартість">
-											<h5>{`${item.priceWithDiscount > 0 ? item.priceWithDiscount : item.price * this.state.productsCounts[i]} грн`}</h5>
+											<h5>{`${this.getCost(i, item.priceWithDiscount > 0 ? item.priceWithDiscount : item.price)} грн`}</h5>
 										</td>
 									</tr>
 								)
