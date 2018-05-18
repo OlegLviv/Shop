@@ -186,13 +186,9 @@ class ProductPlace extends React.Component {
 			})
 	};
 
-	onChangeSortingType = e => {
-		this.setState({sortingType: e.target.value});
-	};
+	onChangeSortingType = e => this.setState({sortingType: e.target.value});
 
-	onChangeHowManyToShow = e => {
-		this.setState({howManyToShow: e.target.value});
-	};
+	onChangeHowManyToShow = e => this.setState({howManyToShow: e.target.value});
 
 	onBackExpNavProdClick = () => this.setState({isExpandedNavProd: false});
 
@@ -239,7 +235,7 @@ class ProductPlace extends React.Component {
 					{this.state.products.map(item => {
 						return (
 							<div
-								className="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-6 container-products__row__item">
+								className="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6 container-products__row__item">
 								<ProductCard
 									imgSrcPromise={this.fetchImgSrc(item.id)}
 									defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"

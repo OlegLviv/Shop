@@ -48,14 +48,14 @@ class ProductCard extends React.Component {
 				<img className="card-img-top"
 					 src={this.state.imgSrc}
 					 alt="Card image cap"/>
-				<div className="card-body">
-					<Link to={`/product/${this.props.product.id}`}>
-						<h5 className="card-title text-center">{this.props.product.name}</h5>
+				<div className="card-dev__body">
+					<Link to={`/product/${this.props.product.id}`} className="card-dev__body__link">
+						<h5 className="text-center">{this.props.product.name}</h5>
 					</Link>
 					{this.props.product.discount > 0 &&
-					<div className="discount-box">{`${this.props.product.discount}%`}</div>}
-					<div className={`${this.props.product.discount > 0 ? 'prices-box' : ''}`}>
-						<h4 className={`${this.props.product.discount > 0 ? 'price-with-discount' : ''}`}>{`${this.props.product.price} грн`}</h4>
+					<div className="card-dev__body__discount-box">{`${this.props.product.discount}%`}</div>}
+					<div className={`${this.props.product.discount > 0 ? 'card-dev__body__prices-box-if-discount' : 'card-dev__body__prices-box'}`}>
+						<div className={`card-dev__body__prices-box__price ${this.props.product.discount > 0 ? 'card-dev__body__prices-box-if-discount__price-if-discount' : ''}`}>{`${this.props.product.price} грн`}</div>
 						{this.props.product.discount > 0 && <h6>{`${this.props.product.priceWithDiscount} грн`}</h6>}
 					</div>
 					<div className="card-dev__footer">

@@ -73,7 +73,7 @@ class MostPopular extends Component {
 					{this.state.products.map(item => {
 						return (
 							<div
-								className="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-6">
+								className="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
 								<ProductCard
 									imgSrcPromise={this.fetchImgSrc(item.id)}
 									defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
