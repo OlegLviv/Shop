@@ -12,7 +12,10 @@ namespace Core.Models.DTO.Product
         public string Name { get; set; }
 
         [Required]
-        [Range(0.1, double.MaxValue)]
+        [Range(0.1, 99999)]
         public double Price { get; set; }
+
+        [Range(0, 100)]
+        public int Discount { get; set; }
     }
 }

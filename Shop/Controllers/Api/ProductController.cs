@@ -450,6 +450,8 @@ namespace Shop.Controllers.Api
 
             product.Price = model.Price;
             product.Name = model.Name;
+            product.Discount = model.Discount;
+            product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
 
             return this.JsonResult(new
             {

@@ -125,6 +125,7 @@ class ProductCardPlace extends React.Component {
 			isNotProducts: true,
 			productsCounts: []
 		});
+		this.props.onCleanProducts();
 	};
 
 	onMakeOrder = () => this.setState({isMakeOrderModalOpen: true});

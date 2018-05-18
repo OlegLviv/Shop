@@ -43,14 +43,23 @@
 	}
 	&__info-container {
 	  border: 1px $dark-grey-color solid;
-	  padding-top: 2rem;
-	  padding-left: 3rem;
+	  padding: 2rem;
 	  background: $light-background;
 	  border-radius: 5px;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: flex-start;
+
 	  &__main-info {
 		&__price {
 		  display: flex;
 		  align-items: baseline;
+		}
+		&__priceDiscount {
+		  background: $yellow-transparent-color;
+		  border: 1px $dark-yellow-transparent-color solid;
+		  border-radius: 5px;
+		  text-align: center;
 		}
 		&__price h3 {
 		  color: $dark-blue-color;
@@ -59,6 +68,7 @@
 	  &__to-card {
 		&__btn-to-card button {
 		  margin: 2rem 2rem 2rem 0;
+		  padding: 1rem 4rem;
 		}
 	  }
 	}
@@ -125,6 +135,14 @@
 
 .card-header {
   background: $light-background;
+}
+
+.with-discount {
+  text-decoration: line-through;
+}
+
+hr {
+  width: 100%;
 }
 
 @media screen and (max-width: 760px) {

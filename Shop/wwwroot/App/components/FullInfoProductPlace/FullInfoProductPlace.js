@@ -281,9 +281,15 @@ class FullInfoProductPlace extends React.Component {
 									<div className="container-product__row__info-container__main-info">
 										<h4 className="h4-dev">{this.state.product.name}</h4>
 										<div className="container-product__row__info-container__main-info__price">
-											<h3>{this.state.product.price}</h3>
-											<span> грн</span>
+											<h3 className={`${(this.state.product.priceWithDiscount > 0) && 'with-discount'}`}>{
+												`${this.state.product.price} грн`
+											}</h3>
 										</div>
+										{(this.state.product.priceWithDiscount > 0) &&
+										<div
+											className="container-product__row__info-container__main-info__priceDiscount">{
+											`${this.state.product.priceWithDiscount} грн`
+										}</div>}
 									</div>
 									<hr/>
 									<div className="container-product__row__info-container__to-card">
@@ -298,12 +304,14 @@ class FullInfoProductPlace extends React.Component {
 											</button>
 										</div>
 										<div className="container-product__row__info-container__to-card__btn-to-card">
-											<button className="btn btn-dark btn-lg" onClick={this.onAddToBackedClick}>
-												{
-													this.state.addProductButText
-												}
-											</button>
-											<button className="btn btn-info btn-lg">В обране</button>
+											<div>
+												<button className="btn btn-dark btn-lg" onClick={this.onAddToBackedClick}>
+													{
+														this.state.addProductButText
+													}
+												</button>
+												<button className="btn btn-info btn-lg">В обране</button>
+											</div>
 										</div>
 									</div>
 								</div>
