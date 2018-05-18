@@ -53,7 +53,7 @@ class ProductCard extends React.Component {
 						<h5 className="text-center">{this.props.product.name}</h5>
 					</Link>
 					{this.props.product.discount > 0 &&
-					<div className="card-dev__body__discount-box">{`${this.props.product.discount}%`}</div>}
+					<div className="card-dev__body__discount-box">{`-${this.props.product.discount}%`}</div>}
 					<div className={`${this.props.product.discount > 0 ? 'card-dev__body__prices-box-if-discount' : 'card-dev__body__prices-box'}`}>
 						<div className={`card-dev__body__prices-box__price ${this.props.product.discount > 0 ? 'card-dev__body__prices-box-if-discount__price-if-discount' : ''}`}>{`${this.props.product.price} грн`}</div>
 						{this.props.product.discount > 0 && <h6>{`${this.props.product.priceWithDiscount} грн`}</h6>}
