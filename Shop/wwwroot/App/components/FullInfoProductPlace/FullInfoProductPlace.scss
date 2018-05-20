@@ -64,11 +64,20 @@
 		&__price h3 {
 		  color: $dark-blue-color;
 		}
+		&__hr {
+		  width: 100%;
+		}
 	  }
 	  &__to-card {
 		&__btn-to-card button {
 		  margin: 2rem 2rem 2rem 0;
 		  padding: 1rem 4rem;
+		  transition-property: all;
+		  transition-duration: .7s;
+		  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+		}
+		&__btn-to-card button:hover {
+		  transform: scale(1.1);
 		}
 	  }
 	}
@@ -83,8 +92,9 @@
 	&__comment {
 	  transition-property: all;
 	  transition-duration: .7s;
-	  padding: 2rem 3rem 2rem 3rem;
-	  background: $light-background;
+	  padding: 1rem 2rem;
+	  margin-bottom: .7rem;
+	  background: $most-light-background;
 	  max-width: 30rem;
 	  min-width: 25rem;
 	  min-height: 10rem;
@@ -93,13 +103,22 @@
 	  border: 1px $dark-grey-color solid;
 	  &__date {
 		font-size: 10px;
+		padding-top: .5rem;
 	  }
 	  &__userName {
 		font-weight: 500;
 		font-size: 20px;
 	  }
 	  &__commentBody {
+		max-height: 20rem;
 		font-size: 16px;
+		text-overflow: ellipsis;
+		overflow: scroll;
+		padding-top: 1rem;
+	  }
+	  &__hr {
+		margin-top: 0;
+		margin-bottom: 0;
 	  }
 	}
   }
@@ -141,8 +160,11 @@
   text-decoration: line-through;
 }
 
-hr {
-  width: 100%;
+.description {
+  padding: 2rem 0;
+  background: $light-background;
+  border: 1px $dark-grey-transparent-color solid;
+  border-radius: 5px;
 }
 
 @media screen and (max-width: 760px) {

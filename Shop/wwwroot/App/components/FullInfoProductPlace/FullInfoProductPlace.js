@@ -10,6 +10,7 @@ import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
 import {getRandomArbitrary} from "../../utils/utils";
 import {addProductCookies} from "../../services/cookies";
 import {connect} from 'react-redux';
+import {convertDateToDateString, convertDateToTimeString} from "../../utils/timeUtils";
 
 const getProductId = (props) => props.match.params.productId;
 
@@ -155,7 +156,7 @@ class FullInfoProductPlace extends React.Component {
 
 	renderDescription = () => {
 		return (
-			<div className="card-body-text">
+			<div className="description">
 				{this.state.product.description ? this.state.product.description : 'Опису для даного товару немає'}
 			</div>
 		);
@@ -166,52 +167,55 @@ class FullInfoProductPlace extends React.Component {
 		return (
 			<div className="card-body-text">
 				{/*{this.state.product.description}*/}
-				charact
+				В розробці
 			</div>
 		);
 	};
 
 	//todo need add feedback logic
 	renderFeedback = () => {
-		const {user} = this.props;
+		const {user, isLogin} = this.props;
 		if (!this.state.isLoadedFeedbacks && this.state.isLoadingFeedbacks) {
 			return <Spinner/>
 		}
-		return (
-			<div className="container-c-b">
-				{
-					this.state.productFeedbacks.map(item => {
-						return (
-							<div className="container-c-b__card-body-content">
-								<div className="container-c-b__card-body-content__comment"
-									 style={{
-										 'margin-left': `${getRandomArbitrary(-3, 3)}rem`,
-										 'transform': `rotate(${getRandomArbitrary(-3, 3)}deg)`,
-										 'box-shadow': `${user && (this.props.user.id === item.userId && '1px 1px 10px 3px #17a2b899')}`
-									 }}>
-									<div
-										className="container-c-b__card-body-content__comment__userName">{`${item.userName} ${item.userLastName}`}
+		if (user && isLogin)
+			return (
+				<div className="container-c-b">
+					{
+						this.state.productFeedbacks.map(item => {
+							return (
+								<div className="container-c-b__card-body-content">
+									<div className="container-c-b__card-body-content__comment"
+										 style={{
+											 'box-shadow': `${user && (this.props.user.id === item.userId && '1px 1px 10px 3px #17a2b899')}`,
+											 'margin-left': `${user && (this.props.user.id === item.userId && '5rem')}`,
+											 'background': `${user && (this.props.user.id === item.userId && '#e3e3e3')}`
+										 }}>
+										<div
+											className="container-c-b__card-body-content__comment__userName">{`${item.userName} ${item.userLastName}`}
+										</div>
+										<hr className="container-c-b__card-body-content__comment__hr"/>
+										<div
+											className="container-c-b__card-body-content__comment__date">{`${convertDateToDateString(item.date)} ${convertDateToTimeString(item.date)}`}</div>
+										<div
+											className="container-c-b__card-body-content__comment__commentBody">{item.body}</div>
 									</div>
-									<div
-										className="container-c-b__card-body-content__comment__date">{new Date(item.date * 1000).toDateString()}</div>
-									<div
-										className="container-c-b__card-body-content__comment__commentBody">{item.body}</div>
 								</div>
-							</div>
-						)
-					})
-				}
-				{this.props.isLogin && this.props.user ? <div className="container-c-b__submit-box">
+							)
+						})
+					}
+					{this.props.isLogin && this.props.user ? <div className="container-c-b__submit-box">
 					<textarea className="form-control"
 							  placeholder="Введіть свій коментар"
 							  onChange={(e) => this.setState({feedbackValue: e.target.value})}
 							  onKeyPress={this.onSendFeedbackKeyPress}/>
-					<button className="btn btn-dark" onClick={this.onSendFeedback}>Відправити
-					</button>
-				</div> : <div className="container-c-b__submit-box">Для того щоб залишити повідомлення увійдіть в
-					систему</div>}
-			</div>
-		);
+						<button className="btn btn-dark" onClick={this.onSendFeedback}>Відправити
+						</button>
+					</div> : <div className="container-c-b__submit-box">Для того щоб залишити повідомлення увійдіть в
+						систему</div>}
+				</div>
+			);
+		else return <div className="text-center">Для того щоб залишити коментар будь ласка зареєструйтесь</div>;
 	};
 
 	renderNavAboutProduct = () => {
@@ -291,7 +295,7 @@ class FullInfoProductPlace extends React.Component {
 											`${this.state.product.priceWithDiscount} грн`
 										}</div>}
 									</div>
-									<hr/>
+									<hr className="container-product__row__info-container__main-info__hr"/>
 									<div className="container-product__row__info-container__to-card">
 										<div>Кількість</div>
 										<div className="btn-group">
@@ -305,7 +309,8 @@ class FullInfoProductPlace extends React.Component {
 										</div>
 										<div className="container-product__row__info-container__to-card__btn-to-card">
 											<div>
-												<button className="btn btn-dark btn-lg" onClick={this.onAddToBackedClick}>
+												<button className="btn btn-dark btn-lg"
+														onClick={this.onAddToBackedClick}>
 													{
 														this.state.addProductButText
 													}

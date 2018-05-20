@@ -25,6 +25,7 @@ namespace Shop.Controllers.Api
     [Produces("application/json")]
     [Route("api/Product")]
     [ModelStateFilter]
+    // ReSharper disable once HollowTypeName
     public class ProductController : Controller
     {
         private readonly AppDbContext _context;
@@ -34,6 +35,7 @@ namespace Shop.Controllers.Api
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
+        // ReSharper disable once TooManyDependencies
         public ProductController(AppDbContext context,
             IRepositoryAsync<Product> productsRepository,
             ProductService productService,
@@ -368,19 +370,15 @@ namespace Shop.Controllers.Api
             if (user == null)
                 return BadRequest("User with this id don't exist");
 
-            var feedback = new Feedback
-            {
-                Product = product,
-                ProductId = product.Id,
-                Body = model.Body,
-                Date = DateTime.Now,
-                UserId = model.UserId
-            };
+            var feedback = _mapper.Map<Feedback>(model);
+            feedback.Product = product;
+
             if (product.Feedbacks == null)
                 product.Feedbacks = new List<Feedback>
                 {
                     feedback
                 };
+
             product
                 .Feedbacks
                 .Add(feedback);
@@ -389,15 +387,12 @@ namespace Shop.Controllers.Api
 
             if (updateResult <= 0)
                 throw new Exception("Can't update product");
-            //  todo need mapping
-            return this.JsonResult(new FeedbackDto
-            {
-                UserName = user.Name,
-                UserLastName = user.LastName,
-                UserId = user.Id,
-                Date = ((DateTimeOffset)feedback.Date).ToUnixTimeSeconds(),
-                Body = feedback.Body
-            });
+
+            var feedbackDto = _mapper.Map<FeedbackDto>(feedback);
+            feedbackDto.UserName = user.Name;
+            feedbackDto.UserLastName = user.LastName;
+
+            return this.JsonResult(feedbackDto);
         }
 
         [HttpPost("AddProperty")]

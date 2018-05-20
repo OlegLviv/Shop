@@ -42,7 +42,6 @@ class ProductCard extends React.Component {
 	};
 
 	render() {
-		console.log(this.props.product.discount);
 		return (
 			<div className="card card-dev">
 				<img className="card-img-top"

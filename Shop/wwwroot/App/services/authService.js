@@ -15,13 +15,11 @@ export const logInToken = (userName, password) => {
 			const {token} = resp.data;
 			if (token) {
 				localStorage.setItem('access_token', token);
-				console.log('setToken', token);
 			}
 			if (localStorage.getItem('access_token')) {
 				api().get(GET_USER_ROLE_URL)
 					.then(resp => {
 						const {role} = resp.data;
-						console.log('getUserROle', role);
 						if (role) {
 							switch (role) {
 								case 'Admin': {
