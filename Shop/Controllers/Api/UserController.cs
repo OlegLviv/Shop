@@ -176,6 +176,24 @@ namespace Shop.Controllers.Api
             return Ok(new { IsSuccess = true });
         }
 
+        [HttpPost("SendConfirmEmailCode")]
+        public async Task<IActionResult> SendConfirmEmailCode()
+        {
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var callbackUrl = Url.EmailConfirmationLink(nameof(UserController.ConfirmEmail), "User", user.Id, token, Request.Scheme);
+            var sendRes = await _sender.SendEmailAsync(_configuration["EmailCredential:Email"], user.Email, "Your register confirm link", callbackUrl);
+
+            if (!sendRes)
+                return BadRequest("Ups, we can't to send message to your email");
+
+            return Ok(new { IsSuccess = true });
+        }
+
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
         {

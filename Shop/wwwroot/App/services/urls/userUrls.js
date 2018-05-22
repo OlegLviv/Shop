@@ -16,6 +16,8 @@ export const CHANGE_USER_PASSWORD_URL = `/api/User/ChangePassword`;
 
 export const SEND_CHANGE_EMAIL_TOKEN_URL = '/api/User/SendChangeEmailToken';
 
+export const SEND_CONFIRM_EMAIL_CODE = '/api/user/SendConfirmEmailCode';
+
 //	PUT
 export const EDIT_USER_PERSONAL_DATA_URL = `/api/User/EditPersonalData`;
 
