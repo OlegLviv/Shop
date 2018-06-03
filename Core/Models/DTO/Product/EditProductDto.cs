@@ -17,5 +17,7 @@ namespace Core.Models.DTO.Product
 
         [Range(0, 100)]
         public int Discount { get; set; }
+
+        public string Description { get; set; }
     }
 }

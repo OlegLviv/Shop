@@ -28,6 +28,7 @@ class Edit extends React.Component {
 			newProductName: '',
 			newProductPrice: 0,
 			newProductDiscount: 0,
+			newProductDescription: '',
 			isLoading: false,
 			isLoaded: true,
 			isDeleteConfirmed: false,
@@ -68,6 +69,7 @@ class Edit extends React.Component {
 			newProductName: item.name,
 			newProductPrice: item.price,
 			newProductDiscount: item.discount,
+			newProductDescription: item.description,
 			activePage: 1
 		});
 	};
@@ -93,7 +95,8 @@ class Edit extends React.Component {
 			productId: this.state.selectedProduct.id,
 			name: this.state.newProductName,
 			price: this.state.newProductPrice,
-			discount: this.state.newProductDiscount
+			discount: this.state.newProductDiscount,
+			description: this.state.newProductDescription
 		};
 		apiPut(EDIT_PRODUCT_URL, newProduct)
 			.then(resp => {
@@ -215,6 +218,15 @@ class Edit extends React.Component {
 								   defaultValue={selectedProduct.priceWithDiscount}
 								   value={this.state.newProductDiscount}
 								   onChange={(e) => this.setState({newProductDiscount: e.target.value})}/>
+						</td>
+					</tr>
+					<tr>
+						<td>Опис</td>
+						<td>
+							<input className="form-control" placeholder="Введіть опис"
+								   defaultValue={selectedProduct.description}
+								   value={this.state.newProductDescription}
+								   onChange={e => this.setState({newProductDescription: e.target.value})}/>
 						</td>
 					</tr>
 					{this.renderImagesEdit()}
