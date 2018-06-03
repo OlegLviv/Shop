@@ -17,6 +17,7 @@ namespace DAL
         public DbSet<PossibleProductProperty> PossibleProductProperties { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Mailing> Mailings { get; set; }
+        public DbSet<CallMe> CallMe { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

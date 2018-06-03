@@ -3,9 +3,12 @@ import {Link} from 'react-router-dom';
 import RegisterModal from '../../Modal/RegisterModal/RegisterModal';
 import LogInModal from '../../Modal/LogInModal/LogInModal';
 import './MainInfo.scss';
-import {apiWithoutRedirect} from "../../../services/api";
+import {apiPost, apiWithoutRedirect} from "../../../services/api";
 import {GET_USER_INFO_URL} from "../../../services/urls/userUrls";
 import {singOutToken} from "../../../services/authService";
+import CallMeModal from '../../Modal/CallMeModal/CallMeModal';
+import {CALL_ME} from "../../../services/urls/orderUrls";
+import {SuccessDispatchedCallMeModal} from '../../Modal/CallMeModal/SuccessDispatchedCallMeModal';
 
 class MainInfo extends React.Component {
 	constructor(props) {
@@ -13,7 +16,10 @@ class MainInfo extends React.Component {
 		this.state = {
 			isLoginModalOpen: false,
 			isRegisterModalOpen: false,
-			userName: ''
+			userName: '',
+			isCallMeModalOpen: false,
+			loading: false,
+			isOpenSuccessDispatchedCallMeModal: false
 		}
 	}
 
@@ -33,6 +39,8 @@ class MainInfo extends React.Component {
 				// }
 			});
 	}
+
+	trySetLoading = () => !this.state.loading && this.setState({loading: true});
 
 	singOut = () => {
 		singOutToken(() => {
@@ -56,10 +64,47 @@ class MainInfo extends React.Component {
 		this.setState({isRegisterModalOpen: false});
 	};
 
+	onCallMeClick = () => this.setState({isCallMeModalOpen: true});
+
+	onDispatchCallMe = model => {
+		this.trySetLoading();
+
+		apiPost(CALL_ME, model)
+			.then(resp => {
+				if (resp.status === 200 && resp.data === 'Success') {
+					this.setState({
+						loading: false,
+						isOpenSuccessDispatchedCallMeModal: true
+					});
+					this.onCloseCallMe();
+				}
+			})
+			.catch(err => {
+				this.setState({
+					loading: false
+				});
+				alert(`Error: ${err}`);
+			});
+	};
+
+	onCloseCallMe = () => this.setState({isCallMeModalOpen: false});
+
+	renderCallMeModal = () => <CallMeModal isOpen={this.state.isCallMeModalOpen}
+										   onDispatch={this.onDispatchCallMe}
+										   onClose={this.onCloseCallMe}
+										   loading={this.state.loading}/>;
+
+	renderSuccessDispatchedCallMeModal = () => <SuccessDispatchedCallMeModal
+		isOpen={this.state.isOpenSuccessDispatchedCallMeModal}
+		onClose={() => this.setState({isOpenSuccessDispatchedCallMeModal: false})}/>;
+
 	render() {
 		const {userName} = this.state;
+
 		return (
 			<div className="info_container row">
+				{this.renderCallMeModal()}
+				{this.renderSuccessDispatchedCallMeModal()}
 				<div className="info_container__left col-xl-4 col-lg-12">
 					<Link to="/aboutCompany">Про компанію</Link>
 					<Link to="/deliveryAndPay">Доставка та оплата</Link>
@@ -72,7 +117,7 @@ class MainInfo extends React.Component {
 							+380680538860
 						</div>
 						<div className="info_container__right__menu-item__sub-menu">
-							Зателефонуй мені
+							<a onClick={this.onCallMeClick}>Зателефонуй мені</a>
 						</div>
 					</div>
 					<div className="info_container__right__menu-item">
@@ -80,7 +125,7 @@ class MainInfo extends React.Component {
 							<a onClick={this.openLoginModal}>Вхід</a>
 							<a onClick={this.openRegisterModal}>Реєстрація</a>
 						</div> : <div className="info_container__right__menu-item__sub">
-							<Link to={`/${userName === 'Admin' ? 'adminPanel' : 'userPanel'}`}>{userName}</Link>
+							<Link to={`/${userName === 'Admin' ? 'adminPanel/action-on-products' : 'userPanel/change-password'}`}>{userName}</Link>
 							<a onClick={this.singOut}>Вийти</a>
 						</div>}
 						<LogInModal

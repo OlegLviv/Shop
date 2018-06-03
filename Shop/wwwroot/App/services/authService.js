@@ -23,11 +23,11 @@ export const logInToken = (userName, password) => {
 						if (role) {
 							switch (role) {
 								case 'Admin': {
-									window.location.replace('/adminPanel');
+									window.location.replace('/adminPanel/action-on-products');
 								}
 									break;
 								case 'Client': {
-									window.location.replace('/userPanel');
+									window.location.replace('/userPanel/change-password');
 								}
 									break;
 							}

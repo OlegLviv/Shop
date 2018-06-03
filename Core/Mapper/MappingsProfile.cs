@@ -19,13 +19,14 @@ namespace Core.Mapper
 
             CreateMap<CreateOrderDto, Order>();
             CreateMap<Order, OrderDto>();
+            CreateMap<CreateCallMeDto, CallMe>();
 
             CreateMap<SubscribeMailDto, Mailing>();
             CreateMap<Mailing, SubscribeMailDto>();
 
             CreateMap<SendProductFeedbackDto, Feedback>();
             CreateMap<Feedback, FeedbackDto>().ForMember(d => d.Date,
-                m => m.MapFrom(nd => ((DateTimeOffset) nd.Date).ToUnixTimeSeconds()));
+                m => m.MapFrom(nd => ((DateTimeOffset)nd.Date).ToUnixTimeSeconds()));
         }
     }
 }

@@ -198,8 +198,10 @@ class ProductCardPlace extends React.Component {
 												<img className="mr-2 product-img"
 													 src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
 												<div className="media-body">
-													<h5>{item.name}</h5>
-													<div className="my-3">Kod</div>
+													<h5>
+														<Link to={`/product/${item.id}`}>{item.name}</Link>
+													</h5>
+													<small className="my-3">{`Код: ${item.id}`}</small>
 												</div>
 											</div>
 										</td>

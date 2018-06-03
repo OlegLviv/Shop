@@ -28,18 +28,21 @@ namespace Shop.Controllers.Api
         private readonly IOrderService _orderService;
         private readonly UserManager<User> _userManager;
         private readonly IRepositoryAsync<Product> _productRepository;
+        private readonly IRepositoryAsync<CallMe> _callMeRepository;
 
         public OrderController(IMapper mapper,
             IRepositoryAsync<Order> orderRepository,
             UserManager<User> userManager,
             IRepositoryAsync<Product> productRepository,
-            IOrderService orderService)
+            IOrderService orderService,
+            IRepositoryAsync<CallMe> callMeRepository)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _userManager = userManager;
             _productRepository = productRepository;
             _orderService = orderService;
+            _callMeRepository = callMeRepository;
         }
 
         #region GET
@@ -185,6 +188,19 @@ namespace Shop.Controllers.Api
                 return Ok("Success");
 
             return BadRequest("Can't insert order");
+        }
+
+        [HttpPost("CallMe")]
+        public async Task<IActionResult> CallMe([FromBody] CreateCallMeDto model)
+        {
+            var callMe = _mapper.Map<CallMe>(model);
+
+            var insertedResult = await _callMeRepository.InsertAsync(callMe);
+
+            if (insertedResult >= 1)
+                return Ok("Success");
+
+            return BadRequest("Can't insert call me request");
         }
         #endregion
 
