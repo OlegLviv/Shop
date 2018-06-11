@@ -56,7 +56,7 @@ class AddNewCharacteristic extends React.Component {
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), (err) => {
 			if (err.response.data === 'Icorrect sub category or properties not found')
 				this.setState({subCategoryProps: []});
-			else alert(`Error: ${JSON.stringify(err.response)}`)
+			else alert(`Error: ${JSON.stringify(err.response)}`);
 		})
 			.then(resp => {
 				console.log(resp.data);

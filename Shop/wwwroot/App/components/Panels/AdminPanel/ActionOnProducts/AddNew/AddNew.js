@@ -80,7 +80,11 @@ class AddNew extends React.Component {
 	setSubCategoryState = () => {
 		this.trySetLoading();
 
-		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), err => {
+			if (err.response.data === 'Icorrect sub category or properties not found')
+				this.setState({subCategoryProps: []});
+			else alert(`Error: ${JSON.stringify(err.response)}`);
+		})
 			.then(resp => {
 				console.log('resp', resp.data);
 				const product = {...this.state.product};
@@ -94,7 +98,7 @@ class AddNew extends React.Component {
 					isLoading: false
 				});
 			})
-			.catch(err => alert(`Error: ${err}`));
+			.catch(() => this.setState({isLoading: false}));
 	};
 
 	createFormData = () => {
@@ -326,7 +330,8 @@ class AddNew extends React.Component {
 						</div>
 						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
 							 border-bottom="true">
-							<input className={`form-control ${!isValidName && 'invalid-input'}`} onChange={this.onChangeProductName}/>
+							<input className={`form-control ${!isValidName && 'invalid-input'}`}
+								   onChange={this.onChangeProductName}/>
 							{!isValidName && this.renderError('Мінімальна кількість символів 2, максимальна 64')}
 						</div>
 					</div>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Core.ValidationAttributes;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.Models.DTO.Product
@@ -9,9 +10,11 @@ namespace Core.Models.DTO.Product
         [MaxLength(128)]
         public string Name { get; set; }
 
+        [JSEmpty]
         [Required]
         public string Category { get; set; }
 
+        [JSEmpty]
         [Required]
         public string SubCategory { get; set; }
 

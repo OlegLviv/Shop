@@ -268,8 +268,10 @@ namespace Shop.Controllers.Api
                 .Table
                 .Include(x => x.ProductImages)
                 .FirstOrDefaultAsync(x => x.Id == productId);
+
             if (product == null)
                 return BadRequest("Product don't exist. Or Incorrect product id");
+
             var prodImages = product
                 .ProductImages;
 
