@@ -22,29 +22,57 @@ export const priceRange = {
 	maxPrice: 10000
 };
 
-export const normalizeSubCategoryToRoute = (subCategory) => {
+export const normalizeSubCategoryToRoute = subCategory => {
 	switch (subCategory) {
 		//	Stationery
+		case 'Пенали':
+			return 'pencils';
+		case 'Стругалки, резинки, лінійки':
+			return 'shingles-elastics-rulers';
 		case 'Папки шкільні':
 			return 'schoolFolders';
 		case 'Папки офісні':
 			return 'officeFolders';
 		case 'Зошити':
 			return 'copyBooks';
+		case 'Щоденники':
+			return 'diaries';
+		case 'Папір офісний':
+			return 'office-paper';
 		case 'Блокноти':
 			return 'notebooks';
 		case 'Стікери':
 			return 'stickers';
 		case 'Словники':
 			return 'dictionaries';
+		case 'Кольоровий папір і картон':
+			return 'colored-paper-and-cardboard';
+		case 'Підставки для книг':
+			return 'stands-for-books';
 		case 'Ручки':
 			return 'pens';
+		case 'Підставки для ручок':
+			return 'stands-for-pens';
 		case 'Олівці':
 			return 'pencils';
+		case 'Фломастери':
+			return 'flomasters';
+		case 'Фарби і пензлики':
+			return 'paints-and-brushes';
 		case 'Маркери':
 			return 'markers';
 		case 'Коректори':
-			return 'proofreaders';
+			return 'correctors';
+		case 'Пластилін':
+			return 'plasticine';
+		case 'Клей':
+			return 'glue';
+		case 'Скотч':
+			return 'scotch-tape';
+		case 'Калькулятори':
+			return 'calculators';
+		case 'Ножиці і ножі канц.':
+			return 'scissors-and-knives';
 		case 'Шкільне приладдя':
 			return 'schoolSupplies';
 		case 'Офісне приладдя':
@@ -66,7 +94,7 @@ export const normalizeSubCategoryToRoute = (subCategory) => {
 	}
 };
 
-export const normalizeCategoryToRoute = (category) => {
+export const normalizeCategoryToRoute = category => {
 	switch (category) {
 		case 'Рюкзаки. Сумочки':
 			return 'Backpacks Handbags';
@@ -80,7 +108,7 @@ export const normalizeCategoryToRoute = (category) => {
 };
 
 
-export const getSubCategories = (category) => {
+export const getSubCategories = category => {
 	switch (category) {
 		case 'Рюкзаки. Сумочки':
 			return NAVIGATION_SUB_CATEGORIES.backs;
@@ -103,16 +131,30 @@ export const NAVIGATION_CATEGORIES = [
 export const NAVIGATION_SUB_CATEGORIES = {
 	backs: [],
 	stationeries: [
+		'Пенали',
+		'Стругалки, резинки, лінійки',
 		'Папки шкільні',
 		'Папки офісні',
 		'Зошити',
+		'Щоденники',
+		'Папір офісний',
 		'Блокноти',
 		'Стікери',
 		'Словники',
+		'Кольоровий папір і картон',
+		'Підставки для книг',
 		'Ручки',
+		'Підставки для ручок',
 		'Олівці',
+		'Фломастери',
+		'Фарби і пензлики',
 		'Маркери',
 		'Коректори',
+		'Пластилін',
+		'Клей',
+		'Скотч',
+		'Калькулятори',
+		'Ножиці і ножі канц.',
 		'Шкільне приладдя',
 		'Офісне приладдя',
 		'ЗНО'

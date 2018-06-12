@@ -112,9 +112,7 @@
 	  &__commentBody {
 		max-height: 20rem;
 		font-size: 16px;
-		text-overflow: ellipsis;
-		overflow: scroll;
-		padding-top: 1rem;
+		padding: 1rem 0;
 	  }
 	  &__hr {
 		margin-top: 0;
