@@ -134,6 +134,14 @@ namespace Shop.Controllers.Api
             });
         }
 
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        //[HttpGet("GetCallMe")]
+        //public async Task<IActionResult> GetCallMe()
+        //{
+        //    var callMeList = _callMeRepository
+        //        .Table
+        //        .Where()
+        //}
         #endregion
 
         #region POST
@@ -190,7 +198,7 @@ namespace Shop.Controllers.Api
             return BadRequest("Can't insert order");
         }
 
-        [HttpPost("CallMe")]
+        [HttpPost("CreateCallMe")]
         public async Task<IActionResult> CallMe([FromBody] CreateCallMeDto model)
         {
             var callMe = _mapper.Map<CallMe>(model);

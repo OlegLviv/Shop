@@ -1,15 +1,18 @@
 ﻿using Core.Models.DomainModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DAL
 {
-    public class AppDbContext : IdentityDbContext
-    {
+    public sealed class AppDbContext : IdentityDbContext
+    {   
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
+            Database.MigrateAsync().Wait();
         }
+
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Product> Products { get; set; }

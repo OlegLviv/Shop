@@ -10,7 +10,7 @@ export const CREATE_ORDER_URL = '/api/order/createOrder';
 
 export const CREATE_USER_ORDER_URL = '/api/order/CreateUserOrder';
 
-export const CALL_ME = '/api/order/callMe';
+export const CREATE_CALL_ME = '/api/order/CreateCallMe';
 
 //	PUT
 export const getChangeOrderStatusUrl = (id, orderStatus) => `/api/order/ChangeOrderStatus/${id}/${orderStatus}`;

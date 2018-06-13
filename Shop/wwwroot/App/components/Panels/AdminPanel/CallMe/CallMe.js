@@ -4,7 +4,11 @@ import './CallMe.scss';
 class CallMe extends React.Component {
 	render() {
 		return (
-			<div>Call me</div>
+			<div className="call-me-cont">
+				<div className="call-me-cont__header">
+					Заявки на дзвінки
+				</div>
+			</div>
 		);
 	}
 }

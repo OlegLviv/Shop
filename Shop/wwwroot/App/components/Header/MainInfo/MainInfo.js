@@ -7,7 +7,7 @@ import {apiPost, apiWithoutRedirect} from "../../../services/api";
 import {GET_USER_INFO_URL} from "../../../services/urls/userUrls";
 import {singOutToken} from "../../../services/authService";
 import CallMeModal from '../../Modal/CallMeModal/CallMeModal';
-import {CALL_ME} from "../../../services/urls/orderUrls";
+import {CREATE_CALL_ME} from "../../../services/urls/orderUrls";
 import {SuccessDispatchedCallMeModal} from '../../Modal/CallMeModal/SuccessDispatchedCallMeModal';
 
 class MainInfo extends React.Component {
@@ -69,7 +69,7 @@ class MainInfo extends React.Component {
 	onDispatchCallMe = model => {
 		this.trySetLoading();
 
-		apiPost(CALL_ME, model)
+		apiPost(CREATE_CALL_ME, model)
 			.then(resp => {
 				if (resp.status === 200 && resp.data === 'Success') {
 					this.setState({

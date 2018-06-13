@@ -1,0 +1,15 @@
+@import '../../../../main';
+
+.call-me-cont {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+
+  &__header {
+	width: 100%;
+	padding: 1rem;
+	background: $dark;
+	color: $dark-grey-color;
+  }
+}

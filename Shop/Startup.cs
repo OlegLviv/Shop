@@ -32,7 +32,9 @@ namespace Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(option =>
-             option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"]) ? "DevConnection" : "ProdConnection")));
+                option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"])
+                    ? "DevConnection"
+                    : "ProdConnection")));
 
             AddIdentity(services);
 

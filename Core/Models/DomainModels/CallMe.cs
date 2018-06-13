@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Core.Models.DomainModels.Base;
 
 namespace Core.Models.DomainModels
@@ -11,5 +12,7 @@ namespace Core.Models.DomainModels
         [Required]
         [Phone]
         public string Phone { get; set; }
+
+        public long Date { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }
 }
