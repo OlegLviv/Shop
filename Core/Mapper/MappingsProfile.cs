@@ -19,7 +19,9 @@ namespace Core.Mapper
 
             CreateMap<CreateOrderDto, Order>();
             CreateMap<Order, OrderDto>();
+
             CreateMap<CreateCallMeDto, CallMe>();
+            CreateMap<CallMe, CallMeDto>();
 
             CreateMap<SubscribeMailDto, Mailing>();
             CreateMap<Mailing, SubscribeMailDto>();

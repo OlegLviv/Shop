@@ -56,7 +56,7 @@ namespace Shop.Controllers.Api
 
             var order = await _orderRepository
                 .Table
-                .Include(x=>x.ProductsContainers)
+                .Include(x => x.ProductsContainers)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
@@ -134,14 +134,24 @@ namespace Shop.Controllers.Api
             });
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        //[HttpGet("GetCallMe")]
-        //public async Task<IActionResult> GetCallMe()
-        //{
-        //    var callMeList = _callMeRepository
-        //        .Table
-        //        .Where()
-        //}
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("GetCallMe/{status:int}/{pageNumber}/{pageSize}")]
+        public IActionResult GetCallMe(CallMeStatus status, int pageNumber = 1, int pageSize = 16)
+        {
+            var callMeList = _callMeRepository
+                .Table
+                .Where(x => x.CallMeStatus == status);
+
+            var callMePagination = new Paginator<CallMeDto>
+            {
+                Data = _mapper.Map<IEnumerable<CallMeDto>>(callMeList).Page(pageNumber, pageSize),
+                TotalCount = callMeList.Count(),
+                PageSize = pageSize,
+                PageNumber = pageNumber
+            };
+
+            return this.JsonResult(callMePagination);
+        }
         #endregion
 
         #region POST
