@@ -24,9 +24,21 @@ export const priceRange = {
 
 export const normalizeSubCategoryToRoute = subCategory => {
 	switch (subCategory) {
+		// Backs
+		case 'Рюкзаки для дошкільнят':
+			return 'backpacks-for-preschoolers';
+		case 'Рюкзаки для школярів':
+			return 'backpacks-for-schoolchildren';
+		case 'Рюкзаки для дорослих':
+			return 'backpacks-for-adults';
+		case 'Рюкзаки для перевзуття':
+			return 'backpacks-for-dressing';
+		case 'Дитячі сумочки':
+			return 'baby-handbags';
+
 		//	Stationery
 		case 'Пенали':
-			return 'pencils';
+			return 'pencil-cases';
 		case 'Стругалки, резинки, лінійки':
 			return 'shingles-elastics-rulers';
 		case 'Папки шкільні':
@@ -129,7 +141,13 @@ export const NAVIGATION_CATEGORIES = [
 ];
 
 export const NAVIGATION_SUB_CATEGORIES = {
-	backs: [],
+	backs: [
+		'Рюкзаки для дошкільнят',
+		'Рюкзаки для школярів',
+		'Рюкзаки для дорослих',
+		'Рюкзаки для перевзуття',
+		'Дитячі сумочки'
+	],
 	stationeries: [
 		'Пенали',
 		'Стругалки, резинки, лінійки',

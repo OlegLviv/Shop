@@ -79,6 +79,7 @@ class AddNew extends React.Component {
 
 	setSubCategoryState = () => {
 		this.trySetLoading();
+		console.log('set');
 
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), err => {
 			if (err.response.data === 'Icorrect sub category or properties not found')
@@ -87,6 +88,8 @@ class AddNew extends React.Component {
 		})
 			.then(resp => {
 				console.log('resp', resp.data);
+				console.log('sub cat', this.state.subCategory);
+				console.log('sub cat normalize', normalizeSubCategoryToRoute(this.state.subCategory));
 				const product = {...this.state.product};
 				clearObjectProps(product);
 				for (let i in resp.data) {
@@ -221,7 +224,7 @@ class AddNew extends React.Component {
 	onChangePropsValue = (propName, e) => {
 		const product = {...this.state.product};
 		product[propName] = e.target.value;
-		console.log(product);
+		console.log('product',product);
 		this.setState({product: product});
 	};
 
