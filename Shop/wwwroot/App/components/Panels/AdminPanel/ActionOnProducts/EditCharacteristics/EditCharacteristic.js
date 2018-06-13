@@ -82,7 +82,11 @@ class EditCharacteristic extends React.Component {
 	updateSubCategoryState = () => {
 		this.trySetLoading();
 
-		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), err => {
+			if (err.response.data === 'Icorrect sub category or properties not found')
+				this.setState({subCategoryProps: []});
+			else alert(`Error: ${JSON.stringify(err.response)}`);
+		})
 			.then(resp => {
 				const product = {...this.state.product};
 				clearObjectProps(product);
@@ -96,10 +100,7 @@ class EditCharacteristic extends React.Component {
 					isLoading: false
 				});
 			})
-			.catch(err => {
-				this.setState({subCategoryProps: [], isLoading: false});
-				alert(`Error: ${err}`);
-			});
+			.catch(() => this.setState({isLoading: false}));
 	};
 
 	onChangeOptionCategory = e => this.setState({category: e.target.value});

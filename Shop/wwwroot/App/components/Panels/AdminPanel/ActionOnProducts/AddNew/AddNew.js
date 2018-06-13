@@ -224,7 +224,7 @@ class AddNew extends React.Component {
 	onChangePropsValue = (propName, e) => {
 		const product = {...this.state.product};
 		product[propName] = e.target.value;
-		console.log('product',product);
+		console.log('product', product);
 		this.setState({product: product});
 	};
 
@@ -326,21 +326,23 @@ class AddNew extends React.Component {
 						<div>Значення властивості</div>
 					</div>
 
-					<div className="container-add-new__props">
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true" border-left="true">
-							<div className="container-add-new__props__item--inverse__text">Назва</div>
+					{
+						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true" border-left="true">
+								<div className="container-add-new__props__item--inverse__text">Назва</div>
+							</div>
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true">
+								<input className={`form-control ${!isValidName && 'invalid-input'}`}
+									   onChange={this.onChangeProductName}/>
+								{!isValidName && this.renderError('Мінімальна кількість символів 2, максимальна 64')}
+							</div>
 						</div>
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true">
-							<input className={`form-control ${!isValidName && 'invalid-input'}`}
-								   onChange={this.onChangeProductName}/>
-							{!isValidName && this.renderError('Мінімальна кількість символів 2, максимальна 64')}
-						</div>
-					</div>
+					}
 
 					{
-						this.state.subCategoryProps.map(item => {
+						this.state.subCategoryProps.length > 0 && this.state.subCategoryProps.map(item => {
 							return (
 								<div className="container-add-new__props">
 									<div className="col-6 container-add-new__props__item--inverse"
@@ -363,44 +365,55 @@ class AddNew extends React.Component {
 							)
 						})
 					}
-					<div className="container-add-new__props">
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true" border-left="true">
-							<div className="container-add-new__props__item--inverse__text">Ціна</div>
+					{
+						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true" border-left="true">
+								<div className="container-add-new__props__item--inverse__text">Ціна</div>
+							</div>
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true">
+								<input className={`form-control ${!isValidPrice && 'invalid-input'}`}
+									   value={this.state.price} onChange={this.onChangePrice}/>
+								{!isValidPrice && this.renderError('Поле може містити тільки цифри. Максимальна ціна 99999')}
+							</div>
 						</div>
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true">
-							<input className={`form-control ${!isValidPrice && 'invalid-input'}`}
-								   value={this.state.price} onChange={this.onChangePrice}/>
-							{!isValidPrice && this.renderError('Поле може містити тільки цифри. Максимальна ціна 99999')}
+					}
+					{
+						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true" border-left="true">
+								<div className="container-add-new__props__item--inverse__text">Знижка %</div>
+							</div>
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true">
+								<input className={`form-control ${!isValidDiscount && 'invalid-input'}`}
+									   value={this.state.discount}
+									   onChange={this.onChangeDiscount}/>
+								{!isValidDiscount && this.renderError('Поле може містити тільки цифри. 0-100 без знаку %')}
+							</div>
 						</div>
-					</div>
-					<div className="container-add-new__props">
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true" border-left="true">
-							<div className="container-add-new__props__item--inverse__text">Знижка %</div>
-						</div>
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true">
-							<input className={`form-control ${!isValidDiscount && 'invalid-input'}`}
-								   value={this.state.discount}
-								   onChange={this.onChangeDiscount}/>
-							{!isValidDiscount && this.renderError('Поле може містити тільки цифри. 0-100 без знаку %')}
-						</div>
-					</div>
-					<div className="container-add-new__props">
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true" border-left="true">
-							<div className="container-add-new__props__item--inverse__text">Опис товару</div>
-						</div>
-						<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-							 border-bottom="true">
+					}
+					{
+						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true" border-left="true">
+								<div className="container-add-new__props__item--inverse__text">Опис товару</div>
+							</div>
+							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+								 border-bottom="true">
 							<textarea className={`form-control ${!isValidDescription && 'invalid-input'}`}
 									  value={this.state.description}
 									  onChange={this.onChangeDescription}/>
-							{!isValidDescription && this.renderError('Максимальна кількість символів 512')}
+								{!isValidDescription && this.renderError('Максимальна кількість символів 512')}
+							</div>
 						</div>
-					</div>
+					}
+					{
+						this.state.subCategoryProps.length === 0 && <div className="error-if-empty-prod-props">
+							Будь ласка додайте хоча б одну властивість для товару
+						</div>
+					}
 				</div>
 				<div className="container-add-new__row__add-new-prop-box text-center">
 					<small>* Для того, щоб додати нову властивість перейдіть в Товари->
