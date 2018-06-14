@@ -18,6 +18,7 @@ import Orders from './Orders/Orders';
 import FullOrder from './Orders/FullOrder/FullOrder';
 import Mailing from './Mailing/Mailing';
 import CallMe from './CallMe/CallMe';
+import FullCallMe from './CallMe/FullCallMe';
 
 const navItems = [
 	{
@@ -117,7 +118,8 @@ class AdminPanel extends React.Component {
 							<Route exact path="/adminPanel/orders" component={Orders}/>
 							<Route exact path="/adminPanel/mailing" component={Mailing}/>
 							<Route path="/adminPanel/orders/:orderId" render={props => <FullOrder {...props}/>}/>
-							<Route path="/adminPanel/call-me/" component={CallMe}/>
+							<Route exact path="/adminPanel/call-me/" component={CallMe}/>
+							<Route path="/adminPanel/call-me/:id/" component={FullCallMe}/>
 							<Route component={NotFound}/>
 						</Switch>
 					</div>

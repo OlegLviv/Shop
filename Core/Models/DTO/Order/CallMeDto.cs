@@ -6,11 +6,10 @@ namespace Core.Models.DTO.Order
 {
     public class CallMeDto
     {
-        [Required]
+        public string Id { get; set; }
+
         public string Name { get; set; }
 
-        [Required]
-        [Phone]
         public string Phone { get; set; }
 
         public CallMeStatus CallMeStatus { get; set; } = CallMeStatus.New;

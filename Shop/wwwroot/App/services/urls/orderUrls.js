@@ -5,6 +5,8 @@ export const getOwnOrdersUrl = (pageNumber = 1, pageSize = 16, orderStatus = 0) 
 
 export const getOrderUrl = id => `/api/order/getOrder/${id}`;
 
+export const getCallMeUrl = (status, pageNumber = 1, pageSize = 16) => `/api/order/getCallMe/${status}/${pageNumber}/${pageSize}`;
+
 //	POST
 export const CREATE_ORDER_URL = '/api/order/createOrder';
 

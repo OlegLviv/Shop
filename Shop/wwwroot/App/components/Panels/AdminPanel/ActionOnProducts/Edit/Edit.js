@@ -74,7 +74,7 @@ class Edit extends React.Component {
 		});
 	};
 
-	onPaginationChange = (pageNumber) => {
+	onPaginationChange = pageNumber => {
 		apiGet(getProductsByNameUrl(this.state.searchValue, pageNumber, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
@@ -90,7 +90,9 @@ class Edit extends React.Component {
 		if (this.state.isLoaded) {
 			this.setState({isLoaded: false});
 		}
+
 		this.setState({isLoading: true});
+
 		const newProduct = {
 			productId: this.state.selectedProduct.id,
 			name: this.state.newProductName,
@@ -98,6 +100,7 @@ class Edit extends React.Component {
 			discount: this.state.newProductDiscount,
 			description: this.state.newProductDescription
 		};
+
 		apiPut(EDIT_PRODUCT_URL, newProduct)
 			.then(resp => {
 				console.log(resp.data);
