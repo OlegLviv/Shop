@@ -10,16 +10,16 @@ export const isValidPassword = s => new RegExp('^(?=(?:.*[A-Z]))\\S{6,20}$').tes
 
 export const isValidNameAndLastName = s => new RegExp('^([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+){1,20}$').test(s);
 
-export const isValidPossibleProp = s => new RegExp('^[A-zА-яёЁіІ0-9&:.,"\'+\\-()*@$#!|\\ ]{2,20}$').test(s);
+export const isValidPossibleProp = s => new RegExp('^[^;]{2,20}$').test(s);
 
 export const isValidPhoneNumber = s => new RegExp('^((\\+7|\\+3)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$').test(s);
 
 export const isValidNameLastName = s => new RegExp('^(([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+)((\\s?)([A-zА-яёЁіІ]+(\\\'|\\-)?[A-zА-яёЁіІ]+))?){1,20}$').test(s);
 
 //	Products
-export const isValidProductName = s => new RegExp('^[A-zА-яіІёЁ0-9&:.,""\'+\\-()*$#!#|\\ ]{2,64}$').test(s);
+export const isValidProductName = s => new RegExp('^[^;]{2,64}$').test(s);
 
-export const isValidProductPrice = s => new RegExp('^[0-9]{1,5}$').test(s);
+export const isValidProductPrice = s => new RegExp('^[0-9]{1,5}[.,]?[0-9]{1,2}$').test(s);
 
 export const isValidProductDiscount = s => new RegExp('^[0-9]{1,3}$').test(s) && Number(s) <= 100;
 

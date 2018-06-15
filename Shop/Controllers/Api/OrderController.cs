@@ -152,6 +152,18 @@ namespace Shop.Controllers.Api
 
             return this.JsonResult(callMePagination);
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("GetCallMe/{id}")]
+        public async Task<IActionResult> GetCallMe(string id)
+        {
+            var callMe = await _callMeRepository.GetByIdAsync(id);
+
+            if (callMe == null)
+                return BadRequest("Incorrect id or call me not found");
+
+            return this.JsonResult(_mapper.Map<CallMeDto>(callMe));
+        }
         #endregion
 
         #region POST
@@ -223,6 +235,31 @@ namespace Shop.Controllers.Api
         #endregion
 
         #region PUT
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpPut("ChangeCallMeStatus/{id}/{callMeStatus:int}")]
+        public async Task<IActionResult> ChangeCallMeStatus(string id, CallMeStatus callMeStatus)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return BadRequest("Incorrect id");
+
+            var callMe = await _callMeRepository.GetByIdAsync(id);
+
+            if (callMe == null)
+                return BadRequest("Call me don't exist or incorrect id");
+
+            if (callMe.CallMeStatus == callMeStatus)
+                return BadRequest($"Call me allready have status {callMe.CallMeStatus.ToString()}");
+
+            callMe.CallMeStatus = callMeStatus;
+
+            var updateRes = await _callMeRepository.UpdateAsync(callMe);
+
+            if (updateRes >= 1)
+                return Ok(_mapper.Map<CallMeDto>(callMe));
+
+            return BadRequest("Can't update call me");
+        }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpPut("ChangeOrderStatus/{id}/{orderStatus:int}")]

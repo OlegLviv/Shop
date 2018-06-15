@@ -4,7 +4,7 @@ import {apiGet} from "../../../../services/api";
 import {getCallMeUrl} from "../../../../services/urls/orderUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../Spinner/Spinner";
-import {convertDateToDateString, convertDateToTimeString, getDateWithTimeString} from "../../../../utils/timeUtils";
+import {getDateWithTimeString} from "../../../../utils/timeUtils";
 import {Link} from 'react-router-dom';
 
 const callMeListPerPage = 5;

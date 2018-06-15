@@ -95,7 +95,7 @@ class AdminPanel extends React.Component {
 			return (
 				<div className="row container-adm-panel">
 					<div className="col-xl-2 col-lg-3 container-adm-panel__navigation">
-						<Navigation items={navItems} navLink="/" navText="Navbar"/>
+						<Navigation items={navItems} navLink="/" navText="Меню"/>
 					</div>
 					<div className="col-xl-10 col-lg-9 panel-content">
 						<Switch>

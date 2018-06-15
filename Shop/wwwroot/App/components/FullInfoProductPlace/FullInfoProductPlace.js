@@ -12,7 +12,7 @@ import {addProductCookies} from "../../services/cookies";
 import {connect} from 'react-redux';
 import {convertDateToDateString, convertDateToTimeString} from "../../utils/timeUtils";
 
-const getProductId = (props) => props.match.params.productId;
+const getProductId = props => props.match.params.productId;
 
 class FullInfoProductPlace extends React.Component {
 	constructor(props) {
@@ -68,6 +68,7 @@ class FullInfoProductPlace extends React.Component {
 	//todo need clean if added feedback
 	sendFeedback = () => {
 		const {isLogin, user} = this.props;
+
 		if (!this.props.isLogin) {
 			alert('please login');
 		}
