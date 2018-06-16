@@ -8,6 +8,7 @@ import {apiWithoutRedirect} from "../../../services/api";
 import {getProductPropsUrl} from "../../../services/urls/productUrls";
 import {formateQueryDictionary, formateQueryDictionaryWithRemove} from "../../../utils/productsUtils";
 import {Chevron} from "../../common/Chevron/Chevron";
+import {Spinner} from "../../Spinner/Spinner";
 
 const {maxPrice} = priceRange;
 const {minPrice} = priceRange;
@@ -20,7 +21,8 @@ class ExpandedNavigationProducts extends React.Component {
 			priceTo: maxPrice,
 			isPriceExpanded: true,
 			isFilterPropsExpanded: [],
-			filters: []
+			filters: [],
+			loading: false
 		}
 	}
 
@@ -28,21 +30,30 @@ class ExpandedNavigationProducts extends React.Component {
 		this.getFiltersByQuery();
 	}
 
+	trySetLoading = () => !this.state.loading && this.setState({loading: true});
+
 	getFiltersByQuery = () => {
 		if (!this.props.products || this.props.products.length === 0)
 			return;
+
+		this.trySetLoading();
+
 		apiWithoutRedirect()
 			.get(getProductPropsUrl(this.props.products[0].subCategory))
 			.then(resp => {
 				console.log(resp.data);
-				this.setState({filters: resp.data});
+				this.setState({
+					filters: resp.data,
+					loading: false
+				});
 			})
-			.catch(err => console.error(err.response.data));
+			.catch(err => {
+				this.setState({loading: false});
+				alert(`Error: ${JSON.stringify(err.response.data)}`);
+			});
 	};
 
-	onBackClick = () => {
-		this.props.onBackClick();
-	};
+	onBackClick = () => this.props.onBackClick();
 
 	onRangeChangeValue = (val) => {
 		this.props.onPriceRangeChangeValue(val);
@@ -52,11 +63,9 @@ class ExpandedNavigationProducts extends React.Component {
 		});
 	};
 
-	onPriceToggle = () => {
-		this.setState((prev) => ({isPriceExpanded: !prev.isPriceExpanded}));
-	};
+	onPriceToggle = () => this.setState(prev => ({isPriceExpanded: !prev.isPriceExpanded}));
 
-	onFilterPropToggle = (i) => {
+	onFilterPropToggle = i => {
 		const newValues = this.state.isFilterPropsExpanded;
 		newValues[i] = !this.state.isFilterPropsExpanded[i];
 		this.setState({isFilterPropsExpanded: newValues});
@@ -65,7 +74,7 @@ class ExpandedNavigationProducts extends React.Component {
 	onSearchByFilter = () => {
 		if (!this.queryDictionary)
 			this.queryDictionary = {};
-		
+
 		this.props.onSearchByFilter(this.state.priceFrom, this.state.priceTo, this.queryDictionary);
 	};
 
@@ -80,6 +89,7 @@ class ExpandedNavigationProducts extends React.Component {
 
 	renderExpandedNavMulty = (name, listSuggest, i) => {
 		const {isFilterPropsExpanded} = this.state;
+
 		return (
 			<div className="expanded-nav__body__filter-name">
 				<div className="expanded-nav__body__filter-name__header" onClick={() => this.onFilterPropToggle(i)}>
@@ -106,7 +116,7 @@ class ExpandedNavigationProducts extends React.Component {
 
 	// todo need fix chevron expanded
 	render() {
-		const {isPriceExpanded} = this.state;
+		const {isPriceExpanded, loading} = this.state;
 		return (
 			<div className="expanded-nav">
 				<div className="expanded-nav__header">
@@ -137,7 +147,11 @@ class ExpandedNavigationProducts extends React.Component {
 								onChange={this.onRangeChangeValue}/>
 						</div>}
 					</div>
-					{this.state.filters.map((item, i) => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues, i))}
+					{
+						!loading ? <div>
+							{this.state.filters.map((item, i) => this.renderExpandedNavMulty(item.propValue, item.possiblePropsValues, i))}
+						</div> : <Spinner/>
+					}
 					<button className="btn btn-primary expanded-nav__body__search-but"
 							onClick={this.onSearchByFilter}>Знайти
 					</button>

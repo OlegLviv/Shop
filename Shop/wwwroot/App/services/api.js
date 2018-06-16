@@ -71,6 +71,7 @@ export const apiDelete = (url, error) => api()
 export const apiWithoutRedirect = () => {
 	if (!localStorage.getItem('access_token'))
 		return axios;
+
 	return axios.create({
 		headers: headerToken(localStorage.getItem('access_token'))
 	});
