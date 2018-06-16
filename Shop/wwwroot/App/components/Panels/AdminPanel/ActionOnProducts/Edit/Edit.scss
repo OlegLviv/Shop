@@ -24,6 +24,14 @@
 	  width: 50%;
 	  &__item {
 		cursor: pointer;
+		display: flex;
+		justify-content: space-between;
+		flex-direction: row;
+	  }
+	  &__item img {
+		height: 5rem;
+		max-width: 5rem;
+		border-radius: 5px;
 	  }
 	  &__item:hover {
 		background: $light-background;

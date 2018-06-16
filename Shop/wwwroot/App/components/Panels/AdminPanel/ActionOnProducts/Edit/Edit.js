@@ -6,7 +6,7 @@ import {
 	EDIT_PRODUCT_URL,
 	getDeleteProductUrl,
 	getProductImageCountUrl,
-	getDeleteProductImageUrl
+	getDeleteProductImageUrl, getProductImageUrl
 } from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
@@ -16,6 +16,7 @@ import {SuccessUpdatedModal} from "./SuccessUpdatedModal";
 const howProductsPerPage = 5;
 
 //	todo need fix spinner and deleting images
+//	todo need fix loading state
 class Edit extends React.Component {
 	constructor(props) {
 		super(props);
@@ -34,7 +35,8 @@ class Edit extends React.Component {
 			isDeleteConfirmed: false,
 			imgUrls: [],
 			isShowSuccessDeleted: false,
-			isShowSuccessUpdated: false
+			isShowSuccessUpdated: false,
+			loadedImg: false
 		}
 	}
 
@@ -75,15 +77,30 @@ class Edit extends React.Component {
 	};
 
 	onPaginationChange = pageNumber => {
+		this.setState({
+			isLoading: true,
+			isLoaded: false,
+			loadedImg: false
+		});
+
 		apiGet(getProductsByNameUrl(this.state.searchValue, pageNumber, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
 				this.setState({
 					products: resp.data.data,
 					activePage: resp.data.pageNumber,
-					totalProductCount: resp.data.totalCount
+					totalProductCount: resp.data.totalCount,
+					isLoaded: true,
+					isLoading: false
 				});
 			})
+			.catch(err => {
+				this.setState({
+					isLoaded: true,
+					isLoading: false
+				});
+				alert(`Error: ${err}`);
+			});
 	};
 
 	onSaveProduct = () => {
@@ -119,7 +136,9 @@ class Edit extends React.Component {
 		if (this.state.isLoaded) {
 			this.setState({isLoaded: false});
 		}
+
 		this.setState({isLoading: true});
+
 		apiDelete(getDeleteProductUrl(this.state.selectedProduct.id))
 			.then(resp => {
 				if (resp.data >= 1) {
@@ -159,6 +178,8 @@ class Edit extends React.Component {
 
 	onCloseSuccessUpdatedModal = () => this.setState({isShowSuccessUpdated: false});
 
+	onImgLoad = () => this.setState({loadedImg: true});
+
 	setImagesUrl = () => {
 		Promise.all([this.getImageCount()])
 			.then(resp => {
@@ -174,6 +195,7 @@ class Edit extends React.Component {
 
 	renderImagesEdit = () => {
 		this.setImagesUrl();
+
 		return this.state.imgUrls.map((url, i) => (<tr>
 			<td className="edit-product-img-td">
 				<img alt="..." src={url}/>
@@ -186,6 +208,7 @@ class Edit extends React.Component {
 
 	renderEditPanel = () => {
 		const {selectedProduct} = this.state;
+
 		return (
 			<div>
 				{this.state.isLoaded && !this.state.isLoading && selectedProduct ? <table>
@@ -290,13 +313,28 @@ class Edit extends React.Component {
 						{!this.state.isLoading && this.state.isLoaded ?
 							<ul className="list-group edit-container__product-list-box__list-group">
 								{
-									this.state.products.map(item => <li key={item.id}
-																		className="list-group-item list-group edit-container__product-list-box__list-group__item"
-																		onClick={() => this.onProductClick(item)}>
-										<div>{`Назва продукту: ${item.name}`}</div>
-										<div>{`Категорія: ${item.category}`}</div>
-										<div>{`Підкатегорія: ${item.subCategory}`}</div>
-									</li>)
+									this.state.products.map(item => (
+										<li key={item.id}
+											className="list-group-item list-group edit-container__product-list-box__list-group__item"
+											onClick={() => this.onProductClick(item)}>
+											<div>
+												<div>{`Назва продукту: ${item.name}`}</div>
+												<div>{`Категорія: ${item.category}`}</div>
+												<div>{`Підкатегорія: ${item.subCategory}`}</div>
+											</div>
+											<div>
+												<img className=""
+													 style={{
+														 display: `${!this.state.loadedImg ? 'none' : 'block'}`
+													 }}
+													 src={getProductImageUrl(item.id)}
+													 alt="Card image cap"
+													 onLoad={this.onImgLoad}
+												/>
+												{!this.state.loadedImg && <img className=""
+																			   src={require('../../../../../spinner.gif')}/>}
+											</div>
+										</li>))
 								}
 							</ul> : <Spinner/>}
 					</div>
