@@ -203,8 +203,9 @@ class MakeOrderModal extends React.Component {
 						<select className="form-control" id="selectPay" onChange={this.onWayOfDeliveryChange}
 								value={this.state.wayOfDelivery}>
 							<option>Нова пошта</option>
-							<option>Пошта1</option>
-							<option>Пошта2</option>
+							<option>Інтайм</option>
+							<option>Укрпошта</option>
+							<option>Делівері</option>
 						</select>
 					</div>
 					<div className="form-container__footer">
