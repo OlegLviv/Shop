@@ -27,5 +27,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 3rem 0;
+  padding: 3rem 1rem;
+}
+
+.not-confirmed-email h5 {
+  text-align: center;
+}
+
+.not-confirmed-email h6 {
+  text-align: center;
 }

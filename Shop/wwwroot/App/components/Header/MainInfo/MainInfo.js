@@ -116,17 +116,19 @@ class MainInfo extends React.Component {
 						<div className="info_container__right__menu-item__sub-menu">
 							+380680538860
 						</div>
-						<div className="info_container__right__menu-item__sub-menu">
+						<div className="info_container__right__menu-item__sub-menu btn btn-outline-dark">
 							<a onClick={this.onCallMeClick}>Зателефонуй мені</a>
 						</div>
 					</div>
 					<div className="info_container__right__menu-item">
 						{!userName ? <div>
-							<a onClick={this.openLoginModal}>Вхід</a>
+							<a className="btn btn-outline-dark" onClick={this.openLoginModal}>Вхід</a>
 							<a onClick={this.openRegisterModal}>Реєстрація</a>
 						</div> : <div className="info_container__right__menu-item__sub">
-							<Link to={`/${userName === 'Admin' ? 'adminPanel/action-on-products' : 'userPanel/change-password'}`}>{userName}</Link>
-							<a onClick={this.singOut}>Вийти</a>
+							<Link className="btn btn-outline-dark"
+								  to={`/${userName === 'Admin' ? 'adminPanel/action-on-products' : 'userPanel/change-password'}`}>{userName}</Link>
+							<a className="btn btn-danger info_container__right__menu-item__sub__exit"
+							   onClick={this.singOut}>Вийти</a>
 						</div>}
 						<LogInModal
 							isModalOpen={this.state.isLoginModalOpen}
