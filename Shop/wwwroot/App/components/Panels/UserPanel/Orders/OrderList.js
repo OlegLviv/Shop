@@ -5,16 +5,20 @@ import {convertDateToDateString, convertDateToTimeString} from "../../../../util
 import {OrderStatus} from '../../../common/OrderStatus/OrderStatus';
 
 class OrderList extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			products: []
-		}
-	}
 
 	trySetLoading = () => !this.state.loading && this.setState({loading: true});
 
+	renderNotFound = () => (
+		<div className="text-center mt-2">
+			<h3>Нічого не знайдено</h3>
+		</div>
+	);
+
 	render() {
+		console.log(this.props.orders);
+		if (!this.props.isLoading && !this.props.orders.length)
+			return this.renderNotFound();
+		
 		if (!this.props.isLoading)
 			return (
 				<ul className="list-group order-list">
@@ -34,7 +38,8 @@ class OrderList extends Component {
 					</li>)}
 				</ul>
 			);
-		else return <Spinner/>;
+		else
+			return <Spinner/>;
 	}
 }
 
