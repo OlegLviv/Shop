@@ -255,7 +255,6 @@ namespace Shop.Controllers.Api
                     .FirstOrDefaultAsync(x => x.SubCategory == subCategory && x.PropertyName.Equals(prop, StringComparison.OrdinalIgnoreCase)))
                     .Values
                     .Split(';')
-
                 });
             }
             return this.JsonResult(posibleProductProperties);

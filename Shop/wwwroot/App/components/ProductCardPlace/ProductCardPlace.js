@@ -3,7 +3,7 @@ import './ProductCardPlace.scss';
 import {Icon} from 'react-fa';
 import {getProductsOutOfCookies, setCookie} from "../../services/cookies";
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductsByIdsUrl} from "../../services/urls/productUrls";
+import {getProductImageUrl, getProductsByIdsUrl} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
@@ -38,7 +38,8 @@ class ProductCardPlace extends React.Component {
 			isNotProducts: false,
 			isMakeOrderModalOpen: false,
 			loading: false,
-			canSuccessReceivedOrderModal: false
+			canSuccessReceivedOrderModal: false,
+			loadedImg: false
 		}
 	}
 
@@ -156,6 +157,10 @@ class ProductCardPlace extends React.Component {
 			});
 	};
 
+	onImgLoad = () => {
+		this.setState({loadedImg: true});
+	};
+
 	renderMakeOrderModal = () => <MakeOrderModal
 		isModalOpen={this.state.isMakeOrderModalOpen}
 		onCloseModal={this.onCloseMakeOrderModal}
@@ -171,11 +176,13 @@ class ProductCardPlace extends React.Component {
 		if (isProductsLoaded && !isProductsLoading && !isNotProducts) {
 			return (
 				<div>
+					<button className="btn btn-outline-danger" onClick={this.onCleanProductsCard}>Очистити кошик
+						<Icon name="trash ml-1"/>
+					</button>
 					<div className="container-p-card-place__header">
-						<button className="btn btn-outline-danger" onClick={this.onCleanProductsCard}>Очистити кошик
-							<Icon name="trash ml-1"/>
-						</button>
-						<h1 className="text-center">Кошик</h1>
+						<h1 className="text-center container-p-card-place__header__main-text">
+							<div>Кошик</div>
+						</h1>
 					</div>
 					<table>
 						<thead>
@@ -196,10 +203,21 @@ class ProductCardPlace extends React.Component {
 										<td data-label="Назва">
 											<div className="media">
 												<img className="mr-2 product-img"
-													 src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
+													 style={{
+														 display: `${!this.state.loadedImg ? 'none' : 'block'}`
+													 }}
+													 src={getProductImageUrl(item.id)}
+													 alt="Card image cap"
+													 onLoad={this.onImgLoad}
+												/>
+												{!this.state.loadedImg && <img className="mr-2 product-img"
+																			   src={require('../../spinner.gif')}/>}
 												<div className="media-body">
 													<h5>
-														<Link to={`/product/${item.id}`}>{item.name}</Link>
+														<Link className="product-name"
+															  to={`/product/${item.id}`}>
+															{item.name}
+														</Link>
 													</h5>
 													<small className="my-3">{`Код: ${item.id}`}</small>
 												</div>

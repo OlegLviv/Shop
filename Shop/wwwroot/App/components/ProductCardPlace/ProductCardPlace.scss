@@ -2,7 +2,15 @@
 
 .container-p-card-place {
   padding: 2rem 5rem 0 5rem;
-	min-height: 100vh;
+  min-height: 100vh;
+  &__header {
+	&__main-text {
+	  background: $light-background;
+	  border: 1px $dark-grey-color solid;
+	  border-radius: 5px;
+	  margin-top: .5rem;
+	}
+  }
   &__footer {
 	display: flex;
 	justify-content: space-between;
@@ -31,6 +39,10 @@
   -moz-transform: scale(1.1);
   -ms-transform: scale(1.1);
   -o-transform: scale(1.1);
+}
+
+.product-name {
+  color: $dark;
 }
 
 @media screen and (max-width: 620px) {
