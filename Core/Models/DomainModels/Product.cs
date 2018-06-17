@@ -38,6 +38,6 @@ namespace Core.Models.DomainModels
         [Range(0, 100)]
         public int Discount { get; set; }
 
-        public bool IsAvailable { get; set; }
+        public bool IsAvailable { get; set; } = true;
     }
 }

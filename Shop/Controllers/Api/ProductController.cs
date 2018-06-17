@@ -260,6 +260,7 @@ namespace Shop.Controllers.Api
             return this.JsonResult(posibleProductProperties);
         }
 
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         [HttpGet("GetProductImage/{productId}/{number:int}")]
         public async Task<IActionResult> GetProductImage(string productId, int number)
         {
@@ -449,6 +450,7 @@ namespace Shop.Controllers.Api
             product.Discount = model.Discount;
             product.Description = model.Description;
             product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
+            product.IsAvailable = model.IsAvailable;
 
             return this.JsonResult(new
             {

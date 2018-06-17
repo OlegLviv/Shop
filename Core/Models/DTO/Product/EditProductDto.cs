@@ -19,5 +19,7 @@ namespace Core.Models.DTO.Product
         public int Discount { get; set; }
 
         public string Description { get; set; }
+
+        public bool IsAvailable { get; set; }
     }
 }

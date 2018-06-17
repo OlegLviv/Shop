@@ -18,7 +18,7 @@ class OrderList extends Component {
 		console.log(this.props.orders);
 		if (!this.props.isLoading && !this.props.orders.length)
 			return this.renderNotFound();
-		
+
 		if (!this.props.isLoading)
 			return (
 				<ul className="list-group order-list">

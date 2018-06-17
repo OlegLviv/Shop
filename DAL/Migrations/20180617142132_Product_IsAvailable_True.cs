@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
 namespace DAL.Migrations
 {
-    public partial class Product_IsAvailable : Migration
+    public partial class Product_IsAvailable_True : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,7 +12,7 @@ namespace DAL.Migrations
                 name: "IsAvailable",
                 table: "Products",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

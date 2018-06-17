@@ -115,7 +115,8 @@ class Edit extends React.Component {
 			name: this.state.newProductName,
 			price: this.state.newProductPrice,
 			discount: this.state.newProductDiscount,
-			description: this.state.newProductDescription
+			description: this.state.newProductDescription,
+			isAvailable: this.state.selectedProduct.isAvailable
 		};
 
 		apiPut(EDIT_PRODUCT_URL, newProduct)
@@ -244,6 +245,18 @@ class Edit extends React.Component {
 								   defaultValue={selectedProduct.priceWithDiscount}
 								   value={this.state.newProductDiscount}
 								   onChange={(e) => this.setState({newProductDiscount: e.target.value})}/>
+						</td>
+					</tr>
+					<tr>
+						<td>Є в наявності</td>
+						<td>
+							<input type="checkbox"
+								   checked={this.state.selectedProduct.isAvailable}
+								   onChange={({target}) => {
+									   const selectedProduct = {...this.state.selectedProduct};
+									   selectedProduct.isAvailable = target.checked;
+									   this.setState({selectedProduct: selectedProduct});
+								   }}/>
 						</td>
 					</tr>
 					<tr>

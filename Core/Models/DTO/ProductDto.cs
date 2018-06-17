@@ -26,5 +26,7 @@ namespace Core.Models.DTO
 
         //  todo maybe need delete
         public int ProductCount { get; set; }
+
+        public bool IsAvailable { get; set; }
     }
 }
