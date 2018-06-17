@@ -167,7 +167,7 @@ class Edit extends React.Component {
 		})
 	};
 
-	onDeleteImage = (i) => {
+	onDeleteImage = i => {
 		apiDelete(getDeleteProductImageUrl(this.state.selectedProduct.id, i))
 			.then(resp => console.log(resp));
 	};
@@ -319,7 +319,7 @@ class Edit extends React.Component {
 						   onChange={this.onChangeSearch}
 						   value={this.state.searchValue}/>
 				</div>
-				{!this.state.products.length && this.state.searchValue && this.renderNotFoundProducts()}
+				{!this.state.products.length && this.state.searchValue && !this.state.isLoading && this.renderNotFoundProducts()}
 				{!this.state.selectedProduct ? <div>
 					<div className="edit-container__product-list-box">
 						{this.state.products.length > 0 && <h6 className="text-center">Оберіть товар</h6>}
