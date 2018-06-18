@@ -11,6 +11,18 @@
 	border-radius: 5px;
 	font-size: 20px;
 	text-align: center;
+	display: flex;
+	align-items: center;
+
+	&__chevron {
+	  margin-right: 1rem;
+	  color: $dark-grey-color;
+	}
+
+	&__chevron:hover {
+	  color: $primary;
+	  cursor: pointer;
+	}
   }
 }
 

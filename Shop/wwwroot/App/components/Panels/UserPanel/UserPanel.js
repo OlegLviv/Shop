@@ -50,8 +50,6 @@ class UserPanel extends React.Component {
 						<Route exact path="/userPanel/change-password" component={ChangePassword}/>
 						<Route exact path="/userPanel/change-email" component={ChangeEmail}/>
 						<Route exact path="/userPanel/change-phone-number" component={ChangePhone}/>
-						<Route exact path="/userPanel/change-phone-number"
-							   render={() => <div>change-phone-number</div>}/>
 						<Route exact path="/userPanel/mailing" component={Mailing}/>
 						<Route exact path="/userPanel/orders" component={Orders}/>
 						<Route component={NotFound}/>

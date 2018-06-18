@@ -5,6 +5,7 @@ import {getCallMeByIdUrl, getChangeCallMeStatusUrl} from "../../../../services/u
 import {Spinner} from "../../../Spinner/Spinner";
 import {getDateWithTimeString} from "../../../../utils/timeUtils";
 import {CallMeStatus} from "../../../common/CallMeStatus/CallMeStatus";
+import DocumentTitle from 'react-document-title';
 
 const getId = props => props.match.params.id;
 
@@ -67,35 +68,37 @@ class FullCallMe extends React.Component {
 		const {callMe, loading} = this.state;
 
 		return (
-			<div className="call-me-cont">
-				<div className="call-me-cont__header">
-					Інформація про зворотній дзвінок
+			<DocumentTitle title={`Заявка на дзвінок: ${callMe ? callMe.name : ''}`}>
+				<div className="call-me-cont">
+					<div className="call-me-cont__header">
+						Інформація про зворотній дзвінок
+					</div>
+					{
+						!loading && callMe ? <table>
+							<thead>
+							<tr>
+								<th>Ім'я</th>
+								<th>Телефон</th>
+								<th>Дата</th>
+								<th>Статус</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>{callMe.name}</td>
+								<td>{callMe.phone}</td>
+								<td>{getDateWithTimeString(callMe.date)}</td>
+								<td>
+									<CallMeStatus status={callMe.callMeStatus}
+												  onClick={this.toggleStatus}/>
+								</td>
+							</tr>
+							</tbody>
+						</table> : <Spinner/>
+					}
 				</div>
-				{
-					!loading && callMe ? <table>
-						<thead>
-						<tr>
-							<th>Ім'я</th>
-							<th>Телефон</th>
-							<th>Дата</th>
-							<th>Статус</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td>{callMe.name}</td>
-							<td>{callMe.phone}</td>
-							<td>{getDateWithTimeString(callMe.date)}</td>
-							<td>
-								<CallMeStatus status={callMe.callMeStatus}
-											  onClick={this.toggleStatus}/>
-							</td>
-						</tr>
-						</tbody>
-					</table> : <Spinner/>
-				}
-			</div>
-		)
+			</DocumentTitle>
+		);
 	}
 }
 

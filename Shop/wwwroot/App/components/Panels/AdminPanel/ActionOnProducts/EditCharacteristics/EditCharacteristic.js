@@ -14,6 +14,7 @@ import {Link} from 'react-router-dom';
 import {SuccessAddedNewCharacteristicModal} from "./SuccessAddedNewCharacteristicModal";
 import {SuccessDeletedCharacteristicModal} from "./SuccessDeletedCharacteristicModal";
 import {Spinner} from "../../../../Spinner/Spinner";
+import DocumentTitle from 'react-document-title';
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -292,18 +293,20 @@ class EditCharacteristic extends React.Component {
 
 	render() {
 		return (
-			<div className="ec-container">
-				{this.renderSuccessAddedNewCharacteristic()}
-				{this.renderSuccessDeletedCharacteristic()}
-				<div className="ec-container__header">
-					Редактор харктеристик товару
+			<DocumentTitle title="Редактор характеристик товару">
+				<div className="ec-container">
+					{this.renderSuccessAddedNewCharacteristic()}
+					{this.renderSuccessDeletedCharacteristic()}
+					<div className="ec-container__header">
+						Редактор харктеристик товару
+					</div>
+					{this.renderChooseCatSubCat()}
+					{!this.state.isLoading ? this.renderEditCharacteristicTable() : <Spinner/>}
+					{!this.state.subCategoryProps.length &&
+					<div className="text-center my-3">Властивостей для даного товару не знайдено. Ви може створити їх
+						<Link to="/adminPanel/action-on-products/add-new-characteristic">{' тут'}</Link></div>}
 				</div>
-				{this.renderChooseCatSubCat()}
-				{!this.state.isLoading ? this.renderEditCharacteristicTable() : <Spinner/>}
-				{!this.state.subCategoryProps.length &&
-				<div className="text-center my-3">Властивостей для даного товару не знайдено. Ви може створити їх
-					<Link to="/adminPanel/action-on-products/add-new-characteristic">{' тут'}</Link></div>}
-			</div>
+			</DocumentTitle>
 		)
 	}
 }

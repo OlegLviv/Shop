@@ -6,6 +6,7 @@ import {apiGet, apiPut} from "../../../../services/api";
 import {Spinner} from "../../../Spinner/Spinner";
 import {CHANGE_USER_PHONE_URL} from "../../../../services/urls/userUrls";
 import {SuccessChangedPhoneModal} from "./SuccessChangedPhoneModal";
+import DocumentTitle from 'react-document-title';
 
 class ChangePhone extends React.Component {
 	constructor(props) {
@@ -122,10 +123,12 @@ class ChangePhone extends React.Component {
 
 	render() {
 		return (
-			<div className="ch-phone-cont">
-				<div className="ch-phone-cont__header">Зміна номеру телефону</div>
-				{!this.state.isLoading ? this.renderMainForm() : <Spinner/>}
-			</div>
+			<DocumentTitle title="Зміна номеру телефону">
+				<div className="ch-phone-cont">
+					<div className="ch-phone-cont__header">Зміна номеру телефону</div>
+					{!this.state.isLoading ? this.renderMainForm() : <Spinner/>}
+				</div>
+			</DocumentTitle>
 		)
 	}
 }

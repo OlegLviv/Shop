@@ -12,6 +12,7 @@ import {isValidEmail} from "../../../../utils/validationUtils";
 import {Spinner} from "../../../Spinner/Spinner";
 import {SuccessChangedEmailModal} from "./SuccessChangedEmailModal";
 import {SuccessSendedEmailConfirmCodeModal} from "./SuccessSendedEmailConfirmCodeModal";
+import DocumentTitle from 'react-document-title';
 
 const getChangeUserEmailBody = ({token, newEmail}) => ({
 	emailToken: token,
@@ -238,13 +239,15 @@ class ChangeEmail extends React.Component {
 
 	render() {
 		return (
-			<div className="ce-container">
-				{this.renderSuccessChangedEmailModal()}
-				<SuccessSendedEmailConfirmCodeModal isOpen={this.state.isSendConfirmEmailToken}
-													onClose={() => this.setState({isSendConfirmEmailToken: false})}/>
-				<div className="ce-container__header">Зміна Email</div>
-				{this.renderMainForm()}
-			</div>
+			<DocumentTitle title="Зміна email">
+				<div className="ce-container">
+					{this.renderSuccessChangedEmailModal()}
+					<SuccessSendedEmailConfirmCodeModal isOpen={this.state.isSendConfirmEmailToken}
+														onClose={() => this.setState({isSendConfirmEmailToken: false})}/>
+					<div className="ce-container__header">Зміна Email</div>
+					{this.renderMainForm()}
+				</div>
+			</DocumentTitle>
 		);
 	}
 }

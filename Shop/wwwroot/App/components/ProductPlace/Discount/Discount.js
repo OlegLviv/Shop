@@ -10,6 +10,10 @@ import Pagination from 'react-js-pagination';
 import ProductCard from '../ProductCard/ProductCard';
 import {addProductCookies} from "../../../services/cookies";
 import {connect} from "react-redux";
+import {Spinner} from "../../Spinner/Spinner";
+import DocumentTitle from 'react-document-title';
+import {Icon} from 'react-fa';
+import {Link} from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 16;
 
@@ -79,33 +83,43 @@ class Discount extends Component {
 
 	render() {
 		return (
-			<div className="discount">
-				<div className="discount__header">
-					Товари зі знижками
-				</div>
-				<div className="row">
+			<DocumentTitle title="Товари зі знижками">
+				<div className="discount">
+					<div className="discount__header">
+						<Link to="/">
+							<Icon name="chevron-left" className="discount__header__chevron"/>
+						</Link>
+						<div>Товари зі знижками</div>
+					</div>
 					{
-						this.state.products.map(product => <div className="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
-							<ProductCard
-								imgSrcPromise={this.fetchImgSrc(product.id)}
-								defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
-								product={product}
-								key={product.id}
-								onLikeButClick={this.onLikeButClick}
-								onAddProduct={this.onAddProductToShoppingCardButClick}/>
-						</div>)
+						!this.state.loading ? <div>
+							<div className="row">
+								{
+									this.state.products.map(product => <div
+										className="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
+										<ProductCard
+											imgSrcPromise={this.fetchImgSrc(product.id)}
+											defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
+											product={product}
+											key={product.id}
+											onLikeButClick={this.onLikeButClick}
+											onAddProduct={this.onAddProductToShoppingCardButClick}/>
+									</div>)
+								}
+							</div>
+							<div className="pagination-box">
+								<Pagination totalItemsCount={this.state.totalProductCount}
+											itemsCountPerPage={ITEMS_PER_PAGE}
+											onChange={this.onPaginationChange}
+											activePage={this.state.activePage}
+											itemClass="page-item"
+											linkClass="page-link"
+											innerClass="pagination-box__pagination pagination"/>
+							</div>
+						</div> : <Spinner/>
 					}
 				</div>
-				<div className="pagination-box">
-					<Pagination totalItemsCount={this.state.totalProductCount}
-								itemsCountPerPage={ITEMS_PER_PAGE}
-								onChange={this.onPaginationChange}
-								activePage={this.state.activePage}
-								itemClass="page-item"
-								linkClass="page-link"
-								innerClass="pagination-box__pagination pagination"/>
-				</div>
-			</div>
+			</DocumentTitle>
 		);
 	}
 }

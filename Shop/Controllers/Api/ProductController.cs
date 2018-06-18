@@ -426,7 +426,7 @@ namespace Shop.Controllers.Api
                     new List<string> { model.PossibleProperty });
 
             if (!addPossiblePropRes)
-                return BadRequest("Cant add possible property");
+                return BadRequest("Can't add possible property");
 
             return Ok("Success");
         }

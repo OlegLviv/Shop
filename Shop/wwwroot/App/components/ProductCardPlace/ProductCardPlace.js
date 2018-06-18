@@ -13,6 +13,7 @@ import {createProductsContainerForOrders} from "../../utils/orderUtils";
 import {CREATE_ORDER_URL, CREATE_USER_ORDER_URL} from "../../services/urls/orderUrls";
 import {SuccessReceivedOrderModal} from "./SuccessReceivedOrderModal";
 import {connect} from 'react-redux';
+import DocumentTitle from 'react-document-title';
 
 const renderNoProducts = () => {
 	return (
@@ -272,11 +273,13 @@ class ProductCardPlace extends React.Component {
 
 	render() {
 		return (
-			<div className="container-p-card-place">
-				{this.renderSuccessReceivedOrderModal()}
-				{this.renderSwitchContent()}
-				{this.renderMakeOrderModal()}
-			</div>
+			<DocumentTitle title="Кошик">
+				<div className="container-p-card-place">
+					{this.renderSuccessReceivedOrderModal()}
+					{this.renderSwitchContent()}
+					{this.renderMakeOrderModal()}
+				</div>
+			</DocumentTitle>
 		);
 	}
 }

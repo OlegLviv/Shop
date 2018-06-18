@@ -7,10 +7,10 @@ import {
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
 import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
-import {getRandomArbitrary} from "../../utils/utils";
 import {addProductCookies} from "../../services/cookies";
 import {connect} from 'react-redux';
 import {convertDateToDateString, convertDateToTimeString} from "../../utils/timeUtils";
+import DocumentTitle from 'react-document-title';
 
 const getProductId = props => props.match.params.productId;
 
@@ -263,70 +263,73 @@ class FullInfoProductPlace extends React.Component {
 
 	render() {
 		return (
-			<div className="container-product">
-				{this.state.product ?
-					<div>
-						<div className="row container-product__row">
-							<div className="col-xl-5 col-lg-5 col-md-5">
-								<div className="container-product__row__product-img-container">
-									<div className="container-product__row__product-img-container__main-img">
-										<img
-											src={this.getMainImgSrc()}/>
-									</div>
-									<div className="container-product__row__product-img-container__sm-img">
-										{
-											this.state.product.imgSources.map(src => <img
-												onClick={() => this.onSmallImgClick(src)} src={src}/>)
-										}
+			<DocumentTitle title={this.state.product ? this.state.product.name : 'Загрузка...'}>
+				<div className="container-product">
+					{this.state.product ?
+						<div>
+							<div className="row container-product__row">
+								<div className="col-xl-5 col-lg-5 col-md-5">
+									<div className="container-product__row__product-img-container">
+										<div className="container-product__row__product-img-container__main-img">
+											<img
+												src={this.getMainImgSrc()}/>
+										</div>
+										<div className="container-product__row__product-img-container__sm-img">
+											{
+												this.state.product.imgSources.map(src => <img
+													onClick={() => this.onSmallImgClick(src)} src={src}/>)
+											}
+										</div>
 									</div>
 								</div>
-							</div>
-							<div className="col-xl-7 col-lg-7 col-md-7">
-								<div className="container-product__row__info-container">
-									<div className="container-product__row__info-container__main-info">
-										<h4 className="h4-dev">{this.state.product.name}</h4>
-										<div className="container-product__row__info-container__main-info__price">
-											<h3 className={`${(this.state.product.priceWithDiscount > 0) && 'with-discount'}`}>{
-												`${this.state.product.price} грн`
-											}</h3>
+								<div className="col-xl-7 col-lg-7 col-md-7">
+									<div className="container-product__row__info-container">
+										<div className="container-product__row__info-container__main-info">
+											<h4 className="h4-dev">{this.state.product.name}</h4>
+											<div className="container-product__row__info-container__main-info__price">
+												<h3 className={`${(this.state.product.priceWithDiscount > 0) && 'with-discount'}`}>{
+													`${this.state.product.price} грн`
+												}</h3>
+											</div>
+											{(this.state.product.priceWithDiscount > 0) &&
+											<div
+												className="container-product__row__info-container__main-info__priceDiscount">{
+												`${this.state.product.priceWithDiscount} грн`
+											}</div>}
 										</div>
-										{(this.state.product.priceWithDiscount > 0) &&
-										<div
-											className="container-product__row__info-container__main-info__priceDiscount">{
-											`${this.state.product.priceWithDiscount} грн`
-										}</div>}
-									</div>
-									<hr className="container-product__row__info-container__main-info__hr"/>
-									<div className="container-product__row__info-container__to-card">
-										<div>Кількість</div>
-										<div className="btn-group">
-											<button type="button" className="btn btn-dark"
-													onClick={this.onProductCountDec}>-
-											</button>
-											<input type="number" value={this.state.productCount}/>
-											<button type="button" className="btn btn-dark"
-													onClick={this.onProductCountInc}>+
-											</button>
-										</div>
-										<div className="container-product__row__info-container__to-card__btn-to-card">
-											<div>
-												<button className="btn btn-dark btn-lg"
-														onClick={this.onAddToBackedClick}>
-													{
-														this.state.addProductButText
-													}
+										<hr className="container-product__row__info-container__main-info__hr"/>
+										<div className="container-product__row__info-container__to-card">
+											<div>Кількість</div>
+											<div className="btn-group">
+												<button type="button" className="btn btn-dark"
+														onClick={this.onProductCountDec}>-
 												</button>
-												<button className="btn btn-info btn-lg">В обране</button>
+												<input type="number" value={this.state.productCount}/>
+												<button type="button" className="btn btn-dark"
+														onClick={this.onProductCountInc}>+
+												</button>
+											</div>
+											<div
+												className="container-product__row__info-container__to-card__btn-to-card">
+												<div>
+													<button className="btn btn-dark btn-lg"
+															onClick={this.onAddToBackedClick}>
+														{
+															this.state.addProductButText
+														}
+													</button>
+													<button className="btn btn-info btn-lg">В обране</button>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+							{this.renderNavAboutProduct()}
 						</div>
-						{this.renderNavAboutProduct()}
-					</div>
-					: <Spinner/>}
-			</div>
+						: <Spinner/>}
+				</div>
+			</DocumentTitle>
 		)
 	}
 }

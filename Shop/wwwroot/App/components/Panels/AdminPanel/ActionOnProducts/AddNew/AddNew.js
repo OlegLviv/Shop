@@ -22,6 +22,7 @@ import {
 } from "../../../../../utils/validationUtils";
 import {MaxImageAlertModal} from "./MaxImageAlertModal";
 import {MaxSizeFileAlertModal} from "./MaxSizeFileAlertModal";
+import DocumentTitle from 'react-document-title';
 
 const MAX_IMAGE_SIZE = 3000000;
 
@@ -290,153 +291,155 @@ class AddNew extends React.Component {
 	render() {
 		const {isValidPrice, isValidDescription, isValidName, isValidDiscount} = this.state;
 		return (
-			!this.state.isLoading ? <div className="container-add-new">
-				{this.renderSuccessSavedModal()}
-				{this.renderMaxImageAlertModal()}
-				{this.renderMaxSizeFileAlertModal()}
-				<div className="row container-add-new__row">
-					<div className="col-6 container-add-new__row__item" border-right="true">
-						<div>Оберіть карегорію</div>
-					</div>
-					<div className="col-6 container-add-new__row__item">
-						<div>Оберіть підкарегорію</div>
-					</div>
-					<div className="col-6 container-add-new__row__item--inverse" border-right="true"
-						 border-bottom="true" border-left="true">
-						<select onChange={this.onChangeOptionCategory} defaultValue={this.state.category}>
-							{
-								NAVIGATION_CATEGORIES.map(item => <option
-									value={item}>{item}
-								</option>)
-							}
-						</select>
-					</div>
-					<div className="col-6 container-add-new__row__item--inverse" border-right="true"
-						 border-bottom="true">
-						<select onChange={this.onChangeOptionSubCategory} value={this.state.subCategory}>
-							{
-								getSubCategories(this.state.category).map(item => <option>{item}</option>)
-							}
-						</select>
-					</div>
-					<div className="col-6 container-add-new__row__item" border-right="true" margin-top="true">
-						<div>Властивість товару</div>
-					</div>
-					<div className="col-6 container-add-new__row__item" margin-top="true">
-						<div>Значення властивості</div>
-					</div>
-
-					{
-						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true" border-left="true">
-								<div className="container-add-new__props__item--inverse__text">Назва</div>
-							</div>
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true">
-								<input className={`form-control ${!isValidName && 'invalid-input'}`}
-									   onChange={this.onChangeProductName}/>
-								{!isValidName && this.renderError('Мінімальна кількість символів 2, максимальна 64')}
-							</div>
+			<DocumentTitle title="Додавання товару">
+				{!this.state.isLoading ? <div className="container-add-new">
+					{this.renderSuccessSavedModal()}
+					{this.renderMaxImageAlertModal()}
+					{this.renderMaxSizeFileAlertModal()}
+					<div className="row container-add-new__row">
+						<div className="col-6 container-add-new__row__item" border-right="true">
+							<div>Оберіть карегорію</div>
 						</div>
-					}
+						<div className="col-6 container-add-new__row__item">
+							<div>Оберіть підкарегорію</div>
+						</div>
+						<div className="col-6 container-add-new__row__item--inverse" border-right="true"
+							 border-bottom="true" border-left="true">
+							<select onChange={this.onChangeOptionCategory} defaultValue={this.state.category}>
+								{
+									NAVIGATION_CATEGORIES.map(item => <option
+										value={item}>{item}
+									</option>)
+								}
+							</select>
+						</div>
+						<div className="col-6 container-add-new__row__item--inverse" border-right="true"
+							 border-bottom="true">
+							<select onChange={this.onChangeOptionSubCategory} value={this.state.subCategory}>
+								{
+									getSubCategories(this.state.category).map(item => <option>{item}</option>)
+								}
+							</select>
+						</div>
+						<div className="col-6 container-add-new__row__item" border-right="true" margin-top="true">
+							<div>Властивість товару</div>
+						</div>
+						<div className="col-6 container-add-new__row__item" margin-top="true">
+							<div>Значення властивості</div>
+						</div>
 
-					{
-						this.state.subCategoryProps.length > 0 && this.state.subCategoryProps.map(item => {
-							return (
-								<div className="container-add-new__props">
-									<div className="col-6 container-add-new__props__item--inverse"
-										 border-right="true"
-										 border-bottom="true" border-left="true">
-										<div
-											className="container-add-new__props__item--inverse__text">{item.propValue}</div>
-									</div>
-									<div className="col-6 container-add-new__props__item--inverse"
-										 border-right="true"
-										 border-bottom="true">
-										<select onChange={(e) => this.onChangePropsValue(item.propValue, e)}>
-											{
-												item.possiblePropsValues.map(itemPP =>
-													<option>{itemPP}</option>)
-											}
-										</select>
-									</div>
+						{
+							this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true" border-left="true">
+									<div className="container-add-new__props__item--inverse__text">Назва</div>
 								</div>
-							)
-						})
-					}
-					{
-						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true" border-left="true">
-								<div className="container-add-new__props__item--inverse__text">Ціна</div>
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true">
+									<input className={`form-control ${!isValidName && 'invalid-input'}`}
+										   onChange={this.onChangeProductName}/>
+									{!isValidName && this.renderError('Мінімальна кількість символів 2, максимальна 64')}
+								</div>
 							</div>
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true">
-								<input className={`form-control ${!isValidPrice && 'invalid-input'}`}
-									   value={this.state.price} onChange={this.onChangePrice}/>
-								{!isValidPrice && this.renderError('Поле може містити тільки цифри. Максимальна ціна 99999')}
+						}
+
+						{
+							this.state.subCategoryProps.length > 0 && this.state.subCategoryProps.map(item => {
+								return (
+									<div className="container-add-new__props">
+										<div className="col-6 container-add-new__props__item--inverse"
+											 border-right="true"
+											 border-bottom="true" border-left="true">
+											<div
+												className="container-add-new__props__item--inverse__text">{item.propValue}</div>
+										</div>
+										<div className="col-6 container-add-new__props__item--inverse"
+											 border-right="true"
+											 border-bottom="true">
+											<select onChange={(e) => this.onChangePropsValue(item.propValue, e)}>
+												{
+													item.possiblePropsValues.map(itemPP =>
+														<option>{itemPP}</option>)
+												}
+											</select>
+										</div>
+									</div>
+								)
+							})
+						}
+						{
+							this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true" border-left="true">
+									<div className="container-add-new__props__item--inverse__text">Ціна</div>
+								</div>
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true">
+									<input className={`form-control ${!isValidPrice && 'invalid-input'}`}
+										   value={this.state.price} onChange={this.onChangePrice}/>
+									{!isValidPrice && this.renderError('Поле може містити тільки цифри. Максимальна ціна 99999')}
+								</div>
 							</div>
-						</div>
-					}
-					{
-						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true" border-left="true">
-								<div className="container-add-new__props__item--inverse__text">Знижка %</div>
+						}
+						{
+							this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true" border-left="true">
+									<div className="container-add-new__props__item--inverse__text">Знижка %</div>
+								</div>
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true">
+									<input className={`form-control ${!isValidDiscount && 'invalid-input'}`}
+										   value={this.state.discount}
+										   onChange={this.onChangeDiscount}/>
+									{!isValidDiscount && this.renderError('Поле може містити тільки цифри. 0-100 без знаку %')}
+								</div>
 							</div>
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true">
-								<input className={`form-control ${!isValidDiscount && 'invalid-input'}`}
-									   value={this.state.discount}
-									   onChange={this.onChangeDiscount}/>
-								{!isValidDiscount && this.renderError('Поле може містити тільки цифри. 0-100 без знаку %')}
-							</div>
-						</div>
-					}
-					{
-						this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true" border-left="true">
-								<div className="container-add-new__props__item--inverse__text">Опис товару</div>
-							</div>
-							<div className="col-6 container-add-new__props__item--inverse" border-right="true"
-								 border-bottom="true">
+						}
+						{
+							this.state.subCategoryProps.length > 0 && <div className="container-add-new__props">
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true" border-left="true">
+									<div className="container-add-new__props__item--inverse__text">Опис товару</div>
+								</div>
+								<div className="col-6 container-add-new__props__item--inverse" border-right="true"
+									 border-bottom="true">
 							<textarea className={`form-control ${!isValidDescription && 'invalid-input'}`}
 									  value={this.state.description}
 									  onChange={this.onChangeDescription}/>
-								{!isValidDescription && this.renderError('Максимальна кількість символів 512')}
+									{!isValidDescription && this.renderError('Максимальна кількість символів 512')}
+								</div>
 							</div>
-						</div>
-					}
-					{
-						this.state.subCategoryProps.length === 0 && <div className="error-if-empty-prod-props">
-							Будь ласка додайте хоча б одну властивість для товару
-						</div>
-					}
-				</div>
-				<div className="container-add-new__row__add-new-prop-box text-center">
-					<small>* Для того, щоб додати нову властивість перейдіть в Товари->
-						<Link to="/adminPanel/action-on-products/add-new-characteristic">Додати нові
-							характеристики</Link></small>
-					<br/>
-					<small>** Для того, щоб редагувати властивість перейдіть в Товари->
-						<Link to="/adminPanel/action-on-products/edit-characteristic">Редагувати
-							характеристики</Link></small>
-				</div>
-				<div className="container-add-new__row__file-box">
-					<input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
-				</div>
-				{this.renderSelectedImages()}
-				<div className="container-add-new__action-box">
-					<button className="btn btn-info container-add-new__action-box__save"
-							onClick={this.onSave}>Зберегти товар
-					</button>
-					<button className="btn btn-danger container-add-new__action-box__clear"
-							onClick={this.onClear}>Очистити фото
-					</button>
-				</div>
-			</div> : <Spinner/>
+						}
+						{
+							this.state.subCategoryProps.length === 0 && <div className="error-if-empty-prod-props">
+								Будь ласка додайте хоча б одну властивість для товару
+							</div>
+						}
+					</div>
+					<div className="container-add-new__row__add-new-prop-box text-center">
+						<small>* Для того, щоб додати нову властивість перейдіть в Товари->
+							<Link to="/adminPanel/action-on-products/add-new-characteristic">Додати нові
+								характеристики</Link></small>
+						<br/>
+						<small>** Для того, щоб редагувати властивість перейдіть в Товари->
+							<Link to="/adminPanel/action-on-products/edit-characteristic">Редагувати
+								характеристики</Link></small>
+					</div>
+					<div className="container-add-new__row__file-box">
+						<input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
+					</div>
+					{this.renderSelectedImages()}
+					<div className="container-add-new__action-box">
+						<button className="btn btn-info container-add-new__action-box__save"
+								onClick={this.onSave}>Зберегти товар
+						</button>
+						<button className="btn btn-danger container-add-new__action-box__clear"
+								onClick={this.onClear}>Очистити фото
+						</button>
+					</div>
+				</div> : <Spinner/>}
+			</DocumentTitle>
 		)
 	}
 }

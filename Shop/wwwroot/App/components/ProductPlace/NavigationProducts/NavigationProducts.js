@@ -26,7 +26,7 @@ class NavigationProducts extends React.Component {
 								NAVIGATION_SUB_CATEGORIES.backs.map(item => <Link
 									key={guid()}
 									className="dropdown-item"
-									to={`/products/stationery/${normalizeSubCategoryToRoute(item)}`}>{item}</Link>)
+									to={`/products/backpacks-handbags/${normalizeSubCategoryToRoute(item)}`}>{item}</Link>)
 							}
 						</div>
 					</div>

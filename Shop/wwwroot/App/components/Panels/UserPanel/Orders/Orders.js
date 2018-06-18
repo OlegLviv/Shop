@@ -4,6 +4,7 @@ import {getOwnOrdersUrl} from "../../../../services/urls/orderUrls";
 import OrderList from './OrderList';
 import './Orders.scss';
 import Pagination from 'react-js-pagination';
+import DocumentTitle from 'react-document-title';
 
 const itemPerPage = 4;
 
@@ -50,22 +51,24 @@ class Orders extends Component {
 
 	render() {
 		return (
-			<div className="orders-cont">
-				<div className="orders-cont__header">Мої замовлення</div>
-				<div className="orders-cont__orders-lis">
-					{this.renderOrdersList()}
+			<DocumentTitle title="Мої замовлення">
+				<div className="orders-cont">
+					<div className="orders-cont__header">Мої замовлення</div>
+					<div className="orders-cont__orders-lis">
+						{this.renderOrdersList()}
+					</div>
+					<div className="pagination-box">
+						{!this.state.isLoading && this.state.orders.length > 0 &&
+						<Pagination totalItemsCount={this.state.totalOrdersCount}
+									itemsCountPerPage={itemPerPage}
+									onChange={this.onPaginationChange}
+									activePage={this.state.activePage}
+									itemClass="page-item"
+									linkClass="page-link"
+									innerClass="pagination-box__pagination pagination"/>}
+					</div>
 				</div>
-				<div className="pagination-box">
-					{!this.state.isLoading && this.state.orders.length > 0 &&
-					<Pagination totalItemsCount={this.state.totalOrdersCount}
-								itemsCountPerPage={itemPerPage}
-								onChange={this.onPaginationChange}
-								activePage={this.state.activePage}
-								itemClass="page-item"
-								linkClass="page-link"
-								innerClass="pagination-box__pagination pagination"/>}
-				</div>
-			</div>
+			</DocumentTitle>
 		);
 	}
 }

@@ -5,6 +5,7 @@ import {CHANGE_USER_PASSWORD_URL} from "../../../../services/urls/userUrls";
 import {isValidPassword, isValidWhiteSpace} from "../../../../utils/validationUtils";
 import {SuccessChangedPasswordModal} from "./SuccessChangedPasswordModal";
 import {Spinner} from "../../../Spinner/Spinner";
+import DocumentTitle from 'react-document-title';
 
 class ChangePassword extends React.Component {
 	constructor(props) {
@@ -188,12 +189,14 @@ class ChangePassword extends React.Component {
 
 	render() {
 		return (
-			<div className="cp-container">
-				{this.renderSuccessChangedPasswordModal()}
-				<div className="cp-container__header">Зміна паролю</div>
-				{this.state.isLoaded && !this.state.isLoading ? this.renderChangePasswordForm() : <Spinner/>}
-			</div>
-		)
+			<DocumentTitle title="Зміна паролю">
+				<div className="cp-container">
+					{this.renderSuccessChangedPasswordModal()}
+					<div className="cp-container__header">Зміна паролю</div>
+					{this.state.isLoaded && !this.state.isLoading ? this.renderChangePasswordForm() : <Spinner/>}
+				</div>
+			</DocumentTitle>
+		);
 	}
 }
 

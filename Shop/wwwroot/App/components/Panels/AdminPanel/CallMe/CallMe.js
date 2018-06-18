@@ -6,6 +6,7 @@ import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../Spinner/Spinner";
 import {getDateWithTimeString} from "../../../../utils/timeUtils";
 import {Link} from 'react-router-dom';
+import DocumentTitle from 'react-document-title';
 
 const callMeListPerPage = 5;
 
@@ -80,29 +81,31 @@ class CallMe extends React.Component {
 
 	render() {
 		return (
-			<div className="call-me-cont">
-				<div className="call-me-cont__header">
-					<div>Заявки на дзвінки</div>
-					<select onChange={this.onChangeSelectCallMeStatus} className="form-control">
-						<option value={0}>Нові</option>
-						<option value={1}>Виконані</option>
-					</select>
+			<DocumentTitle title="Заявки на дзвінки">
+				<div className="call-me-cont">
+					<div className="call-me-cont__header">
+						<div>Заявки на дзвінки</div>
+						<select onChange={this.onChangeSelectCallMeStatus} className="form-control">
+							<option value={0}>Нові</option>
+							<option value={1}>Виконані</option>
+						</select>
+					</div>
+					<div className="call-me-cont__list-box">
+						{
+							!this.state.loading ? this.renderCallMeList() : <Spinner/>
+						}
+					</div>
+					<div className="edit-container__pagin-box">
+						{this.state.callMeArr.length > 0 && <Pagination totalItemsCount={this.state.totalProductCount}
+																		itemsCountPerPage={callMeListPerPage}
+																		onChange={this.onPaginationChange}
+																		activePage={this.state.activePage}
+																		itemClass="page-item"
+																		linkClass="page-link"
+																		innerClass="edit-container__pagin-box__pagin pagination"/>}
+					</div>
 				</div>
-				<div className="call-me-cont__list-box">
-					{
-						!this.state.loading ? this.renderCallMeList() : <Spinner/>
-					}
-				</div>
-				<div className="edit-container__pagin-box">
-					{this.state.callMeArr.length > 0 && <Pagination totalItemsCount={this.state.totalProductCount}
-																	itemsCountPerPage={callMeListPerPage}
-																	onChange={this.onPaginationChange}
-																	activePage={this.state.activePage}
-																	itemClass="page-item"
-																	linkClass="page-link"
-																	innerClass="edit-container__pagin-box__pagin pagination"/>}
-				</div>
-			</div>
+			</DocumentTitle>
 		);
 	}
 }

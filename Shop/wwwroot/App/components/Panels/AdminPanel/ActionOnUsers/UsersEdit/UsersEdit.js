@@ -8,6 +8,7 @@ import {
 } from "../../../../../services/urls/userUrls";
 import {Spinner} from "../../../../Spinner/Spinner";
 import {SuccessUpdatedUserDataModal} from "./SuccessUpdatedUserDataModal";
+import DocumentTitle from 'react-document-title';
 
 class UsersEdit extends React.Component {
 	constructor(props) {
@@ -212,42 +213,44 @@ class UsersEdit extends React.Component {
 
 	render() {
 		return (
-			<div className="user-edit-container">
-				{
-					!this.state.selectedUser ? <div>
-						<div className="user-edit-container__header">
-							Редактор користовачів
-						</div>
-						<div className="user-edit-container__search-box">
-							<h6 className="text-center">Пошук</h6>
-							<input className="form-control"
-								   type="text"
-								   value={this.state.searchValue}
-								   onChange={this.onChangeSearch}
-								   placeholder="Введіть ім'я або id користувача"/>
-							<small className="my-2">* Для того щоб знайти користувача по id втавте перед id знак @
-							</small>
-						</div>
-						<div className="user-edit-container__product-list-box">
-							{this.renderNotFoundById()}
-							{this.renderNotFoundByName()}
-							{!this.state.isLoading && this.state.isLoaded ?
-								<ul className="list-group user-edit-container__product-list-box__list-group">
-									{
-										this.state.users.map(user => <li
-											key={user.id}
-											onClick={() => this.onClickUser(user)}
-											className="list-group-item user-edit-container__product-list-box__list-group__item">
-											<div>{`${user.name} ${user.lastName}`}</div>
-											<div>{`id: ${user.id}`}</div>
-										</li>)
-									}
-								</ul> : <Spinner/>}
-						</div>
-					</div> : this.renderEditPanel()
-				}
-				{this.renderShowSuccessUpdatedUserModal()}
-			</div>
+			<DocumentTitle title="Редактор персональних даних">
+				<div className="user-edit-container">
+					{
+						!this.state.selectedUser ? <div>
+							<div className="user-edit-container__header">
+								Редактор користовачів
+							</div>
+							<div className="user-edit-container__search-box">
+								<h6 className="text-center">Пошук</h6>
+								<input className="form-control"
+									   type="text"
+									   value={this.state.searchValue}
+									   onChange={this.onChangeSearch}
+									   placeholder="Введіть ім'я або id користувача"/>
+								<small className="my-2">* Для того щоб знайти користувача по id втавте перед id знак @
+								</small>
+							</div>
+							<div className="user-edit-container__product-list-box">
+								{this.renderNotFoundById()}
+								{this.renderNotFoundByName()}
+								{!this.state.isLoading && this.state.isLoaded ?
+									<ul className="list-group user-edit-container__product-list-box__list-group">
+										{
+											this.state.users.map(user => <li
+												key={user.id}
+												onClick={() => this.onClickUser(user)}
+												className="list-group-item user-edit-container__product-list-box__list-group__item">
+												<div>{`${user.name} ${user.lastName}`}</div>
+												<div>{`id: ${user.id}`}</div>
+											</li>)
+										}
+									</ul> : <Spinner/>}
+							</div>
+						</div> : this.renderEditPanel()
+					}
+					{this.renderShowSuccessUpdatedUserModal()}
+				</div>
+			</DocumentTitle>
 		)
 	}
 }

@@ -5,6 +5,7 @@ import {getChangeOrderStatusUrl, getOrderUrl} from "../../../../../services/urls
 import {Spinner} from "../../../../Spinner/Spinner";
 import {OrderStatus} from "../../../../common/OrderStatus/OrderStatus";
 import {SuccessOrderStatusChangedModal} from "./SuccessOrderStatusChangedModal";
+import DocumentTitle from 'react-document-title';
 
 class FullOrder extends React.Component {
 	constructor(props) {
@@ -176,12 +177,14 @@ class FullOrder extends React.Component {
 
 	render() {
 		return (
-			<div>
-				{this.renderUserInfo()}
-				{this.renderProductsInfo()}
-				{this.renderOrderInfo()}
-				{this.renderSuccessOrderStatusChangedModal()}
-			</div>
+			<DocumentTitle title={`Замовлення ${this.props.match.params.orderId}`}>
+				<div>
+					{this.renderUserInfo()}
+					{this.renderProductsInfo()}
+					{this.renderOrderInfo()}
+					{this.renderSuccessOrderStatusChangedModal()}
+				</div>
+			</DocumentTitle>
 		);
 	}
 }

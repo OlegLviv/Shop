@@ -96,7 +96,7 @@ export const normalizeSubCategoryToRoute = subCategory => {
 		case 'Шкатулки':
 			return 'casket';
 		case 'Декоративні коробочки':
-			return 'decorativeBoxes';
+			return 'decorative-boxes';
 		case 'Статуетки':
 			return 'figures';
 
@@ -106,16 +106,113 @@ export const normalizeSubCategoryToRoute = subCategory => {
 	}
 };
 
+export const normalizeRouteToSubCategory = routeValue => {
+	switch (routeValue) {
+		// Backs
+		case 'backpacks-for-preschoolers':
+			return 'Рюкзаки для дошкільнят';
+		case 'backpacks-for-schoolchildren':
+			return 'Рюкзаки для школярів';
+		case 'backpacks-for-adults':
+			return 'Рюкзаки для дорослих';
+		case 'backpacks-for-dressing':
+			return 'Рюкзаки для перевзуття';
+		case 'baby-handbags':
+			return 'Дитячі сумочки';
+
+		//	Stationery
+		case 'pencil-cases':
+			return 'Пенали';
+		case 'shingles-elastics-rulers':
+			return 'Стругалки, резинки, лінійки';
+		case 'schoolFolders':
+			return 'Папки шкільні';
+		case 'officeFolders':
+			return 'Папки офісні';
+		case 'copyBooks':
+			return 'Зошити';
+		case 'diaries':
+			return 'Щоденники';
+		case 'office-paper':
+			return 'Папір офісний';
+		case 'notebooks':
+			return 'Блокноти';
+		case 'stickers':
+			return 'Стікери';
+		case 'dictionaries':
+			return 'Словники';
+		case 'colored-paper-and-cardboard':
+			return 'Кольоровий папір і картон';
+		case 'stands-for-books':
+			return 'Підставки для книг';
+		case 'pens':
+			return 'Ручки';
+		case 'stands-for-pens':
+			return 'Підставки для ручок';
+		case 'pencils':
+			return 'Олівці';
+		case 'flomasters':
+			return 'Фломастери';
+		case 'paints-and-brushes':
+			return 'Фарби і пензлики';
+		case 'markers':
+			return 'Маркери';
+		case 'correctors':
+			return 'Коректори';
+		case 'plasticine':
+			return 'Пластилін';
+		case 'glue':
+			return 'Клей';
+		case 'scotch-tape':
+			return 'Скотч';
+		case 'calculators':
+			return 'Калькулятори';
+		case 'scissors-and-knives':
+			return 'Ножиці і ножі канц.';
+		case 'schoolSupplies':
+			return 'Шкільне приладдя';
+		case 'officeSupplies':
+			return 'Офісне приладдя';
+		case 'zno':
+			return 'ЗНО';
+
+		//	Gifts
+		case 'casket':
+			return 'Шкатулки';
+		case 'decorative-boxes':
+			return 'Декоративні коробочки';
+		case 'figures':
+			return 'Статуетки';
+
+		//	Books
+		case 'encyclopedias':
+			return 'Енциклопедії';
+	}
+};
+
 export const normalizeCategoryToRoute = category => {
 	switch (category) {
 		case 'Рюкзаки. Сумочки':
-			return 'Backpacks Handbags';
+			return 'backpacks-handbags';
 		case 'Канцтовари':
-			return 'Stationery';
+			return 'stationery';
 		case 'Подарунки':
-			return 'Gifts';
+			return 'gifts';
 		case 'Книги':
-			return 'Books';
+			return 'books';
+	}
+};
+
+export const normalizeRouteToCategory = routeValue => {
+	switch (routeValue) {
+		case 'backpacks-handbags':
+			return 'Рюкзаки. Сумочки';
+		case 'stationery':
+			return 'Канцтовари';
+		case 'gifts':
+			return 'Подарунки';
+		case 'books':
+			return 'Книги';
 	}
 };
 
