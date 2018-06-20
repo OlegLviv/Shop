@@ -1,11 +1,12 @@
 import React from 'react';
 import './FullCallMe.scss';
-import {apiGet, apiPut} from "../../../../services/api";
-import {getCallMeByIdUrl, getChangeCallMeStatusUrl} from "../../../../services/urls/orderUrls";
+import {apiDelete, apiGet, apiPut} from "../../../../services/api";
+import {getCallMeByIdUrl, getChangeCallMeStatusUrl, getDeleteCallMeUrl} from "../../../../services/urls/orderUrls";
 import {Spinner} from "../../../Spinner/Spinner";
 import {getDateWithTimeString} from "../../../../utils/timeUtils";
 import {CallMeStatus} from "../../../common/CallMeStatus/CallMeStatus";
 import DocumentTitle from 'react-document-title';
+import {SuccessDeletedCallMeModal} from "./SuccessDeletedCallMeModal";
 
 const getId = props => props.match.params.id;
 
@@ -14,7 +15,8 @@ class FullCallMe extends React.Component {
 		super(props);
 		this.state = {
 			callMe: null,
-			loading: false
+			loading: false,
+			isShowSuccessDeletedCallMeModal: false
 		}
 	}
 
@@ -64,12 +66,40 @@ class FullCallMe extends React.Component {
 			});
 	};
 
+	onDeleteCallMe = () => {
+		if (this.state.callMe && !this.state.loading) {
+			this.trySetLoading();
+
+			apiDelete(getDeleteCallMeUrl(this.state.callMe.id))
+				.then(() => {
+					this.setState({
+						loading: false,
+						isShowSuccessDeletedCallMeModal: true
+					});
+				})
+				.catch(err => {
+					this.setState({loading: false});
+					alert(`Error:${err}`);
+				});
+		}
+	};
+
+	onCloseSuccessDeletedCallMeModal = () => {
+		this.setState({isShowSuccessDeletedCallMeModal: false});
+		window.location.replace('/adminPanel/call-me');
+	};
+
+	renderSuccessDeletedCallMeModal = () => <SuccessDeletedCallMeModal
+		isOpen={this.state.isShowSuccessDeletedCallMeModal}
+		onClose={this.onCloseSuccessDeletedCallMeModal}/>;
+
 	render() {
 		const {callMe, loading} = this.state;
 
 		return (
 			<DocumentTitle title={`Заявка на дзвінок: ${callMe ? callMe.name : ''}`}>
 				<div className="call-me-cont">
+					{this.renderSuccessDeletedCallMeModal()}
 					<div className="call-me-cont__header">
 						Інформація про зворотній дзвінок
 					</div>
@@ -81,6 +111,7 @@ class FullCallMe extends React.Component {
 								<th>Телефон</th>
 								<th>Дата</th>
 								<th>Статус</th>
+								<th>Видалити</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -91,6 +122,11 @@ class FullCallMe extends React.Component {
 								<td>
 									<CallMeStatus status={callMe.callMeStatus}
 												  onClick={this.toggleStatus}/>
+								</td>
+								<td>
+									<button className="btn btn-danger"
+											onClick={this.onDeleteCallMe}>Видалити
+									</button>
 								</td>
 							</tr>
 							</tbody>

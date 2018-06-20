@@ -1,7 +1,7 @@
 import React from 'react';
 import './CallMe.scss';
-import {apiGet} from "../../../../services/api";
-import {getCallMeUrl} from "../../../../services/urls/orderUrls";
+import {apiDelete, apiGet} from "../../../../services/api";
+import {getCallMeUrl, getDeleteCallMeUrl} from "../../../../services/urls/orderUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../Spinner/Spinner";
 import {getDateWithTimeString} from "../../../../utils/timeUtils";
@@ -60,9 +60,9 @@ class CallMe extends React.Component {
 			return (
 				<ul className="list-group call-me-cont__list-box__list-group">
 					{
-						this.state.callMeArr.map(item => (
+						this.state.callMeArr.map((item, i) => (
 							<Link to={`/adminPanel/call-me/${item.id}`}>
-								<li className="list-group-item call-me-cont__list-box__list-group__item">
+								<li className="list-group-item call-me-cont__list-box__list-group__item" key={item.id}>
 									<div>{`Ім'я: ${item.name}`}</div>
 									<div>{`Телефон: ${item.phone}`}</div>
 									<div>{`Дата: ${getDateWithTimeString(item.date)}`}</div>

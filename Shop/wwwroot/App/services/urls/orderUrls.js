@@ -20,3 +20,6 @@ export const CREATE_CALL_ME = '/api/order/CreateCallMe';
 export const getChangeOrderStatusUrl = (id, orderStatus) => `/api/order/ChangeOrderStatus/${id}/${orderStatus}`;
 
 export const getChangeCallMeStatusUrl = (id, callMeStatus) => `/api/order/ChangeCallMeStatus/${id}/${callMeStatus}`;
+
+// DELETE
+export const getDeleteCallMeUrl = id => `/api/order/DeleteCallMe/${id}`;

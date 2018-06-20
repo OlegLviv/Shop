@@ -287,5 +287,25 @@ namespace Shop.Controllers.Api
         }
 
         #endregion
+
+        #region DELETE
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpDelete("DeleteCallMe/{id}")]
+        public async Task<IActionResult> DeleteCallMe(string id)
+        {
+            var callMe = await _callMeRepository.GetByIdAsync(id);
+
+            if (callMe == null)
+                return BadRequest("Icorrect id or call me not found");
+
+            var deleteResult = await _callMeRepository.DeleteAsync(callMe);
+
+            if (deleteResult >= 1)
+                return Ok("Success");
+
+            return BadRequest("Can't delete call me");
+        }
+        #endregion
     }
 }
