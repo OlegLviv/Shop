@@ -203,7 +203,7 @@ class ProductCardPlace extends React.Component {
 										<td data-label="Номер"><h5>{i + 1}</h5></td>
 										<td data-label="Назва">
 											<div className="media">
-												<img className="mr-2 product-img"
+												<img className="mr-2 ml-2 product-img"
 													 style={{
 														 display: `${!this.state.loadedImg ? 'none' : 'block'}`
 													 }}
