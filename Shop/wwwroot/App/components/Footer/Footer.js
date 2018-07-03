@@ -71,15 +71,11 @@ class Footer extends React.Component {
 						<div className="footer-cont__main__contacts__main-text">Контакти:</div>
 						<div className="footer-cont__main__contacts__contact">
 							<Icon name="phone"/>
-							<div>+38054643345</div>
+							<div>+380966809947</div>
 						</div>
 						<div className="footer-cont__main__contacts__contact">
 							<Icon name="phone"/>
-							<div>+38054643345</div>
-						</div>
-						<div className="footer-cont__main__contacts__contact">
-							<Icon name="phone"/>
-							<div>+38054643345</div>
+							<div>+380991291765</div>
 						</div>
 					</div>
 					<div className="footer-cont__main__contacts">
@@ -89,7 +85,7 @@ class Footer extends React.Component {
 						</div>
 						<div className="footer-cont__main__contacts__contact">
 							<Icon name="home"/>
-							<div>Lviv, Address 22a</div>
+							<div>м.Львів</div>
 						</div>
 					</div>
 					<div className="footer-cont__main__mailing">
