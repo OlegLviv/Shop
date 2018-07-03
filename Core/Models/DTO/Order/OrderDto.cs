@@ -21,6 +21,8 @@ namespace Core.Models.DTO.Order
 
         public OrderStatus OrderStatus { get; set; } = OrderStatus.New;
 
+        public double TotalPrice { get; set; }
+
         public long CreateDate { get; set; }
     }
 }

@@ -103,6 +103,20 @@ export const normalizeSubCategoryToRoute = subCategory => {
 		//	Books
 		case 'Енциклопедії':
 			return 'encyclopedias';
+		case 'Художня література':
+			return 'fiction';
+		case 'Дитяча художня література':
+			return 'childrens-fiction';
+		case 'Психологія':
+			return 'psychology';
+		case 'Релігійна література':
+			return 'religious-literature';
+		case 'Дитяча релігійна література':
+			return 'childrens-religious-literature';
+		case 'Казки':
+			return 'tales';
+		case 'Книжки для малят':
+			return 'kids-books';
 	}
 };
 
@@ -187,6 +201,20 @@ export const normalizeRouteToSubCategory = routeValue => {
 		//	Books
 		case 'encyclopedias':
 			return 'Енциклопедії';
+		case 'fiction':
+			return 'Художня література';
+		case 'childrens-fiction':
+			return 'Дитяча художня література';
+		case 'psychology':
+			return 'Психологія';
+		case 'religious-literature':
+			return 'Релігійна література';
+		case 'childrens-religious-literature':
+			return 'Дитяча релігійна література';
+		case 'tales':
+			return 'Казки';
+		case 'kids-books':
+			return 'Книжки для малят';
 	}
 };
 
@@ -280,7 +308,14 @@ export const NAVIGATION_SUB_CATEGORIES = {
 		'Статуетки'
 	],
 	books: [
-		'Енциклопедії'
+		'Енциклопедії',
+		'Художня література',
+		'Дитяча художня література',
+		'Психологія',
+		'Релігійна література',
+		'Дитяча релігійна література',
+		'Казки',
+		'Книжки для малят'
 	]
 };
 

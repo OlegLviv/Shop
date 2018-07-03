@@ -12,9 +12,12 @@ using Core.Models.DTO;
 using Core.Models.DTO.Order;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Shop.Controllers.Api
 {
@@ -29,13 +32,15 @@ namespace Shop.Controllers.Api
         private readonly UserManager<User> _userManager;
         private readonly IRepositoryAsync<Product> _productRepository;
         private readonly IRepositoryAsync<CallMe> _callMeRepository;
+        private readonly IEmailSender _emailSender;
 
         public OrderController(IMapper mapper,
             IRepositoryAsync<Order> orderRepository,
             UserManager<User> userManager,
             IRepositoryAsync<Product> productRepository,
             IOrderService orderService,
-            IRepositoryAsync<CallMe> callMeRepository)
+            IRepositoryAsync<CallMe> callMeRepository,
+            IEmailSender emailSender)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
@@ -43,6 +48,7 @@ namespace Shop.Controllers.Api
             _productRepository = productRepository;
             _orderService = orderService;
             _callMeRepository = callMeRepository;
+            _emailSender = emailSender;
         }
 
         #region GET
@@ -192,6 +198,12 @@ namespace Shop.Controllers.Api
 
             var insertResult = await _orderRepository.InsertAsync(order);
 
+            await _emailSender.SendEmailAsync(
+                (HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration)?["EmailCredential:Email"],
+                order.Email,
+                "Info",
+                MailsContainer.GetMailForCreateOrder(order));
+
             if (insertResult >= 1)
                 return Ok("Success");
 
@@ -213,6 +225,12 @@ namespace Shop.Controllers.Api
             order.TotalPrice = _orderService.CalculateTotalPrice(order);
 
             var insertResult = await _orderRepository.InsertAsync(order);
+
+            await _emailSender.SendEmailAsync(
+                (HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration)?["EmailCredential:Email"],
+                order.Email,
+                "Info",
+                MailsContainer.GetMailForCreateOrder(order));
 
             if (insertResult >= 1)
                 return Ok("Success");

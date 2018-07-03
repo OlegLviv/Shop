@@ -109,14 +109,19 @@ class FullOrder extends React.Component {
 						<th>Кількість</th>
 						</thead>
 						<tbody>
-						{this.state.order.productsContainers.map(prodCont => {
-							return (
+						{this.state.order.productsContainers.map(prodCont => (
 								<tr>
 									<td>{prodCont.product.name}</td>
 									<td>{prodCont.count}</td>
 								</tr>
 							)
-						})}
+						)}
+						<tr>
+							<td>Сума замовлення</td>
+							<td>
+								<b>{this.state.order.totalPrice}грн</b>
+							</td>
+						</tr>
 						</tbody>
 					</table>
 				</div>
@@ -135,6 +140,10 @@ class FullOrder extends React.Component {
 						<tr>
 							<td>Спосіб доставки</td>
 							<td>{this.state.order.wayOfDelivery}</td>
+						</tr>
+						<tr>
+							<td>Номер замовлення</td>
+							<td>{this.state.order.id}</td>
 						</tr>
 						<tr>
 							<td>Статус замовлення</td>
