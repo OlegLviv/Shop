@@ -1,12 +1,19 @@
+@import "../../../main";
+
 .menu-container {
   padding: 0 5rem 0 5rem;
-  background: #f3f3f3;;
+  background: #f3f3f3;
+
   &__navbar {
 	padding: 0;
 	padding: 2rem 0 2rem 0;
 	display: flex;
+
 	&__card {
 	  margin: 0 !important;
+	  flex-direction: row;
+	  justify-content: space-between;
+
 	  &__shoping-card {
 		display: inline-flex;
 		justify-content: center;
@@ -66,13 +73,15 @@
 	  }
 	}
 	&__card a {
-	  color: #212529;
+	  color: $dark;
 	}
   }
   &__navbar-right {
 	justify-content: space-between;
+
 	&__search {
 	  min-width: 20rem;
+
 	  &__search-item a {
 		display: block;
 		width: 100%;
@@ -111,4 +120,10 @@
 .search-box div div::-webkit-scrollbar-thumb {
   background: #d3d3d3;
   border-radius: .5rem;
+}
+
+@media screen and (max-width: 992px) {
+  .ico {
+	transform: scale(1.5);
+  }
 }

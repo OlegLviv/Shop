@@ -98,21 +98,21 @@ class NavMenu extends React.Component {
 								value={this.state.searchVal}
 								onChange={this.onChangeAutocomplete}
 								onSelect={this.onSelectAutocomplete}/>
-							<button
-								className="btn btn-dark my-sm-0 form-control mr-sm-2 menu-container__navbar-right__search-but">
-								<Icon name="search"/>
-							</button>
+							{/*<button*/}
+								{/*className="btn btn-dark my-sm-0 form-control mr-sm-2 menu-container__navbar-right__search-but">*/}
+								{/*<Icon name="search"/>*/}
+							{/*</button>*/}
 						</div>
 						<ul className="navbar-nav mr-auto menu-container__navbar__card">
 							<li className="nav-item">
 								<Link to="/productsCard"><Icon size="2x"
-															   name="shopping-cart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-shoping"/></Link>
+															   name="shopping-cart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-shoping ico"/></Link>
 								{productCardItemsCount !== 0 && <div
 									className="menu-container__navbar__card__shoping-card">{productCardItemsCount}</div>}
 							</li>
 							<li className="nav-item">
 								<Link to="/likedProducts"><Icon size="2x"
-																name="heart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-like"/></Link>
+																name="heart ml-xl-5 ml-lg-3 menu-container__navbar__card__icon-like ico"/></Link>
 								{likeProdCount !== 0 && <div
 									className="menu-container__navbar__card__like">{likeProdCount}</div>
 								}

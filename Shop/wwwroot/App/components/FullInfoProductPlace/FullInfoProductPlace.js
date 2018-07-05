@@ -309,6 +309,8 @@ class FullInfoProductPlace extends React.Component {
 														onClick={this.onProductCountInc}>+
 												</button>
 											</div>
+											<hr/>
+											<div className="available">{this.state.product.isAvailable ? 'Є в наявності' : 'Немає в наявності'}</div>
 											<div
 												className="container-product__row__info-container__to-card__btn-to-card">
 												<div>

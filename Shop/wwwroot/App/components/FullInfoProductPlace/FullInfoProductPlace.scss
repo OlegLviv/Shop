@@ -80,6 +80,9 @@
 		  transform: scale(1.1);
 		}
 	  }
+	  &__to-card input[type="number"] {
+		border: none;
+	  }
 	}
   }
 }
@@ -148,6 +151,7 @@
 
 .card-about-prod {
   margin-top: 3rem;
+  margin-bottom: 2rem;
 }
 
 .card-header {
@@ -163,6 +167,16 @@
   background: $light-background;
   border: 1px $dark-grey-transparent-color solid;
   border-radius: 5px;
+}
+
+.available {
+  background: $dark-grey-color;
+  border-radius: 5px;
+  padding: .5rem;
+  display: flex;
+  justify-content: center;
+  border: 1px $dark solid;
+  color: $dark;
 }
 
 @media screen and (max-width: 760px) {
