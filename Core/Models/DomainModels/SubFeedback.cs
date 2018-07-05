@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Core.Models.DomainModels.Base;
 
 namespace Core.Models.DomainModels
 {
-    public class Feedback : BaseEntity
+    public class SubFeedback : BaseEntity
     {
         [Required]
         public string UserId { get; set; }
@@ -13,14 +12,16 @@ namespace Core.Models.DomainModels
         [Required]
         public string ProductId { get; set; }
 
-        public Product Product { get; set; }
+        [Required]
+        public Feedback Feedback { get; set; }
 
-        public List<SubFeedback> SubFeedbacks { get; set; }
+        [Required]
+        public string FeedbackId { get; set; }
 
         [Required]
         [MaxLength(255)]
         public string Body { get; set; }
 
-        public DateTime Date { get; set; } = DateTime.Now;
+        public long Date { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
 }

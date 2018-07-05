@@ -31,6 +31,7 @@ namespace Shop.Controllers.Api
         private readonly AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
         private readonly IRepositoryAsync<ProductImage> _imageRepository;
+        private readonly IRepositoryAsync<Feedback> _feedbackRepository;
         private readonly ProductService _productService;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
@@ -40,7 +41,8 @@ namespace Shop.Controllers.Api
             IRepositoryAsync<Product> productsRepository,
             ProductService productService,
             UserManager<User> userManager, IMapper mapper,
-            IRepositoryAsync<ProductImage> imageRepository)
+            IRepositoryAsync<ProductImage> imageRepository,
+            IRepositoryAsync<Feedback> feedbackRepository)
         {
             _context = context;
             _productsRepository = productsRepository;
@@ -48,6 +50,7 @@ namespace Shop.Controllers.Api
             _userManager = userManager;
             _mapper = mapper;
             _imageRepository = imageRepository;
+            _feedbackRepository = feedbackRepository;
         }
 
         #region GET
@@ -70,6 +73,7 @@ namespace Shop.Controllers.Api
             return this.JsonResult(_mapper.Map<ProductDto>(product));
         }
 
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         [HttpGet("GetMostPopularProducts/{count:int?}")]
         public IActionResult GetMostPopularProducts(int count = 16)
         {
@@ -106,6 +110,7 @@ namespace Shop.Controllers.Api
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
+
             return this.JsonResult(new Paginator<Product>
             {
                 Data = products.Take(size),
@@ -115,7 +120,7 @@ namespace Shop.Controllers.Api
             });
         }
 
-        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}/{sortingType:int?}")]
         public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16, SortingType sortingType = SortingType.NoSort)
         {
@@ -212,8 +217,10 @@ namespace Shop.Controllers.Api
             foreach (var productFeedback in productFeedbacks)
             {
                 var user = await _userManager.FindByIdAsync(productFeedback.UserId);
+
                 if (user == null)
                     return BadRequest("Incorrent user id");
+
                 feedbacks.Add(new FeedbackDto
                 {
                     UserName = user.Name,
@@ -238,7 +245,6 @@ namespace Shop.Controllers.Api
                 return BadRequest("Icorrect sub category or properties not found");
 
             var propsArr = properties.Properties.Split(';');
-
             var posibleProductProperties = new List<dynamic>(propsArr.Length);
 
             foreach (var prop in propsArr)
@@ -247,6 +253,7 @@ namespace Shop.Controllers.Api
                 {
                     continue;
                 }
+
                 posibleProductProperties.Add(new
                 {
                     PropValue = prop,
@@ -257,6 +264,7 @@ namespace Shop.Controllers.Api
                     .Split(';')
                 });
             }
+
             return this.JsonResult(posibleProductProperties);
         }
 
@@ -288,8 +296,10 @@ namespace Shop.Controllers.Api
                 .Table
                 .Include(x => x.ProductImages)
                 .FirstOrDefaultAsync(x => x.Id == productId);
+
             if (product == null)
                 return BadRequest("Product don't exist. Or Incorrect product id");
+
             return Ok(product
                 .ProductImages
                 .Count);
@@ -367,7 +377,7 @@ namespace Shop.Controllers.Api
             if (product == null)
                 return BadRequest("Product don't exist");
 
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = await this.GetUserByIdentityAsync(_userManager);
 
             if (user == null)
                 return BadRequest("User with this id don't exist");
@@ -395,6 +405,45 @@ namespace Shop.Controllers.Api
             feedbackDto.UserLastName = user.LastName;
 
             return this.JsonResult(feedbackDto);
+        }
+
+        [HttpPost("SendSubFeedback")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> SendSubFeedback([FromBody] SendProductSubFeedbackDto model)
+        {
+            var feedback = await _feedbackRepository.GetByIdAsync(model.FeedbackId);
+
+            if (feedback == null)
+                return BadRequest("Incorrect feedback id or feedback don't found");
+
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            var subFeedback = new SubFeedback
+            {
+                Feedback = feedback,
+                Body = model.Body,
+                FeedbackId = feedback.Id,
+                UserId = user.Id
+            };
+
+            if (feedback.SubFeedbacks.Count > 0)
+                feedback.SubFeedbacks.Add(subFeedback);
+            else
+                feedback.SubFeedbacks = new List<SubFeedback> { subFeedback };
+
+            var updateResult = await _feedbackRepository.UpdateAsync(feedback);
+
+            if (updateResult <= 0)
+                throw new Exception("Can't update product");
+
+            var subFeedbackDto = _mapper.Map<SubFeedbackDto>(feedback);
+            subFeedbackDto.UserName = user.Name;
+            subFeedbackDto.UserLastName = user.LastName;
+
+            return this.JsonResult(subFeedbackDto);
         }
 
         [HttpPost("AddProperty")]

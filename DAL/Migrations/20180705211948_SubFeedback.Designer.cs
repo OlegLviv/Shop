@@ -13,9 +13,10 @@ using System;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180705211948_SubFeedback")]
+    partial class SubFeedback
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,6 +56,8 @@ namespace DAL.Migrations
 
                     b.Property<DateTime>("Date");
 
+                    b.Property<string>("FeedbackId");
+
                     b.Property<string>("ProductId")
                         .IsRequired();
 
@@ -62,6 +65,8 @@ namespace DAL.Migrations
                         .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FeedbackId");
 
                     b.HasIndex("ProductId");
 
@@ -250,34 +255,6 @@ namespace DAL.Migrations
                         .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("ShopingCard");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.SubFeedback", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36);
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<long>("Date");
-
-                    b.Property<string>("FeedbackId")
-                        .IsRequired();
-
-                    b.Property<string>("ProductId")
-                        .IsRequired();
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FeedbackId");
-
-                    b.ToTable("SubFeedback");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -476,6 +453,10 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("Core.Models.DomainModels.Feedback", b =>
                 {
+                    b.HasOne("Core.Models.DomainModels.Feedback")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("FeedbackId");
+
                     b.HasOne("Core.Models.DomainModels.Product", "Product")
                         .WithMany("Feedbacks")
                         .HasForeignKey("ProductId")
@@ -512,14 +493,6 @@ namespace DAL.Migrations
                     b.HasOne("Core.Models.DomainModels.User", "User")
                         .WithOne("ShopingCard")
                         .HasForeignKey("Core.Models.DomainModels.ShopingCard", "UserId");
-                });
-
-            modelBuilder.Entity("Core.Models.DomainModels.SubFeedback", b =>
-                {
-                    b.HasOne("Core.Models.DomainModels.Feedback", "Feedback")
-                        .WithMany("SubFeedbacks")
-                        .HasForeignKey("FeedbackId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -29,6 +29,7 @@ namespace Core.Mapper
             CreateMap<SendProductFeedbackDto, Feedback>();
             CreateMap<Feedback, FeedbackDto>().ForMember(d => d.Date,
                 m => m.MapFrom(nd => ((DateTimeOffset)nd.Date).ToUnixTimeSeconds()));
+            CreateMap<SubFeedback, SubFeedbackDto>();
         }
     }
 }
