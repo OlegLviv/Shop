@@ -7,7 +7,7 @@ import {
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
 import {SEND_FEEDBACK_URL} from "../../services/urls/productUrls";
-import {addProductCookies} from "../../services/cookies";
+import {addProductCookies, addProductIdOfferCookie} from "../../services/cookies";
 import {connect} from 'react-redux';
 import {convertDateToDateString, convertDateToTimeString} from "../../utils/timeUtils";
 import DocumentTitle from 'react-document-title';
@@ -30,12 +30,10 @@ class FullInfoProductPlace extends React.Component {
 		}
 	}
 
-	// todo need add catch
 	componentDidMount() {
 		this.updateProduct(this.props);
 	}
 
-	// todo need add catch
 	componentWillReceiveProps(nextProps) {
 		this.updateProduct(nextProps);
 	}
@@ -55,6 +53,7 @@ class FullInfoProductPlace extends React.Component {
 					.then(imgCResp => {
 						const product = resp.data;
 						product.imgSources = [];
+						addProductIdOfferCookie(product.id, 3);
 
 						for (let i = 0; i < imgCResp.data; i++) {
 							product.imgSources.push(getProductImageUrl(product.id, i));
@@ -310,7 +309,8 @@ class FullInfoProductPlace extends React.Component {
 												</button>
 											</div>
 											<hr/>
-											<div className="available">{this.state.product.isAvailable ? 'Є в наявності' : 'Немає в наявності'}</div>
+											<div
+												className="available">{this.state.product.isAvailable ? 'Є в наявності' : 'Немає в наявності'}</div>
 											<div
 												className="container-product__row__info-container__to-card__btn-to-card">
 												<div>

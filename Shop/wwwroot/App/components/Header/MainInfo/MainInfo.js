@@ -114,7 +114,7 @@ class MainInfo extends React.Component {
 				<div className="info_container__right col-xl-5 col-lg-12">
 					<div className="info_container__right__menu-item">
 						<div className="info_container__right__menu-item__sub-menu">
-							+380680538860
+							+380966809947
 						</div>
 						<div className="info_container__right__menu-item__sub-menu btn btn-outline-dark">
 							<a onClick={this.onCallMeClick}>Зателефонуй мені</a>

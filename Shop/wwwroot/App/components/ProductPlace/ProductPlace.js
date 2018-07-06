@@ -20,6 +20,7 @@ import {priceRange} from "../../utils/productsUtils";
 import {connect} from 'react-redux';
 import MostPopular from './MostPopular/MostPopular';
 import DocumentTitle from 'react-document-title';
+import OfferProducts from '../common/OfferProducts/OfferProducts';
 
 const getCategory = props => props.match.params.category;
 const getSubCategory = props => props.match.params.subCategory;
@@ -280,6 +281,12 @@ class ProductPlace extends React.Component {
 					</div>
 					<div className="col-xl-9 col-lg-8">
 						{this.renderSwitchContent()}
+					</div>
+					<div className="offer-products-header">
+						Недавно переглянуті товари
+					</div>
+					<div className="col-12 offer-products">
+						<OfferProducts/>
 					</div>
 				</div>
 			</DocumentTitle>

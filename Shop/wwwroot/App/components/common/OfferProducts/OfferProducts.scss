@@ -1,0 +1,11 @@
+@import "../../../main";
+
+.products-card-cont {
+  &__box {
+	display: flex;
+  }
+}
+
+.full-w {
+  width: 100%;
+}

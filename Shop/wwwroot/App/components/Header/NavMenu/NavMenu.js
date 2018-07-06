@@ -7,7 +7,7 @@ import Autocomplete from 'react-autocomplete';
 import {apiWithoutRedirect} from "../../../services/api";
 import {getProductsByNameUrl} from "../../../services/urls/productUrls";
 import {connect} from 'react-redux';
-import {SITE_NAME} from "../../constants/siteConstants";
+import {SITE_NAME} from "../../../constants/siteConstants";
 
 const getLikeProductsCount = () => {
 	const prodCookie = getCookie('likeProducts');
