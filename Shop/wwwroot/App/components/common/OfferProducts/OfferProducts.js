@@ -16,6 +16,9 @@ class OfferProducts extends Component {
 	}
 
 	componentDidMount() {
+		if (!getProductIdOffers()[0])
+			return;
+
 		this.trySetLoading();
 		apiWithoutRedirect()
 			.get(getProductsByIdsUrl(getProductIdOffers()))
@@ -38,7 +41,7 @@ class OfferProducts extends Component {
 		const {products, loading} = this.state;
 
 		return (
-			<div className={`products-card-cont ${loading && 'full-w'}`}>
+			<div className={`products-card-cont ${loading || (!loading && !products.length) ? 'full-w' : ''}`}>
 				{!loading ? <div className="products-card-cont__box">
 					{
 						products.map(product => (
@@ -47,6 +50,10 @@ class OfferProducts extends Component {
 								id={product.id}
 								name={product.name}/>
 						))
+					}
+					{
+						!loading && !products.length &&
+						<h3 className="text-center w-100 pt-2 pb-2">Ви ще нічого не переглядали</h3>
 					}
 				</div> : <Spinner/>}
 			</div>
