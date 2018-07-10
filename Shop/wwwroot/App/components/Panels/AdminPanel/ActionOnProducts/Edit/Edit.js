@@ -357,7 +357,7 @@ class Edit extends React.Component {
 						<div className="edit-container__pagin-box">
 							{this.state.products.length > 0 &&
 							<Pagination totalItemsCount={this.state.totalProductCount}
-										itemsCountPerPage={16}
+										itemsCountPerPage={howProductsPerPage}
 										onChange={this.onPaginationChange}
 										activePage={this.state.activePage}
 										itemClass="page-item"
