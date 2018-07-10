@@ -232,7 +232,7 @@ export const normalizeCategoryToRoute = category => {
 };
 
 export const normalizeRouteToCategory = routeValue => {
-	switch (routeValue) {
+	switch (routeValue && routeValue.toLowerCase()) {
 		case 'backpacks-handbags':
 			return 'Рюкзаки. Сумочки';
 		case 'stationery':

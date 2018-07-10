@@ -13,6 +13,7 @@ import {Spinner} from "../../../../Spinner/Spinner";
 import {SuccessDeletedModal} from "./SuccessDeletedModal";
 import {SuccessUpdatedModal} from "./SuccessUpdatedModal";
 import DocumentTitle from 'react-document-title';
+import {normalizeRouteToCategory, normalizeRouteToSubCategory} from "../../../../../utils/productsUtils";
 
 const howProductsPerPage = 5;
 
@@ -334,8 +335,8 @@ class Edit extends React.Component {
 												onClick={() => this.onProductClick(item)}>
 												<div>
 													<div>{`Назва продукту: ${item.name}`}</div>
-													<div>{`Категорія: ${item.category}`}</div>
-													<div>{`Підкатегорія: ${item.subCategory}`}</div>
+													<div>{`Категорія: ${normalizeRouteToCategory(item.category)}`}</div>
+													<div>{`Підкатегорія: ${normalizeRouteToSubCategory(item.subCategory)}`}</div>
 												</div>
 												<div>
 													<img className=""
