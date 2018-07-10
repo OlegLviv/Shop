@@ -2,6 +2,7 @@
 
 .layout-container {
   min-width: 590px;
+  font-family: 'Fira Sans Condensed', sans-serif;
 }
 
 .invalid-input {
@@ -16,4 +17,15 @@
 
 .invalid-small {
   color: #ff5555 !important;
+}
+
+.navbar-brand {
+  font-size: 2rem;
+  font-weight: bold;
+
+  &__sub {
+	font-size: 50%;
+	padding-left: .2rem;
+	font-weight: inherit;
+  }
 }

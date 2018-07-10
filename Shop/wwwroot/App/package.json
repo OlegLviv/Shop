@@ -19,7 +19,6 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.2.0",
     "react-fa": "^5.0.0",
-    "react-fileupload-progress": "^0.4.1",
     "react-js-pagination": "^3.0.1",
     "react-modal": "^3.3.2",
     "react-redux": "5.0.7",

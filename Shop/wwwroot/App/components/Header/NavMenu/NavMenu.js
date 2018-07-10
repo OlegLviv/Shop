@@ -7,7 +7,7 @@ import Autocomplete from 'react-autocomplete';
 import {apiWithoutRedirect} from "../../../services/api";
 import {getProductsByNameUrl} from "../../../services/urls/productUrls";
 import {connect} from 'react-redux';
-import {SITE_NAME} from "../../../constants/siteConstants";
+import {SITE_NAME, SITE_NAME_SUB} from "../../../constants/siteConstants";
 
 const getLikeProductsCount = () => {
 	const prodCookie = getCookie('likeProducts');
@@ -77,7 +77,9 @@ class NavMenu extends React.Component {
 		return (
 			<div className="menu-container">
 				<nav className="navbar navbar-expand-lg navbar-light menu-container__navbar">
-					<Link to="/" className="navbar-brand">{SITE_NAME}</Link>
+					<Link to="/" className="navbar-brand">{SITE_NAME}
+						<small className="navbar-brand__sub">{SITE_NAME_SUB}</small>
+					</Link>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 							aria-expanded="false" aria-label="Toggle navigation">
@@ -99,8 +101,8 @@ class NavMenu extends React.Component {
 								onChange={this.onChangeAutocomplete}
 								onSelect={this.onSelectAutocomplete}/>
 							{/*<button*/}
-								{/*className="btn btn-dark my-sm-0 form-control mr-sm-2 menu-container__navbar-right__search-but">*/}
-								{/*<Icon name="search"/>*/}
+							{/*className="btn btn-dark my-sm-0 form-control mr-sm-2 menu-container__navbar-right__search-but">*/}
+							{/*<Icon name="search"/>*/}
 							{/*</button>*/}
 						</div>
 						<ul className="navbar-nav mr-auto menu-container__navbar__card">
