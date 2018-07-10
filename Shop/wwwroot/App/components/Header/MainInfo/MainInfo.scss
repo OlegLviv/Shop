@@ -1,5 +1,7 @@
+@import "../../../main";
+
 .info_container {
-  background: #252525;
+  background: $dark;
   color: white;
   display: flex;
   align-items: center;
