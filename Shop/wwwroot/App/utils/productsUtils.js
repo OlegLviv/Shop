@@ -117,6 +117,12 @@ export const normalizeSubCategoryToRoute = subCategory => {
 			return 'tales';
 		case 'Книжки для малят':
 			return 'kids-books';
+
+		//	Toys
+		case 'Конструктори':
+			return 'designers';
+		case 'Машинки':
+			return 'cars'
 	}
 };
 
@@ -215,6 +221,12 @@ export const normalizeRouteToSubCategory = routeValue => {
 			return 'Казки';
 		case 'kids-books':
 			return 'Книжки для малят';
+
+		//	Toys
+		case 'designers':
+			return 'Конструктоори';
+		case 'cars':
+			return 'Машинки';
 	}
 };
 
@@ -228,6 +240,8 @@ export const normalizeCategoryToRoute = category => {
 			return 'gifts';
 		case 'Книги':
 			return 'books';
+		case 'Іграшки':
+			return 'toys';
 	}
 };
 
@@ -241,6 +255,8 @@ export const normalizeRouteToCategory = routeValue => {
 			return 'Подарунки';
 		case 'books':
 			return 'Книги';
+		case 'toys':
+			return 'Іграшки';
 	}
 };
 
@@ -255,6 +271,8 @@ export const getSubCategories = category => {
 			return NAVIGATION_SUB_CATEGORIES.gifts;
 		case 'Книги':
 			return NAVIGATION_SUB_CATEGORIES.books;
+		case 'Іграшки':
+			return NAVIGATION_SUB_CATEGORIES.toys;
 	}
 };
 
@@ -262,7 +280,8 @@ export const NAVIGATION_CATEGORIES = [
 	'Рюкзаки. Сумочки',
 	'Канцтовари',
 	'Подарунки',
-	'Книги'
+	'Книги',
+	'Іграшки'
 ];
 
 export const NAVIGATION_SUB_CATEGORIES = {
@@ -316,6 +335,10 @@ export const NAVIGATION_SUB_CATEGORIES = {
 		'Дитяча релігійна література',
 		'Казки',
 		'Книжки для малят'
+	],
+	toys: [
+		'Конструктори',
+		'Машинки'
 	]
 };
 

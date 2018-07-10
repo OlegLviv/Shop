@@ -82,6 +82,22 @@ class NavigationProducts extends React.Component {
 				</li>
 				<li className="list-group-item home-container__list-group-item">
 					<div className="btn-group dropright home-container__list-group-item__dropright">
+						<button type="button" className="home-container__list-group-item__dropright__dropdown-toggle"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Іграшки
+						</button>
+						<div className="dropdown-menu">
+							{
+								NAVIGATION_SUB_CATEGORIES.toys.map(item => <Link
+									key={guid()}
+									className="dropdown-item"
+									to={`/products/toys/${normalizeSubCategoryToRoute(item)}`}>{item}</Link>)
+							}
+						</div>
+					</div>
+				</li>
+				<li className="list-group-item home-container__list-group-item">
+					<div className="btn-group dropright home-container__list-group-item__dropright">
 						<Link to="/products/discount"
 							  className="home-container__list-group-item__dropright__dropdown-toggle">
 							Товари зі знижками
