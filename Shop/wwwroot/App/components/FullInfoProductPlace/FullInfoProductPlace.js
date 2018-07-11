@@ -25,7 +25,6 @@ class FullInfoProductPlace extends React.Component {
 			aboutProductNacCase: 'description',
 			feedbackValue: '',
 			isLoadingFeedbacks: false,
-			isLoadedFeedbacks: false,
 			selectedImgUrl: '',
 			addProductButText: 'В кошик',
 			isExpandedSubFeedbacks: [],
@@ -134,7 +133,6 @@ class FullInfoProductPlace extends React.Component {
 		this.setState({
 			aboutProductNacCase: 'feedback',
 			isLoadingFeedbacks: true,
-			isLoadedFeedbacks: false
 		});
 		apiWithoutRedirect()
 			.get(getProductFeedbackByIdUrl(this.state.product.id))
@@ -142,7 +140,6 @@ class FullInfoProductPlace extends React.Component {
 				this.setState({
 					productFeedbacks: resp.data,
 					isLoadingFeedbacks: false,
-					isLoadedFeedbacks: true
 				})
 			})
 	};
@@ -217,7 +214,7 @@ class FullInfoProductPlace extends React.Component {
 		);
 	};
 
-	renderSubCommentsSubmitBox = (isLogin, i, id) => {
+	renderSubCommentsSubmitBox = (isLogin, user, i, id) => {
 		if (this.state.submitSubCommentLoading)
 			return <Spinner/>;
 		if (isLogin && !this.state.submitSubCommentLoading)
@@ -239,7 +236,7 @@ class FullInfoProductPlace extends React.Component {
 
 	renderFeedback = () => {
 		const {user, isLogin} = this.props;
-		if (!this.state.isLoadedFeedbacks && this.state.isLoadingFeedbacks) {
+		if (this.state.isLoadingFeedbacks) {
 			return <Spinner/>
 		}
 		return (
@@ -269,7 +266,10 @@ class FullInfoProductPlace extends React.Component {
 								</div>
 								{
 									this.state.isExpandedSubFeedbacks[i] &&
-									<div className="container-c-b__card-body-content__sub-comments">
+									<div className="container-c-b__card-body-content__sub-comments"
+										 style={{
+											 'margin-left': `${user && (this.props.user.id === item.userId && '5rem')}`,
+										 }}>
 										{
 											item.subFeedbacks && item.subFeedbacks.map(subFeedback => (
 												<div
@@ -286,7 +286,7 @@ class FullInfoProductPlace extends React.Component {
 										}
 										<div>
 											{
-												this.renderSubCommentsSubmitBox((user && isLogin), i, item.id)
+												this.renderSubCommentsSubmitBox(isLogin, user, i, item.id)
 											}
 										</div>
 									</div>
@@ -297,13 +297,15 @@ class FullInfoProductPlace extends React.Component {
 				}
 				{this.props.isLogin && this.props.user ? <div className="container-c-b__submit-box">
 					<textarea className="form-control"
+							  value={this.state.feedbackValue}
 							  placeholder="Введіть свій коментар"
 							  onChange={(e) => this.setState({feedbackValue: e.target.value})}
-							  onKeyPress={this.onSendFeedbackKeyPress}/>
-					<button className="btn btn-dark" onClick={this.onSendFeedback}>
+							  onKeyPress={this.onSendFeedbackKeyPress}
+							  disabled={this.state.submitCommentLoading}/>
+					{!this.state.submitCommentLoading ? <button className="btn btn-dark" onClick={this.onSendFeedback}>
 						Відправити
 						<Icon name="comment ml-1"/>
-					</button>
+					</button> : <Spinner/>}
 				</div> : <div className="container-c-b__submit-box">Для того щоб залишити повідомлення увійдіть в
 					систему</div>}
 			</div>
