@@ -1,7 +1,7 @@
 @import "../../../main";
 
 .info_container {
-  background: $dark;
+  background: $lime-green;
   color: white;
   display: flex;
   align-items: center;
@@ -24,7 +24,13 @@
 
 		&__exit {
 		  color: white;
+		  margin-left: .2rem;
 		}
+	  }
+
+	  &__sub a {
+		display: flex;
+		align-items: center;
 	  }
 
 	  &__sub-menu {
@@ -35,14 +41,13 @@
 
 	&__menu-item a {
 	  cursor: pointer;
-	  color: #bbb4b5 !important;
 	  font-weight: normal;
 	  padding: 0 0.5rem 0 0.5rem;
 	  margin-left: .5rem;
 	}
 
 	&__menu-item a:hover {
-	  color: #925e5d !important;
+	  color: $dark !important;
 	}
   }
 
@@ -56,7 +61,7 @@
   }
 
   &__left a:hover {
-	color: #925e5d !important;
+	color: $dark !important;
   }
 }
 

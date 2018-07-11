@@ -38,13 +38,17 @@
 	}
   }
   &__sub-footer {
-	background: $dark;
-	color: $dark-grey-color;
+	background: $lime-green;
+	color: white;
 	display: flex;
 	padding: 1rem 5rem;
 	flex-direction: column;
 	align-items: center;
 	font-size: 13px;
+
+	&__text a {
+	  color: $dark;
+	}
   }
 }
 

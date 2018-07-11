@@ -116,19 +116,24 @@ class MainInfo extends React.Component {
 						<div className="info_container__right__menu-item__sub-menu">
 							+380966809947
 						</div>
-						<div className="info_container__right__menu-item__sub-menu btn btn-outline-dark">
-							<a onClick={this.onCallMeClick}>Зателефонуй мені</a>
+						<div className="info_container__right__menu-item__sub-menu btn btn-outline-dark"
+							 onClick={this.onCallMeClick}>
+							<div>Зателефонуй мені</div>
 						</div>
 					</div>
 					<div className="info_container__right__menu-item">
 						{!userName ? <div>
-							<a className="btn btn-outline-dark" onClick={this.openLoginModal}>Вхід</a>
-							<a onClick={this.openRegisterModal}>Реєстрація</a>
+							<button className="btn btn-outline-light" onClick={this.openLoginModal}>Вхід</button>
+							<button className="btn btn-outline-light" onClick={this.openRegisterModal}>
+								Реєстрація
+							</button>
 						</div> : <div className="info_container__right__menu-item__sub">
-							<Link className="btn btn-outline-dark"
+							<Link className="btn btn-outline-light"
 								  to={`/${userName === 'Admin' ? 'adminPanel/action-on-products' : 'userPanel/change-password'}`}>{userName}</Link>
-							<a className="btn btn-danger info_container__right__menu-item__sub__exit"
-							   onClick={this.singOut}>Вийти</a>
+							<button className="btn btn-danger info_container__right__menu-item__sub__exit"
+									onClick={this.singOut}>
+								Вийти
+							</button>
 						</div>}
 						<LogInModal
 							isModalOpen={this.state.isLoginModalOpen}
