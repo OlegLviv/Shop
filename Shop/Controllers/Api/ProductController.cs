@@ -203,28 +203,42 @@ namespace Shop.Controllers.Api
             if (string.IsNullOrEmpty(productId))
                 return BadRequest("Incorrent id");
 
-            var product = await _productsRepository
+            var productFeedbacks = _feedbackRepository
                 .Table
-                .Include(x => x.Feedbacks)
-                .FirstOrDefaultAsync(x => x.Id == productId);
+                .Include(f => f.SubFeedbacks)
+                .Where(f => f.ProductId == productId);
 
-            if (product == null)
-                return BadRequest("Product don't exist");
-
-            var productFeedbacks = product.Feedbacks;
-            var feedbacks = new List<FeedbackDto>(productFeedbacks.Count);
+            var feedbacks = new List<FeedbackDto>(productFeedbacks.Count());
 
             foreach (var productFeedback in productFeedbacks)
             {
                 var user = await _userManager.FindByIdAsync(productFeedback.UserId);
+                var subFeedbacksDto = new List<SubFeedbackDto>(productFeedback.SubFeedbacks.Count);
+
+                foreach(var sf in productFeedback.SubFeedbacks)
+                {
+                    var userSf = await _userManager.FindByIdAsync(sf.UserId);
+
+                    subFeedbacksDto.Add(new SubFeedbackDto
+                    {
+                        Body = sf.Body,
+                        Id = sf.Id,
+                        Date = sf.Date,
+                        UserId = userSf.Id,
+                        UserName = userSf.Name,
+                        UserLastName = userSf.LastName
+                    });    
+                }
 
                 if (user == null)
                     return BadRequest("Incorrent user id");
 
                 feedbacks.Add(new FeedbackDto
                 {
+                    Id = productFeedback.Id,
                     UserName = user.Name,
                     UserLastName = user.LastName,
+                    SubFeedbacks = subFeedbacksDto,
                     UserId = user.Id,
                     Body = productFeedback.Body,
                     Date = ((DateTimeOffset)productFeedback.Date).ToUnixTimeSeconds()
@@ -411,7 +425,10 @@ namespace Shop.Controllers.Api
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> SendSubFeedback([FromBody] SendProductSubFeedbackDto model)
         {
-            var feedback = await _feedbackRepository.GetByIdAsync(model.FeedbackId);
+            var feedback = await _feedbackRepository
+                .Table
+                .Include(x => x.SubFeedbacks)
+                .FirstOrDefaultAsync(x => x.Id == model.FeedbackId);
 
             if (feedback == null)
                 return BadRequest("Incorrect feedback id or feedback don't found");
@@ -433,13 +450,12 @@ namespace Shop.Controllers.Api
                 feedback.SubFeedbacks.Add(subFeedback);
             else
                 feedback.SubFeedbacks = new List<SubFeedback> { subFeedback };
-
             var updateResult = await _feedbackRepository.UpdateAsync(feedback);
 
             if (updateResult <= 0)
                 throw new Exception("Can't update product");
 
-            var subFeedbackDto = _mapper.Map<SubFeedbackDto>(feedback);
+            var subFeedbackDto = _mapper.Map<SubFeedbackDto>(subFeedback);
             subFeedbackDto.UserName = user.Name;
             subFeedbackDto.UserLastName = user.LastName;
 

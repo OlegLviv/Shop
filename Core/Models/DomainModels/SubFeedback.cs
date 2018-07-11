@@ -10,9 +10,6 @@ namespace Core.Models.DomainModels
         public string UserId { get; set; }
 
         [Required]
-        public string ProductId { get; set; }
-
-        [Required]
         public Feedback Feedback { get; set; }
 
         [Required]
@@ -22,6 +19,6 @@ namespace Core.Models.DomainModels
         [MaxLength(255)]
         public string Body { get; set; }
 
-        public long Date { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        public long Date { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }
 }

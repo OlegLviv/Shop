@@ -26,6 +26,8 @@ export const ADD_PRODUCT_URL = '/api/product/AddProduct';
 
 export const SEND_FEEDBACK_URL = '/api/product/SendFeedback';
 
+export const SEND_SUBFEEDBACK_URL = '/api/product/SendSubFeedback';
+
 export const ADD_PROPERTY_URL = '/api/product/AddProperty';
 
 export const ADD_POSSIBLE_PROPERTY_URL = '/api/product/AddPossibleProperty';

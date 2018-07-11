@@ -1,8 +1,8 @@
 import React from 'react';
-import {apiWithoutRedirect} from "../../services/api";
+import {apiPost, apiWithoutRedirect} from "../../services/api";
 import {
 	getProductByIdUrl, getProductFeedbackByIdUrl, getProductImageCountUrl,
-	getProductImageUrl
+	getProductImageUrl, SEND_SUBFEEDBACK_URL
 } from "../../services/urls/productUrls";
 import './FullInfoProductPlace.scss';
 import {Spinner} from "../Spinner/Spinner";
@@ -11,6 +11,7 @@ import {addProductCookies, addProductIdOfferCookie} from "../../services/cookies
 import {connect} from 'react-redux';
 import {convertDateToDateString, convertDateToTimeString} from "../../utils/timeUtils";
 import DocumentTitle from 'react-document-title';
+import {Icon} from 'react-fa';
 
 const getProductId = props => props.match.params.productId;
 
@@ -26,7 +27,11 @@ class FullInfoProductPlace extends React.Component {
 			isLoadingFeedbacks: false,
 			isLoadedFeedbacks: false,
 			selectedImgUrl: '',
-			addProductButText: 'В кошик'
+			addProductButText: 'В кошик',
+			isExpandedSubFeedbacks: [],
+			subFeedbacksValues: [],
+			submitSubCommentLoading: false,
+			submitCommentLoading: false
 		}
 	}
 
@@ -72,6 +77,7 @@ class FullInfoProductPlace extends React.Component {
 			alert('please login');
 		}
 		if (isLogin && user) {
+			!this.state.submitCommentLoading && this.setState({submitCommentLoading: true});
 			const sendCommentObj = {
 				productId: this.state.product.id,
 				userId: user.id,
@@ -85,7 +91,8 @@ class FullInfoProductPlace extends React.Component {
 						newFeedback.push(resp.data);
 						this.setState({
 							feedbackValue: '',
-							productFeedbacks: newFeedback
+							productFeedbacks: newFeedback,
+							submitCommentLoading: false
 						});
 					}
 				})
@@ -93,6 +100,7 @@ class FullInfoProductPlace extends React.Component {
 					if (err.response.status === 401) {
 						alert('please login')
 					}
+					this.setState({submitCommentLoading: false});
 				});
 		}
 	};
@@ -112,13 +120,9 @@ class FullInfoProductPlace extends React.Component {
 		this.setState(prevState => ({productCount: prevState.productCount - 1}));
 	};
 
-	onProductCountInc = () => {
-		this.setState(prevState => ({productCount: prevState.productCount + 1}))
-	};
+	onProductCountInc = () => this.setState(prevState => ({productCount: prevState.productCount + 1}))
 
-	onSendFeedback = () => {
-		this.sendFeedback();
-	};
+	onSendFeedback = () => this.sendFeedback();
 
 	onSendFeedbackKeyPress = (e) => {
 		if (e.key === 'Enter') {
@@ -154,6 +158,47 @@ class FullInfoProductPlace extends React.Component {
 		this.setState({addProductButText: 'Додано'});
 	};
 
+	onToggleSubFeedbacks = i => this.setState(prevState => {
+		const isExpandedSubFeedbacks = [...prevState.isExpandedSubFeedbacks];
+		isExpandedSubFeedbacks[i] = !isExpandedSubFeedbacks[i];
+		return {isExpandedSubFeedbacks};
+	});
+
+	onChangeSubFeedbacksValue = (i, {target}) => {
+		const subFeedbacksValues = [...this.state.subFeedbacksValues];
+		subFeedbacksValues[i] = target.value;
+		this.setState({subFeedbacksValues});
+	};
+
+	onSendSubFeedback = (feedbackId, i) => {
+		const body = {
+			feedbackId,
+			body: this.state.subFeedbacksValues[i]
+		};
+		!this.state.submitSubCommentLoading && this.setState({submitSubCommentLoading: true});
+
+		apiWithoutRedirect()
+			.post(SEND_SUBFEEDBACK_URL, body)
+			.then(resp => {
+				if (resp.status === 200) {
+					const productFeedbacks = [...this.state.productFeedbacks];
+					productFeedbacks[i].subFeedbacks.push(resp.data);
+					const subFeedbacksValues = [...this.state.subFeedbacksValues];
+					subFeedbacksValues[i] = '';
+					this.setState({
+						productFeedbacks,
+						subFeedbacksValues,
+						submitSubCommentLoading: false
+					});
+				}
+			})
+			.catch(err => {
+				if (err.response.status === 401)
+					alert('Please login');
+				this.setState({submitSubCommentLoading: false});
+			});
+	};
+
 	renderDescription = () => {
 		return (
 			<div className="description">
@@ -172,50 +217,97 @@ class FullInfoProductPlace extends React.Component {
 		);
 	};
 
-	//todo need add feedback logic
+	renderSubCommentsSubmitBox = (isLogin, i, id) => {
+		if (this.state.submitSubCommentLoading)
+			return <Spinner/>;
+		if (isLogin && !this.state.submitSubCommentLoading)
+			return (
+				<div
+					className="container-c-b__card-body-content__sub-comments__submit-box">
+													 <textarea className="form-control"
+															   placeholder="Введіть відповіть..."
+															   value={this.state.subFeedbacksValues[i]}
+															   onChange={(e) => this.onChangeSubFeedbacksValue(i, e)}/>
+					<button className="btn btn-dark ml-1"
+							onClick={() => this.onSendSubFeedback(id, i)}>
+						Відправити
+						<Icon name="comments ml-1"/>
+					</button>
+				</div>
+			);
+	};
+
 	renderFeedback = () => {
 		const {user, isLogin} = this.props;
 		if (!this.state.isLoadedFeedbacks && this.state.isLoadingFeedbacks) {
 			return <Spinner/>
 		}
-		if (user && isLogin)
-			return (
-				<div className="container-c-b">
-					{
-						this.state.productFeedbacks.map(item => {
-							return (
-								<div className="container-c-b__card-body-content">
-									<div className="container-c-b__card-body-content__comment"
-										 style={{
-											 'box-shadow': `${user && (this.props.user.id === item.userId && '1px 1px 10px 3px #17a2b899')}`,
-											 'margin-left': `${user && (this.props.user.id === item.userId && '5rem')}`,
-											 'background': `${user && (this.props.user.id === item.userId && '#e3e3e3')}`
-										 }}>
-										<div
-											className="container-c-b__card-body-content__comment__userName">{`${item.userName} ${item.userLastName}`}
-										</div>
-										<hr className="container-c-b__card-body-content__comment__hr"/>
-										<div
-											className="container-c-b__card-body-content__comment__date">{`${convertDateToDateString(item.date)} ${convertDateToTimeString(item.date)}`}</div>
-										<div
-											className="container-c-b__card-body-content__comment__commentBody">{item.body}</div>
+		return (
+			<div className="container-c-b">
+				{
+					this.state.productFeedbacks.map((item, i) => {
+						console.log('item', item);
+						return (
+							<div className="container-c-b__card-body-content">
+								<div className="container-c-b__card-body-content__comment"
+									 style={{
+										 'box-shadow': `${user && (this.props.user.id === item.userId && '1px 1px 10px 3px #17a2b899')}`,
+										 'margin-left': `${user && (this.props.user.id === item.userId && '5rem')}`,
+										 'background': `${user && (this.props.user.id === item.userId && '#e3e3e3')}`
+									 }}>
+									<div
+										className="container-c-b__card-body-content__comment__userName">{`${item.userName} ${item.userLastName}`}
+									</div>
+									<hr className="container-c-b__card-body-content__comment__hr"/>
+									<div
+										className="container-c-b__card-body-content__comment__date">{`${convertDateToDateString(item.date)} ${convertDateToTimeString(item.date)}`}</div>
+									<div
+										className="container-c-b__card-body-content__comment__commentBody">{item.body}</div>
+									<div className="container-c-b__card-body-content__comment__subfeedbacks-toggle"
+										 onClick={() => this.onToggleSubFeedbacks(i)}>Показати відповіді
 									</div>
 								</div>
-							)
-						})
-					}
-					{this.props.isLogin && this.props.user ? <div className="container-c-b__submit-box">
+								{
+									this.state.isExpandedSubFeedbacks[i] &&
+									<div className="container-c-b__card-body-content__sub-comments">
+										{
+											item.subFeedbacks && item.subFeedbacks.map(subFeedback => (
+												<div
+													className="container-c-b__card-body-content__sub-comments__comment">
+													<div
+														className="container-c-b__card-body-content__sub-comments__comment__userName">{`${subFeedback.userName} ${subFeedback.userLastName}`}</div>
+													<hr className="container-c-b__card-body-content__sub-comments__comment__hr"/>
+													<div
+														className="container-c-b__card-body-content__sub-comments__comment__date">{`${convertDateToDateString(subFeedback.date)} ${convertDateToTimeString(subFeedback.date)}`}</div>
+													<div
+														className="container-c-b__card-body-content__sub-comments__comment__body">{subFeedback.body}</div>
+												</div>
+											))
+										}
+										<div>
+											{
+												this.renderSubCommentsSubmitBox((user && isLogin), i, item.id)
+											}
+										</div>
+									</div>
+								}
+							</div>
+						)
+					})
+				}
+				{this.props.isLogin && this.props.user ? <div className="container-c-b__submit-box">
 					<textarea className="form-control"
 							  placeholder="Введіть свій коментар"
 							  onChange={(e) => this.setState({feedbackValue: e.target.value})}
 							  onKeyPress={this.onSendFeedbackKeyPress}/>
-						<button className="btn btn-dark" onClick={this.onSendFeedback}>Відправити
-						</button>
-					</div> : <div className="container-c-b__submit-box">Для того щоб залишити повідомлення увійдіть в
-						систему</div>}
-				</div>
-			);
-		else return <div className="text-center">Для того щоб залишити коментар будь ласка зареєструйтесь</div>;
+					<button className="btn btn-dark" onClick={this.onSendFeedback}>
+						Відправити
+						<Icon name="comment ml-1"/>
+					</button>
+				</div> : <div className="container-c-b__submit-box">Для того щоб залишити повідомлення увійдіть в
+					систему</div>}
+			</div>
+		);
 	};
 
 	renderNavAboutProduct = () => {
