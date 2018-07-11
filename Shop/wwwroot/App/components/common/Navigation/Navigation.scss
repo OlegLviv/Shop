@@ -1,20 +1,24 @@
+@import "../../../main";
+
 .nav-container {
   display: flex;
   flex-direction: column;
-  background: #252525;
+  background: $dark;
   min-height: 100vh;
   height: 100%;
+
   &__header a {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	color: #d3d3d3;
+	color: $dark-grey-color;
 	padding: 1rem;
 	font-size: 18px;
   }
   &__header a:hover {
 	text-decoration: none;
+	color: $dark-grey-transparent-color;
   }
   &__items {
 	display: flex;
@@ -23,19 +27,28 @@
 	  padding: 1.5rem 1rem;
 	  display: flex;
 	  align-items: center;
-	  color: #d3d3d3;
+	  color: $dark-grey-color;
 	  &__icon {
-		color: #d3d3d3;
+		color: $dark-grey-color;
 	  }
 	  &__text {
 		padding-left: 1rem;
 	  }
 	}
 	&__item:hover {
-	  background: #17a2b8;
+	  background: $green-blue;
 	  text-decoration: none;
-	  color: #eee;
+	  color: $light-background;
 	}
   }
+}
 
+@media screen and (max-width: 992px) {
+  .nav-container {
+	align-items: center;
+
+	&__items {
+	  font-size: 20px;
+	}
+  }
 }

@@ -17,6 +17,8 @@ import EditCharacteristic from './ActionOnProducts/EditCharacteristics/EditChara
 import Orders from './Orders/Orders';
 import FullOrder from './Orders/FullOrder/FullOrder';
 import Mailing from './Mailing/Mailing';
+import CallMe from './CallMe/CallMe';
+import FullCallMe from './CallMe/FullCallMe';
 
 const navItems = [
 	{
@@ -48,6 +50,11 @@ const navItems = [
 		link: '/adminPanel/mailing',
 		icon: 'envelope',
 		text: 'Розсилки'
+	},
+	{
+		link: '/adminPanel/call-me',
+		icon: 'phone',
+		text: 'Заявки на дзвінки'
 	}
 
 ];
@@ -88,7 +95,7 @@ class AdminPanel extends React.Component {
 			return (
 				<div className="row container-adm-panel">
 					<div className="col-xl-2 col-lg-3 container-adm-panel__navigation">
-						<Navigation items={navItems} navLink="/" navText="Navbar"/>
+						<Navigation items={navItems} navLink="/" navText="Меню"/>
 					</div>
 					<div className="col-xl-10 col-lg-9 panel-content">
 						<Switch>
@@ -111,6 +118,8 @@ class AdminPanel extends React.Component {
 							<Route exact path="/adminPanel/orders" component={Orders}/>
 							<Route exact path="/adminPanel/mailing" component={Mailing}/>
 							<Route path="/adminPanel/orders/:orderId" render={props => <FullOrder {...props}/>}/>
+							<Route exact path="/adminPanel/call-me/" component={CallMe}/>
+							<Route path="/adminPanel/call-me/:id/" component={FullCallMe}/>
 							<Route component={NotFound}/>
 						</Switch>
 					</div>

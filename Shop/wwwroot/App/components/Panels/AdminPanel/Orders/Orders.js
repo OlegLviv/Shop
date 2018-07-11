@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 import {Spinner} from "../../../Spinner/Spinner";
 import {convertOrderStatus} from "../../../../utils/orderUtils";
 import {connect} from 'react-redux';
+import DocumentTitle from 'react-document-title';
 
 const itemPerPage = 5;
 
@@ -91,19 +92,21 @@ class Orders extends React.Component {
 
 	render() {
 		return (
-			<div className="orders-container">
-				<div className="orders-container__header">
-					<div>Список замовлень</div>
-					<select onChange={this.onOrdersStatusChange} value={this.state.orderStatus}>
-						<option value={0}>Нові</option>
-						<option value={1}>Переглянуті</option>
-						<option value={2}>Відіслані</option>
-						<option value={3}>Очікують на отримання</option>
-						<option value={4}>Закриті</option>
-					</select>
+			<DocumentTitle title="Замовлення">
+				<div className="orders-container">
+					<div className="orders-container__header">
+						<div>Список замовлень</div>
+						<select onChange={this.onOrdersStatusChange} value={this.state.orderStatus}>
+							<option value={0}>Нові</option>
+							<option value={1}>Переглянуті</option>
+							<option value={2}>Відіслані</option>
+							<option value={3}>Очікують на отримання</option>
+							<option value={4}>Закриті</option>
+						</select>
+					</div>
+					{this.renderSwitchContent()}
 				</div>
-				{this.renderSwitchContent()}
-			</div>
+			</DocumentTitle>
 		);
 	}
 }

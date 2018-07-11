@@ -5,7 +5,7 @@ namespace Core.Models.DTO.Product
     public class AddPossiblePropertyToProductDto
     {
         [Required]
-        [RegularExpression("^[A-zА-яёЁіІ0-9]{2,20}$")]
+        [RegularExpression("^[^;]{2,20}$")]
         public string PossibleProperty { get; set; }
 
         [Required]

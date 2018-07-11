@@ -3,7 +3,7 @@ import './ProductCardPlace.scss';
 import {Icon} from 'react-fa';
 import {getProductsOutOfCookies, setCookie} from "../../services/cookies";
 import {apiWithoutRedirect} from "../../services/api";
-import {getProductsByIdsUrl} from "../../services/urls/productUrls";
+import {getProductImageUrl, getProductsByIdsUrl} from "../../services/urls/productUrls";
 import {Link} from 'react-router-dom';
 import './ProductCardTable.scss';
 import {addObjectQueryToProducts} from "../../utils/productsUtils";
@@ -13,6 +13,7 @@ import {createProductsContainerForOrders} from "../../utils/orderUtils";
 import {CREATE_ORDER_URL, CREATE_USER_ORDER_URL} from "../../services/urls/orderUrls";
 import {SuccessReceivedOrderModal} from "./SuccessReceivedOrderModal";
 import {connect} from 'react-redux';
+import DocumentTitle from 'react-document-title';
 
 const renderNoProducts = () => {
 	return (
@@ -38,7 +39,8 @@ class ProductCardPlace extends React.Component {
 			isNotProducts: false,
 			isMakeOrderModalOpen: false,
 			loading: false,
-			canSuccessReceivedOrderModal: false
+			canSuccessReceivedOrderModal: false,
+			loadedImg: false
 		}
 	}
 
@@ -92,23 +94,25 @@ class ProductCardPlace extends React.Component {
 		this.setState({productsCounts: newProductsCounts});
 	};
 
+	getCost = (i, price) => +(price * this.state.productsCounts[i]).toFixed(1);
+
 	getTotalPrice = () => {
 		const {products, productsCounts} = this.state;
 		let total = 0;
 		for (let i = 0; i < products.length; i++) {
-			total += products[i].price * productsCounts[i];
+			total += (products[i].priceWithDiscount > 0 ? products[i].priceWithDiscount : products[i].price) * productsCounts[i];
 		}
-		return total;
+		return +total.toFixed(1);
 	};
 
 	onIncProductsCount(i) {
-		const productsCounts = this.state.productsCounts;
+		const productsCounts = [...this.state.productsCounts];
 		productsCounts[i] = this.state.productsCounts[i] + 1;
 		this.setState({productsCounts: productsCounts});
 	}
 
 	onDecProductsCount(i) {
-		const productsCounts = this.state.productsCounts;
+		const productsCounts = [...this.state.productsCounts];
 		if (this.state.productsCounts[i] === 0) {
 			return;
 		}
@@ -123,6 +127,7 @@ class ProductCardPlace extends React.Component {
 			isNotProducts: true,
 			productsCounts: []
 		});
+		this.props.onCleanProducts();
 	};
 
 	onMakeOrder = () => this.setState({isMakeOrderModalOpen: true});
@@ -153,6 +158,10 @@ class ProductCardPlace extends React.Component {
 			});
 	};
 
+	onImgLoad = () => {
+		this.setState({loadedImg: true});
+	};
+
 	renderMakeOrderModal = () => <MakeOrderModal
 		isModalOpen={this.state.isMakeOrderModalOpen}
 		onCloseModal={this.onCloseMakeOrderModal}
@@ -168,11 +177,13 @@ class ProductCardPlace extends React.Component {
 		if (isProductsLoaded && !isProductsLoading && !isNotProducts) {
 			return (
 				<div>
+					<button className="btn btn-outline-danger" onClick={this.onCleanProductsCard}>Очистити кошик
+						<Icon name="trash ml-1"/>
+					</button>
 					<div className="container-p-card-place__header">
-						<button className="btn btn-outline-danger" onClick={this.onCleanProductsCard}>Очистити кошик
-							<Icon name="trash ml-1"/>
-						</button>
-						<h1 className="text-center">Кошик</h1>
+						<h1 className="text-center container-p-card-place__header__main-text">
+							<div>Кошик</div>
+						</h1>
 					</div>
 					<table>
 						<thead>
@@ -192,15 +203,30 @@ class ProductCardPlace extends React.Component {
 										<td data-label="Номер"><h5>{i + 1}</h5></td>
 										<td data-label="Назва">
 											<div className="media">
-												<img className="mr-2 product-img"
-													 src="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"/>
+												<img className="mr-2 ml-2 product-img"
+													 style={{
+														 display: `${!this.state.loadedImg ? 'none' : 'block'}`
+													 }}
+													 src={getProductImageUrl(item.id)}
+													 alt="Card image cap"
+													 onLoad={this.onImgLoad}
+												/>
+												{!this.state.loadedImg && <img className="mr-2 product-img"
+																			   src={require('../../spinner.gif')}/>}
 												<div className="media-body">
-													<h5>{item.name}</h5>
-													<div className="my-3">Kod</div>
+													<h5>
+														<Link className="product-name"
+															  to={`/product/${item.id}`}>
+															{item.name}
+														</Link>
+													</h5>
+													<small className="my-3">{`Код: ${item.id}`}</small>
 												</div>
 											</div>
 										</td>
-										<td data-label="Ціна"><h5>{item.price}</h5></td>
+										<td data-label="Ціна">
+											<h5>{item.priceWithDiscount > 0 ? item.priceWithDiscount : item.price}</h5>
+										</td>
 										<td data-label="Кількість">
 											<div className="btn-group">
 												<button type="button" className="btn btn-dark"
@@ -213,7 +239,7 @@ class ProductCardPlace extends React.Component {
 											</div>
 										</td>
 										<td data-label="Вартість">
-											<h5>{`${item.price * this.state.productsCounts[i]} грн`}</h5>
+											<h5>{`${this.getCost(i, item.priceWithDiscount > 0 ? item.priceWithDiscount : item.price)} грн`}</h5>
 										</td>
 									</tr>
 								)
@@ -247,11 +273,13 @@ class ProductCardPlace extends React.Component {
 
 	render() {
 		return (
-			<div className="container-p-card-place">
-				{this.renderSuccessReceivedOrderModal()}
-				{this.renderSwitchContent()}
-				{this.renderMakeOrderModal()}
-			</div>
+			<DocumentTitle title="Кошик">
+				<div className="container-p-card-place">
+					{this.renderSuccessReceivedOrderModal()}
+					{this.renderSwitchContent()}
+					{this.renderMakeOrderModal()}
+				</div>
+			</DocumentTitle>
 		);
 	}
 }

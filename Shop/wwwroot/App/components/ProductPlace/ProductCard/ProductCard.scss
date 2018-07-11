@@ -1,13 +1,84 @@
 @import "../../../main";
 
 .card-dev {
-  box-shadow: 1px 1px 10px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, 0.1);
   transition-property: all;
   transition-duration: 1s;
   cursor: pointer;
+  margin-bottom: 1rem;
   &__footer {
-	display: flex;
-	justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__body {
+    padding: .5rem;
+
+    &__discount-box {
+      position: absolute;
+      top: 1rem;
+      left: -1rem;
+      font-size: 18px;
+      background: $red;
+      border-radius: 5px;
+      padding: .4rem 2rem;
+      color: white;
+      transform: rotate(-45deg);
+    }
+
+    &__prices-box-if-discount {
+      display: flex;
+      justify-content: space-between;
+
+      &__price-if-discount {
+        text-decoration: line-through;
+        color: $dark-blue-color;
+        font-weight: 700;
+        text-shadow: 1px 2px 5px $dark-grey-color;
+        background: $light-background;
+        border: 1px $dark-grey-transparent-color solid;
+        border-radius: 5px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: .5rem;
+        font-size: 13px;
+        flex: auto;
+      }
+    }
+
+    &__prices-box {
+      &__price {
+        color: $dark-blue-color;
+        font-weight: 700;
+        text-shadow: 1px 2px 5px $dark-grey-color;
+        background: $light-background;
+        border: 1px $dark-grey-transparent-color solid;
+        border-radius: 5px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: .5rem;
+      }
+    }
+
+    &__link h5 {
+      overflow-y: hidden;
+      height: 3rem;
+      max-height: 3rem;
+      color: $dark;
+      font-weight: 400;
+    }
+  }
+
+  &__body h6 {
+    border-radius: 5px;
+    background: $yellow-transparent-color;
+    border: 1px $dark-yellow-transparent-color solid;
+    padding: .3rem;
+    text-align: center;
   }
 }
 
@@ -21,80 +92,109 @@
   font-size: 13px;
 }
 
-.card-body {
-  padding: .5rem;
-}
-
-.card-body h5 {
-  overflow-y: hidden;
-  height: 3rem;
-  max-height: 3rem;
-  color: $dark;
-}
-
-.card-body h4 {
-  color: $dark-blue-color;
-  font-weight: 700;
-  text-shadow: 1px 2px 5px $dark-grey-color
-}
-
 .card-img-top {
   min-height: 15rem;
   max-height: 15rem;
 }
 
-.discount-box {
-  position: absolute;
-  top: 1rem;
-  left: -1rem;
-  font-size: 18px;
+.not-available {
+  margin-bottom: .5rem;
   background: $red;
+  border: 1px $error-input-border solid;
   border-radius: 5px;
-  padding: .4rem 2rem;
-  color: white;
-  transform: rotate(-45deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $dark-grey-color;
+  box-shadow: 0 0 2px 1px $red;
 }
 
 @media (max-width: 1230px) {
   .card-dev {
-	&__footer {
-	  flex-direction: column;
-	}
+    &__footer {
+      flex-direction: column;
+    }
   }
   .btn {
-	margin-bottom: .2rem;
+    margin-bottom: .2rem;
+  }
+}
+
+@media (max-width: 1020px) {
+  .card-dev {
+    &__body {
+      &__prices-box-if-discount {
+
+        &__price-if-discount {
+          transform: scale(.9);
+        }
+      }
+    }
+    &__body h6 {
+      transform: scale(.9);
+      font-size: 14px;
+    }
+  }
+}
+
+@media (max-width: 1020px) {
+  .card-dev {
+    &__body {
+      &__prices-box-if-discount {
+
+        &__price-if-discount {
+          transform: scale(1);
+        }
+      }
+    }
+    &__body h6 {
+      transform: scale(1);
+      font-size: 14px;
+    }
   }
 }
 
 @media (max-width: 990px) {
   .card-dev {
-	&__footer {
-	  flex-direction: row;
-	}
+    &__footer {
+      flex-direction: row;
+    }
   }
   .btn {
-	margin-bottom: 0;
+    margin-bottom: 0;
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 690px) {
   .card-dev {
-	&__footer {
-	  flex-direction: column;
-	}
+    &__body {
+      &__prices-box-if-discount {
+
+        &__price-if-discount {
+          transform: scale(.9);
+        }
+      }
+    }
+    &__body h6 {
+      transform: scale(.9);
+      font-size: 14px;
+    }
   }
+}
+
+@media (max-width: 620px) {
   .btn {
-	margin-bottom: .2rem;
+    transform: scale(0.9);
   }
 }
 
 @media (max-width: 576px) {
   .card-dev {
-	&__footer {
-	  flex-direction: row;
-	}
+    &__footer {
+      flex-direction: row;
+    }
   }
   .card-dev {
-	margin-bottom: 0;
+    margin-bottom: 0;
   }
 }

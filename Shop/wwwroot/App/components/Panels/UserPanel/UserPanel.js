@@ -41,17 +41,15 @@ class UserPanel extends React.Component {
 	render() {
 		return (
 			<div className="row container-user-panel">
-				<div className="col-xl-2 col-lg-3 col-md-4 col-sm-4 container-user-panel__navigation">
-					<Navigation items={navItems} navLink="/" navText="Nav"/>
+				<div className="col-xl-2 col-lg-3 container-user-panel__navigation">
+					<Navigation items={navItems} navLink="/" navText="Меню"/>
 				</div>
-				<div className="col-xl-10 col-lg-9 col-md-8 col-sm-8">
+				<div className="col-xl-10 col-lg-9">
 					<Switch>
 						<Route exact path="/userPanel" render={() => <div>User panel</div>}/>
 						<Route exact path="/userPanel/change-password" component={ChangePassword}/>
 						<Route exact path="/userPanel/change-email" component={ChangeEmail}/>
 						<Route exact path="/userPanel/change-phone-number" component={ChangePhone}/>
-						<Route exact path="/userPanel/change-phone-number"
-							   render={() => <div>change-phone-number</div>}/>
 						<Route exact path="/userPanel/mailing" component={Mailing}/>
 						<Route exact path="/userPanel/orders" component={Orders}/>
 						<Route component={NotFound}/>

@@ -13,7 +13,7 @@ export const getProductFeedbackByIdUrl = productId => `/api/product/GetProductFe
 
 export const getProductPropsUrl = subCategory => `/api/product/GetProductProperties/${subCategory}`;
 
-export const getProductImageUrl = (productId, number) => `/api/product/GetProductImage/${productId}/${number}`;
+export const getProductImageUrl = (productId, number = 0) => `/api/product/GetProductImage/${productId}/${number}`;
 
 export const getProductImageCountUrl = productId => `/api/product/GetProductImageCount/${productId}`;
 

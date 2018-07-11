@@ -2,12 +2,38 @@
 
 .discount {
   min-height: 100vh;
+  padding: 0 10rem;
   &__header {
 	background: $dark;
 	color: $dark-grey-color;
 	padding: 1rem;
+	margin-bottom: 1rem;
 	border-radius: 5px;
 	font-size: 20px;
 	text-align: center;
+	display: flex;
+	align-items: center;
+
+	&__chevron {
+	  margin-right: 1rem;
+	  color: $dark-grey-color;
+	}
+
+	&__chevron:hover {
+	  color: $primary;
+	  cursor: pointer;
+	}
+  }
+}
+
+@media screen and (max-width: 1290px) {
+  .discount {
+	padding: 0 5rem;
+  }
+}
+
+@media screen and (max-width: 920px) {
+  .discount {
+	padding: 0;
   }
 }

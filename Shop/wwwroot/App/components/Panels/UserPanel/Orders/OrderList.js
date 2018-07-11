@@ -5,22 +5,29 @@ import {convertDateToDateString, convertDateToTimeString} from "../../../../util
 import {OrderStatus} from '../../../common/OrderStatus/OrderStatus';
 
 class OrderList extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			products: []
-		}
-	}
 
 	trySetLoading = () => !this.state.loading && this.setState({loading: true});
 
+	renderNotFound = () => (
+		<div className="text-center mt-2">
+			<h3>Нічого не знайдено</h3>
+		</div>
+	);
+
 	render() {
+		console.log(this.props.orders);
+		if (!this.props.isLoading && !this.props.orders.length)
+			return this.renderNotFound();
+
 		if (!this.props.isLoading)
 			return (
 				<ul className="list-group order-list">
 					{this.props.orders.map(container => <li key={container.id}
 															className="list-group-item order-list__item">
-						<div>{`${container.productsContainers[0].product.name}...`}</div>
+						{
+							container.productsContainers.map(productsContainer =>
+								<div>{`${productsContainer.product.name} X ${productsContainer.count}`}</div>)
+						}
 						<div className="order-list__item__text-items">
 							<div className="order-list__item__text-items__label">Дата:</div>
 							<div>{convertDateToDateString(container.createDate)}</div>
@@ -29,12 +36,21 @@ class OrderList extends Component {
 							<div className="order-list__item__text-items__label">Час:</div>
 							<div>{convertDateToTimeString(container.createDate)}</div>
 						</div>
+						<div className="order-list__item__text-items">
+							<div className="order-list__item__text-items__label">Загальна вартість:</div>
+							<div>{`${container.totalPrice}грн`}</div>
+						</div>
+						<div className="order-list__item__text-items">
+							<div className="order-list__item__text-items__label">Номер замовлення:</div>
+							<div>{container.id}</div>
+						</div>
 						<div className="order-list__item__text-items__label">Статус:</div>
 						<OrderStatus orderStatus={container.orderStatus}/>
 					</li>)}
 				</ul>
 			);
-		else return <Spinner/>;
+		else
+			return <Spinner/>;
 	}
 }
 

@@ -16,7 +16,7 @@ namespace BLL.Services
 
             foreach (var container in productContainers)
             {
-                totalPrice += container.Product.Price * container.Count;
+                totalPrice += (container.Product.Discount == 0 ? container.Product.Price : container.Product.PriceWithDiscount) * container.Count;
             }
 
             return totalPrice;

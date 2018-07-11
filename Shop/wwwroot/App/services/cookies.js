@@ -1,3 +1,5 @@
+import {PRODUCT_OFFERS} from "../constants/cookies";
+
 export const setCookie = (name, value, days) => {
 	const d = new Date();
 	d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -23,7 +25,7 @@ export const addProductCookies = (name, id, count, days) => {
 	const products = getProductsOutOfCookies(name);
 	let newCookie = '';
 
-	if(!products.length){
+	if (!products.length) {
 		document.cookie = `${name}=${idCountStr};${expires};path=/`;
 		return;
 	}
@@ -45,6 +47,7 @@ export const getCookie = (cname) => {
 	const name = cname + "=";
 	const decodedCookie = decodeURIComponent(document.cookie);
 	const ca = decodedCookie.split(';');
+
 	for (let i = 0; i < ca.length; i++) {
 		let c = ca[i];
 		while (c.charAt(0) === ' ') {
@@ -74,3 +77,34 @@ export const getProductsOutOfCookies = cname => {
 	}
 	return idCountObjArr;
 };
+
+const isProductIdOffersCookieExist = id => {
+	const prodOfferC = getCookie(PRODUCT_OFFERS);
+	if (!prodOfferC)
+		return false;
+
+	const ids = prodOfferC.split(',');
+	for (let i = 0; i < ids.length; i++) {
+		if (ids[i] === id)
+			return true;
+	}
+	return false;
+};
+
+export const addProductIdOfferCookie = (productId, days) => {
+	if (!isProductIdOffersCookieExist(productId)) {
+		if (!getCookie(PRODUCT_OFFERS)) {
+			setCookie(PRODUCT_OFFERS, productId, days);
+			return;
+		}
+
+		let cookie = `${getCookie(PRODUCT_OFFERS)},${productId}`;
+
+		if (cookie.split(',').length > 10)
+			cookie = productId;
+
+		setCookie(PRODUCT_OFFERS, cookie, days);
+	}
+};
+
+export const getProductIdOffers = () => getCookie(PRODUCT_OFFERS).split(',');

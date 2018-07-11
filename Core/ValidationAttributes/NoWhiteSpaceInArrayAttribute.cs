@@ -5,11 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace Core.ValidationAttributes
 {
-    internal class NoWhiteSpaceInArrayAttribute:ValidationAttribute
+    internal class NoWhiteSpaceInArrayAttribute : ValidationAttribute
     {
         public override bool IsValid(object value)
         {
-            var values = ((IEnumerable<string>) value);
+            var values = ((IEnumerable<string>)value);
 
             return values.All(val => Regex.IsMatch(val, "^\\S+$"));
         }

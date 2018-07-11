@@ -23,6 +23,7 @@ namespace DAL.Initializator
             await CreateDefaultRolesAndAdminAsync(userManager, roleManager, logger, configuration);
             await CreateDefaultUserAsync(userManager, configuration);
         }
+
         private static async Task CreateDefaultRolesAndAdminAsync(UserManager<User> um, RoleManager<IdentityRole> rm, ILogger logger, IConfiguration configuration)
         {
             var administratorRole = configuration["Roles:Admin"];

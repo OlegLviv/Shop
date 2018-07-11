@@ -1,0 +1,16 @@
+@import "../../../main";
+
+.prod-card {
+  width: 15rem;
+  margin: 0 .2rem;
+
+  &__card-body {
+	&__text {
+	  overflow-y: hidden;
+	  height: 3rem;
+	  max-height: 3rem;
+	  color: $dark;
+	  font-weight: 400;
+	}
+  }
+}

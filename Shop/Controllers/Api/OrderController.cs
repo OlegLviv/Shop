@@ -12,9 +12,12 @@ using Core.Models.DTO;
 using Core.Models.DTO.Order;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Shop.Controllers.Api
 {
@@ -28,18 +31,24 @@ namespace Shop.Controllers.Api
         private readonly IOrderService _orderService;
         private readonly UserManager<User> _userManager;
         private readonly IRepositoryAsync<Product> _productRepository;
+        private readonly IRepositoryAsync<CallMe> _callMeRepository;
+        private readonly IEmailSender _emailSender;
 
         public OrderController(IMapper mapper,
             IRepositoryAsync<Order> orderRepository,
             UserManager<User> userManager,
             IRepositoryAsync<Product> productRepository,
-            IOrderService orderService)
+            IOrderService orderService,
+            IRepositoryAsync<CallMe> callMeRepository,
+            IEmailSender emailSender)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
             _userManager = userManager;
             _productRepository = productRepository;
             _orderService = orderService;
+            _callMeRepository = callMeRepository;
+            _emailSender = emailSender;
         }
 
         #region GET
@@ -53,7 +62,7 @@ namespace Shop.Controllers.Api
 
             var order = await _orderRepository
                 .Table
-                .Include(x=>x.ProductsContainers)
+                .Include(x => x.ProductsContainers)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
@@ -131,6 +140,36 @@ namespace Shop.Controllers.Api
             });
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("GetCallMe/{status:int}/{pageNumber}/{pageSize}")]
+        public IActionResult GetCallMe(CallMeStatus status, int pageNumber = 1, int pageSize = 16)
+        {
+            var callMeList = _callMeRepository
+                .Table
+                .Where(x => x.CallMeStatus == status);
+
+            var callMePagination = new Paginator<CallMeDto>
+            {
+                Data = _mapper.Map<IEnumerable<CallMeDto>>(callMeList).Page(pageNumber, pageSize),
+                TotalCount = callMeList.Count(),
+                PageSize = pageSize,
+                PageNumber = pageNumber
+            };
+
+            return this.JsonResult(callMePagination);
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("GetCallMe/{id}")]
+        public async Task<IActionResult> GetCallMe(string id)
+        {
+            var callMe = await _callMeRepository.GetByIdAsync(id);
+
+            if (callMe == null)
+                return BadRequest("Incorrect id or call me not found");
+
+            return this.JsonResult(_mapper.Map<CallMeDto>(callMe));
+        }
         #endregion
 
         #region POST
@@ -159,6 +198,12 @@ namespace Shop.Controllers.Api
 
             var insertResult = await _orderRepository.InsertAsync(order);
 
+            await _emailSender.SendEmailAsync(
+                (HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration)?["EmailCredential:Email"],
+                order.Email,
+                "Info",
+                MailsContainer.GetMailForCreateOrder(order));
+
             if (insertResult >= 1)
                 return Ok("Success");
 
@@ -181,14 +226,58 @@ namespace Shop.Controllers.Api
 
             var insertResult = await _orderRepository.InsertAsync(order);
 
+            await _emailSender.SendEmailAsync(
+                (HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration)?["EmailCredential:Email"],
+                order.Email,
+                "Info",
+                MailsContainer.GetMailForCreateOrder(order));
+
             if (insertResult >= 1)
                 return Ok("Success");
 
             return BadRequest("Can't insert order");
         }
+
+        [HttpPost("CreateCallMe")]
+        public async Task<IActionResult> CallMe([FromBody] CreateCallMeDto model)
+        {
+            var callMe = _mapper.Map<CallMe>(model);
+
+            var insertedResult = await _callMeRepository.InsertAsync(callMe);
+
+            if (insertedResult >= 1)
+                return Ok("Success");
+
+            return BadRequest("Can't insert call me request");
+        }
         #endregion
 
         #region PUT
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpPut("ChangeCallMeStatus/{id}/{callMeStatus:int}")]
+        public async Task<IActionResult> ChangeCallMeStatus(string id, CallMeStatus callMeStatus)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return BadRequest("Incorrect id");
+
+            var callMe = await _callMeRepository.GetByIdAsync(id);
+
+            if (callMe == null)
+                return BadRequest("Call me don't exist or incorrect id");
+
+            if (callMe.CallMeStatus == callMeStatus)
+                return BadRequest($"Call me allready have status {callMe.CallMeStatus.ToString()}");
+
+            callMe.CallMeStatus = callMeStatus;
+
+            var updateRes = await _callMeRepository.UpdateAsync(callMe);
+
+            if (updateRes >= 1)
+                return Ok(_mapper.Map<CallMeDto>(callMe));
+
+            return BadRequest("Can't update call me");
+        }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpPut("ChangeOrderStatus/{id}/{orderStatus:int}")]
@@ -215,6 +304,26 @@ namespace Shop.Controllers.Api
             return BadRequest("Can't update order");
         }
 
+        #endregion
+
+        #region DELETE
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpDelete("DeleteCallMe/{id}")]
+        public async Task<IActionResult> DeleteCallMe(string id)
+        {
+            var callMe = await _callMeRepository.GetByIdAsync(id);
+
+            if (callMe == null)
+                return BadRequest("Icorrect id or call me not found");
+
+            var deleteResult = await _callMeRepository.DeleteAsync(callMe);
+
+            if (deleteResult >= 1)
+                return Ok("Success");
+
+            return BadRequest("Can't delete call me");
+        }
         #endregion
     }
 }

@@ -1,13 +1,17 @@
 import React from 'react';
 import {apiWithoutRedirect} from "../../services/api";
 import {
-	getProductByCatSubCatUrl, getProductImageCountUrl, getProductImageUrl,
+	getProductByCatSubCatUrl,
 	getProductsByQueryUrl
 } from "../../services/urls/productUrls";
 import ProductCard from "./ProductCard/ProductCard";
 import './ProductPlace.scss';
 import {addProductCookies} from "../../services/cookies";
-import {addObjectQueryToProducts, createProductsQueryByObject} from "../../utils/productsUtils";
+import {
+	addObjectQueryToProducts,
+	createProductsQueryByObject, normalizeRouteToCategory,
+	normalizeRouteToSubCategory
+} from "../../utils/productsUtils";
 import NavigationProducts from './NavigationProducts/NavigationProducts';
 import ExpandedNavigationProducts from "./NavigationProducts/ExpandedNavigationProducts";
 import {Spinner} from "../Spinner/Spinner";
@@ -15,9 +19,11 @@ import Pagination from 'react-js-pagination';
 import {priceRange} from "../../utils/productsUtils";
 import {connect} from 'react-redux';
 import MostPopular from './MostPopular/MostPopular';
+import DocumentTitle from 'react-document-title';
+import OfferProducts from '../common/OfferProducts/OfferProducts';
 
-const getCategory = (props) => props.match.params.category;
-const getSubCategory = (props) => props.match.params.subCategory;
+const getCategory = props => props.match.params.category;
+const getSubCategory = props => props.match.params.subCategory;
 
 class ProductPlace extends React.Component {
 	constructor(props) {
@@ -125,7 +131,7 @@ class ProductPlace extends React.Component {
 		});
 	};
 
-	onPaginationChange = (pageNumber) => {
+	onPaginationChange = pageNumber => {
 		this.renderLoadingSpinner();
 		console.log(this.state.priceRangeForPagination);
 		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
@@ -186,30 +192,11 @@ class ProductPlace extends React.Component {
 			})
 	};
 
-	onChangeSortingType = e => {
-		this.setState({sortingType: e.target.value});
-	};
+	onChangeSortingType = e => this.setState({sortingType: e.target.value});
 
-	onChangeHowManyToShow = e => {
-		this.setState({howManyToShow: e.target.value});
-	};
+	onChangeHowManyToShow = e => this.setState({howManyToShow: e.target.value});
 
 	onBackExpNavProdClick = () => this.setState({isExpandedNavProd: false});
-
-	fetchImgSrc = id => {
-		const GET_PRODUCT_IMG = getProductImageUrl(id, 0);
-		const GET_PRODUCT_IMG_COUNT = getProductImageCountUrl(id);
-
-		return Promise.resolve(apiWithoutRedirect()
-			.get(GET_PRODUCT_IMG_COUNT)
-			.then(resp => {
-				if (resp.data > 0) {
-					return GET_PRODUCT_IMG;
-				}
-				else
-					return 'https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png';
-			}));
-	};
 
 	renderLoadingSpinner = () => {
 		this.setState({isProductsLoading: true});
@@ -221,48 +208,52 @@ class ProductPlace extends React.Component {
 
 	renderSwitchContent = () => {
 		if (!this.state.isProductsLoading && this.state.isProductsLoaded && (this.state.products ? this.state.products.length > 0 : false)) {
-			return (<div className="container-fluid container-products">
-				<div className="container-products__how-to-show">
-					<select className="container-products__how-to-show__sort" onChange={this.onChangeSortingType}
-							value={this.state.sortingType}>
-						<option value={0}>Позиція</option>
-						<option value={1}>Найдорожчі спочатку</option>
-						<option value={2}>Найдешевші спочатку</option>
-					</select>
-					<select className="container-products__how-to-show__per-page" onChange={this.onChangeHowManyToShow}
-							value={this.state.howManyToShow}>
-						<option value={16}>16</option>
-						<option value={32}>32</option>
-					</select>
+			return (
+				<div className="container-fluid container-products">
+					<div className="container-products__how-to-show">
+						<select className="container-products__how-to-show__sort"
+								onChange={this.onChangeSortingType}
+								value={this.state.sortingType}>
+							<option value={0}>Позиція</option>
+							<option value={1}>Найдорожчі спочатку</option>
+							<option value={2}>Найдешевші спочатку</option>
+						</select>
+						<select className="container-products__how-to-show__per-page"
+								onChange={this.onChangeHowManyToShow}
+								value={this.state.howManyToShow}>
+							<option value={16}>16</option>
+							<option value={32}>32</option>
+						</select>
+					</div>
+					<div className="row container-products__row">
+						{this.state.products.map(item => {
+							return (
+								<div
+									className="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6 container-products__row__item">
+									<ProductCard
+										defaultImgSrc="https://stanfy.com/wp-content/uploads/2015/09/1-V3h-VWthi5lL0QySF6qZPw.gif"
+										product={item}
+										key={item.id}
+										onLikeButClick={this.onLikeButClick}
+										onAddProduct={this.onAddProductToShoppingCardButClick}/>
+								</div>
+							)
+						})}
+					</div>
+					<div className="pagination-box">
+						<Pagination totalItemsCount={this.state.totalProductCount}
+									itemsCountPerPage={this.state.howManyToShow}
+									onChange={this.onPaginationChange}
+									activePage={this.state.activePage}
+									itemClass="page-item"
+									linkClass="page-link"
+									innerClass="pagination-box__pagination pagination"/>
+					</div>
 				</div>
-				<div className="row container-products__row">
-					{this.state.products.map(item => {
-						return (
-							<div
-								className="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-6 container-products__row__item">
-								<ProductCard
-									imgSrcPromise={this.fetchImgSrc(item.id)}
-									defaultImgSrc="https://pbs.twimg.com/profile_images/473506797462896640/_M0JJ0v8_400x400.png"
-									product={item}
-									key={item.id}
-									onLikeButClick={this.onLikeButClick}
-									onAddProduct={this.onAddProductToShoppingCardButClick}/>
-							</div>
-						)
-					})}
-				</div>
-				<div className="pagination-box">
-					<Pagination totalItemsCount={this.state.totalProductCount}
-								itemsCountPerPage={this.state.howManyToShow}
-								onChange={this.onPaginationChange}
-								activePage={this.state.activePage}
-								itemClass="page-item"
-								linkClass="page-link"
-								innerClass="pagination-box__pagination pagination"/>
-				</div>
-			</div>);
+			);
 		}
-		if (this.state.isProductsLoaded && !this.state.isProductsLoading && (this.state.products ? this.state.products.length === 0 : false)) {
+		if (this.state.isProductsLoaded && !this.state.isProductsLoading && (this.state.products ?
+			this.state.products.length === 0 : false)) {
 			return <div className="text-center">
 				<h3>Нічого не знайдено</h3>
 			</div>;
@@ -275,21 +266,30 @@ class ProductPlace extends React.Component {
 
 	render() {
 		return (
-			<div className="row">
-				<div className="col-xl-3 col-lg-4">
-					{
-						this.state.products && this.state.isExpandedNavProd ? <ExpandedNavigationProducts
-								products={this.state.products}
-								onPriceRangeChangeValue={this.onPriceRangeChangeValue}
-								onSearchByFilter={this.onSearchByFilter}
-								onBackClick={this.onBackExpNavProdClick}/> :
-							<NavigationProducts/>
-					}
+			<DocumentTitle
+				title={`${normalizeRouteToCategory(getCategory(this.props))} | ${normalizeRouteToSubCategory(getSubCategory(this.props))}`}>
+				<div className="row">
+					<div className="col-xl-3 col-lg-4">
+						{
+							this.state.products && this.state.isExpandedNavProd ? <ExpandedNavigationProducts
+									products={this.state.products}
+									onPriceRangeChangeValue={this.onPriceRangeChangeValue}
+									onSearchByFilter={this.onSearchByFilter}
+									onBackClick={this.onBackExpNavProdClick}/> :
+								<NavigationProducts/>
+						}
+					</div>
+					<div className="col-xl-9 col-lg-8">
+						{this.renderSwitchContent()}
+					</div>
+					<div className="offer-products-header">
+						Недавно переглянуті товари
+					</div>
+					<div className="col-12 offer-products">
+						<OfferProducts/>
+					</div>
 				</div>
-				<div className="col-xl-9 col-lg-8">
-					{this.renderSwitchContent()}
-				</div>
-			</div>
+			</DocumentTitle>
 		);
 	}
 }

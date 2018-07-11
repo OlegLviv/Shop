@@ -6,16 +6,19 @@ import {
 	EDIT_PRODUCT_URL,
 	getDeleteProductUrl,
 	getProductImageCountUrl,
-	getDeleteProductImageUrl
+	getDeleteProductImageUrl, getProductImageUrl
 } from "../../../../../services/urls/productUrls";
 import Pagination from 'react-js-pagination';
 import {Spinner} from "../../../../Spinner/Spinner";
 import {SuccessDeletedModal} from "./SuccessDeletedModal";
 import {SuccessUpdatedModal} from "./SuccessUpdatedModal";
+import DocumentTitle from 'react-document-title';
+import {normalizeRouteToCategory, normalizeRouteToSubCategory} from "../../../../../utils/productsUtils";
 
 const howProductsPerPage = 5;
 
 //	todo need fix spinner and deleting images
+//	todo need fix loading state
 class Edit extends React.Component {
 	constructor(props) {
 		super(props);
@@ -27,12 +30,15 @@ class Edit extends React.Component {
 			selectedProduct: null,
 			newProductName: '',
 			newProductPrice: 0,
+			newProductDiscount: 0,
+			newProductDescription: '',
 			isLoading: false,
 			isLoaded: true,
 			isDeleteConfirmed: false,
 			imgUrls: [],
 			isShowSuccessDeleted: false,
-			isShowSuccessUpdated: false
+			isShowSuccessUpdated: false,
+			loadedImg: false
 		}
 	}
 
@@ -66,32 +72,55 @@ class Edit extends React.Component {
 			selectedProduct: item,
 			newProductName: item.name,
 			newProductPrice: item.price,
+			newProductDiscount: item.discount,
+			newProductDescription: item.description,
 			activePage: 1
 		});
 	};
 
-	onPaginationChange = (pageNumber) => {
+	onPaginationChange = pageNumber => {
+		this.setState({
+			isLoading: true,
+			isLoaded: false,
+			loadedImg: false
+		});
+
 		apiGet(getProductsByNameUrl(this.state.searchValue, pageNumber, howProductsPerPage))
 			.then(resp => {
 				console.log(resp.data);
 				this.setState({
 					products: resp.data.data,
 					activePage: resp.data.pageNumber,
-					totalProductCount: resp.data.totalCount
+					totalProductCount: resp.data.totalCount,
+					isLoaded: true,
+					isLoading: false
 				});
 			})
+			.catch(err => {
+				this.setState({
+					isLoaded: true,
+					isLoading: false
+				});
+				alert(`Error: ${err}`);
+			});
 	};
 
 	onSaveProduct = () => {
 		if (this.state.isLoaded) {
 			this.setState({isLoaded: false});
 		}
+
 		this.setState({isLoading: true});
+
 		const newProduct = {
 			productId: this.state.selectedProduct.id,
 			name: this.state.newProductName,
-			price: this.state.newProductPrice
+			price: this.state.newProductPrice,
+			discount: this.state.newProductDiscount,
+			description: this.state.newProductDescription,
+			isAvailable: this.state.selectedProduct.isAvailable
 		};
+
 		apiPut(EDIT_PRODUCT_URL, newProduct)
 			.then(resp => {
 				console.log(resp.data);
@@ -110,7 +139,9 @@ class Edit extends React.Component {
 		if (this.state.isLoaded) {
 			this.setState({isLoaded: false});
 		}
+
 		this.setState({isLoading: true});
+
 		apiDelete(getDeleteProductUrl(this.state.selectedProduct.id))
 			.then(resp => {
 				if (resp.data >= 1) {
@@ -138,7 +169,7 @@ class Edit extends React.Component {
 		})
 	};
 
-	onDeleteImage = (i) => {
+	onDeleteImage = i => {
 		apiDelete(getDeleteProductImageUrl(this.state.selectedProduct.id, i))
 			.then(resp => console.log(resp));
 	};
@@ -149,6 +180,8 @@ class Edit extends React.Component {
 	};
 
 	onCloseSuccessUpdatedModal = () => this.setState({isShowSuccessUpdated: false});
+
+	onImgLoad = () => this.setState({loadedImg: true});
 
 	setImagesUrl = () => {
 		Promise.all([this.getImageCount()])
@@ -165,6 +198,7 @@ class Edit extends React.Component {
 
 	renderImagesEdit = () => {
 		this.setImagesUrl();
+
 		return this.state.imgUrls.map((url, i) => (<tr>
 			<td className="edit-product-img-td">
 				<img alt="..." src={url}/>
@@ -177,6 +211,7 @@ class Edit extends React.Component {
 
 	renderEditPanel = () => {
 		const {selectedProduct} = this.state;
+
 		return (
 			<div>
 				{this.state.isLoaded && !this.state.isLoading && selectedProduct ? <table>
@@ -199,10 +234,40 @@ class Edit extends React.Component {
 					<tr>
 						<td>Ціна</td>
 						<td>
-							<input className="form-control" placeholder="Введіть назву продукту"
+							<input className="form-control" placeholder="Введіть ціну продукту"
 								   defaultValue={selectedProduct.price}
 								   value={this.state.newProductPrice}
 								   onChange={(e) => this.setState({newProductPrice: e.target.value})}/>
+						</td>
+					</tr>
+					<tr>
+						<td>Знижка в %</td>
+						<td>
+							<input className="form-control" placeholder="Введіть знижку"
+								   defaultValue={selectedProduct.priceWithDiscount}
+								   value={this.state.newProductDiscount}
+								   onChange={(e) => this.setState({newProductDiscount: e.target.value})}/>
+						</td>
+					</tr>
+					<tr>
+						<td>Є в наявності</td>
+						<td>
+							<input type="checkbox"
+								   checked={this.state.selectedProduct.isAvailable}
+								   onChange={({target}) => {
+									   const selectedProduct = {...this.state.selectedProduct};
+									   selectedProduct.isAvailable = target.checked;
+									   this.setState({selectedProduct: selectedProduct});
+								   }}/>
+						</td>
+					</tr>
+					<tr>
+						<td>Опис</td>
+						<td>
+							<input className="form-control" placeholder="Введіть опис"
+								   defaultValue={selectedProduct.description}
+								   value={this.state.newProductDescription}
+								   onChange={e => this.setState({newProductDescription: e.target.value})}/>
 						</td>
 					</tr>
 					{this.renderImagesEdit()}
@@ -243,47 +308,65 @@ class Edit extends React.Component {
 
 	render() {
 		return (
-			<div className="edit-container">
-				{this.renderSuccessDeletedModal()}
-				{this.renderSuccessUpdatedModal()}
-				<div className="edit-container__header">
-					Редактор товару
-				</div>
-				<div className="edit-container__search-box">
-					<h6 className="text-center">Пошук</h6>
-					<input className="form-control"
-						   placeholder="Пошук товару"
-						   onChange={this.onChangeSearch}
-						   value={this.state.searchValue}/>
-				</div>
-				{!this.state.products.length && this.state.searchValue && this.renderNotFoundProducts()}
-				{!this.state.selectedProduct ? <div>
-					<div className="edit-container__product-list-box">
-						{this.state.products.length > 0 && <h6 className="text-center">Оберіть товар</h6>}
-						{!this.state.isLoading && this.state.isLoaded ?
-							<ul className="list-group edit-container__product-list-box__list-group">
-								{
-									this.state.products.map(item => <li key={item.id}
-																		className="list-group-item list-group edit-container__product-list-box__list-group__item"
-																		onClick={() => this.onProductClick(item)}>
-										<div>{`Назва продукту: ${item.name}`}</div>
-										<div>{`Категорія: ${item.category}`}</div>
-										<div>{`Підкатегорія: ${item.subCategory}`}</div>
-									</li>)
-								}
-							</ul> : <Spinner/>}
+			<DocumentTitle title="Редактор товару">
+				<div className="edit-container">
+					{this.renderSuccessDeletedModal()}
+					{this.renderSuccessUpdatedModal()}
+					<div className="edit-container__header">
+						Редактор товару
 					</div>
-					<div className="edit-container__pagin-box">
-						{this.state.products.length > 0 && <Pagination totalItemsCount={this.state.totalProductCount}
-																	   itemsCountPerPage={16}
-																	   onChange={this.onPaginationChange}
-																	   activePage={this.state.activePage}
-																	   itemClass="page-item"
-																	   linkClass="page-link"
-																	   innerClass="edit-container__pagin-box__pagin pagination"/>}
+					<div className="edit-container__search-box">
+						<h6 className="text-center">Пошук</h6>
+						<input className="form-control"
+							   placeholder="Пошук товару"
+							   onChange={this.onChangeSearch}
+							   value={this.state.searchValue}/>
 					</div>
-				</div> : this.renderEditPanel()}
-			</div>
+					{!this.state.products.length && this.state.searchValue && !this.state.isLoading && this.renderNotFoundProducts()}
+					{!this.state.selectedProduct ? <div>
+						<div className="edit-container__product-list-box">
+							{this.state.products.length > 0 && <h6 className="text-center">Оберіть товар</h6>}
+							{!this.state.isLoading && this.state.isLoaded ?
+								<ul className="list-group edit-container__product-list-box__list-group">
+									{
+										this.state.products.map(item => (
+											<li key={item.id}
+												className="list-group-item list-group edit-container__product-list-box__list-group__item"
+												onClick={() => this.onProductClick(item)}>
+												<div>
+													<div>{`Назва продукту: ${item.name}`}</div>
+													<div>{`Категорія: ${normalizeRouteToCategory(item.category)}`}</div>
+													<div>{`Підкатегорія: ${normalizeRouteToSubCategory(item.subCategory)}`}</div>
+												</div>
+												<div>
+													<img className=""
+														 style={{
+															 display: `${!this.state.loadedImg ? 'none' : 'block'}`
+														 }}
+														 src={getProductImageUrl(item.id)}
+														 alt="Card image cap"
+														 onLoad={this.onImgLoad}
+													/>
+													{!this.state.loadedImg && <img className=""
+																				   src={require('../../../../../spinner.gif')}/>}
+												</div>
+											</li>))
+									}
+								</ul> : <Spinner/>}
+						</div>
+						<div className="edit-container__pagin-box">
+							{this.state.products.length > 0 &&
+							<Pagination totalItemsCount={this.state.totalProductCount}
+										itemsCountPerPage={howProductsPerPage}
+										onChange={this.onPaginationChange}
+										activePage={this.state.activePage}
+										itemClass="page-item"
+										linkClass="page-link"
+										innerClass="edit-container__pagin-box__pagin pagination"/>}
+						</div>
+					</div> : this.renderEditPanel()}
+				</div>
+			</DocumentTitle>
 		)
 	}
 }

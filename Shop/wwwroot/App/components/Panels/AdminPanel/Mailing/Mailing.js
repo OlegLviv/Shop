@@ -5,6 +5,7 @@ import {apiPost} from "../../../../services/api";
 import {SEND_MAIL_URL} from "../../../../services/urls/mailingUrls";
 import {SuccessSentModal} from "./SuccessSentModal";
 import {Spinner} from "../../../Spinner/Spinner";
+import DocumentTitle from 'react-document-title';
 
 const getSendBody = ({subject, body, isForOnlyRegisteredUsers}) => ({
 	subject: subject,
@@ -133,11 +134,13 @@ class Mailing extends React.Component {
 
 	render() {
 		return (
-			<div className="mailing-cont">
-				{this.renderSuccessSentModal()}
-				<div className="mailing-cont__header">Розсилки</div>
-				{!this.state.isLoading ? this.renderMainForm() : <Spinner/>}
-			</div>
+			<DocumentTitle title="Розсилки">
+				<div className="mailing-cont">
+					{this.renderSuccessSentModal()}
+					<div className="mailing-cont__header">Розсилки</div>
+					{!this.state.isLoading ? this.renderMainForm() : <Spinner/>}
+				</div>
+			</DocumentTitle>
 		)
 	}
 }

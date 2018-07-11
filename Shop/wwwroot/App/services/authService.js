@@ -4,7 +4,7 @@ import {GET_USER_ROLE_URL} from "./urls/userUrls";
 import {REGISTRATION_USER_URL} from "./urls/userUrls";
 import {api} from "./api";
 
-export const logInToken = (userName, password) => {
+export const logInToken = (userName, password, success) => {
 	const loginModel = {
 		userName: userName,
 		password: password
@@ -15,21 +15,24 @@ export const logInToken = (userName, password) => {
 			const {token} = resp.data;
 			if (token) {
 				localStorage.setItem('access_token', token);
-				console.log('setToken', token);
 			}
 			if (localStorage.getItem('access_token')) {
-				api().get(GET_USER_ROLE_URL)
+				api()
+					.get(GET_USER_ROLE_URL)
 					.then(resp => {
+						if (success)
+							success();
+
 						const {role} = resp.data;
-						console.log('getUserROle', role);
+
 						if (role) {
 							switch (role) {
 								case 'Admin': {
-									window.location.replace('/adminPanel');
+									window.location.replace('/adminPanel/action-on-products');
 								}
 									break;
 								case 'Client': {
-									window.location.replace('/userPanel');
+									window.location.replace('/userPanel/change-password');
 								}
 									break;
 							}

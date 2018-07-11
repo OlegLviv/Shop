@@ -25,20 +25,24 @@ namespace Shop.Controllers.Api
     [Produces("application/json")]
     [Route("api/Product")]
     [ModelStateFilter]
+    // ReSharper disable once HollowTypeName
     public class ProductController : Controller
     {
         private readonly AppDbContext _context;
         private readonly IRepositoryAsync<Product> _productsRepository;
         private readonly IRepositoryAsync<ProductImage> _imageRepository;
+        private readonly IRepositoryAsync<Feedback> _feedbackRepository;
         private readonly ProductService _productService;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
+        // ReSharper disable once TooManyDependencies
         public ProductController(AppDbContext context,
             IRepositoryAsync<Product> productsRepository,
             ProductService productService,
             UserManager<User> userManager, IMapper mapper,
-            IRepositoryAsync<ProductImage> imageRepository)
+            IRepositoryAsync<ProductImage> imageRepository,
+            IRepositoryAsync<Feedback> feedbackRepository)
         {
             _context = context;
             _productsRepository = productsRepository;
@@ -46,6 +50,7 @@ namespace Shop.Controllers.Api
             _userManager = userManager;
             _mapper = mapper;
             _imageRepository = imageRepository;
+            _feedbackRepository = feedbackRepository;
         }
 
         #region GET
@@ -68,6 +73,7 @@ namespace Shop.Controllers.Api
             return this.JsonResult(_mapper.Map<ProductDto>(product));
         }
 
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         [HttpGet("GetMostPopularProducts/{count:int?}")]
         public IActionResult GetMostPopularProducts(int count = 16)
         {
@@ -104,6 +110,7 @@ namespace Shop.Controllers.Api
                 .Table
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase));
+
             return this.JsonResult(new Paginator<Product>
             {
                 Data = products.Take(size),
@@ -113,7 +120,7 @@ namespace Shop.Controllers.Api
             });
         }
 
-        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         [HttpGet("GetProducts/{category}/{subCategory}/{priceFrom:int}/{priceTo:int}/{query?}/{pageNumber:int?}/{pageSize:int?}/{sortingType:int?}")]
         public IActionResult GetProducts(string category, string subCategory, int priceFrom, int priceTo, string query = null, int pageNumber = 1, int pageSize = 16, SortingType sortingType = SortingType.NoSort)
         {
@@ -210,8 +217,10 @@ namespace Shop.Controllers.Api
             foreach (var productFeedback in productFeedbacks)
             {
                 var user = await _userManager.FindByIdAsync(productFeedback.UserId);
+
                 if (user == null)
                     return BadRequest("Incorrent user id");
+
                 feedbacks.Add(new FeedbackDto
                 {
                     UserName = user.Name,
@@ -236,7 +245,6 @@ namespace Shop.Controllers.Api
                 return BadRequest("Icorrect sub category or properties not found");
 
             var propsArr = properties.Properties.Split(';');
-
             var posibleProductProperties = new List<dynamic>(propsArr.Length);
 
             foreach (var prop in propsArr)
@@ -245,6 +253,7 @@ namespace Shop.Controllers.Api
                 {
                     continue;
                 }
+
                 posibleProductProperties.Add(new
                 {
                     PropValue = prop,
@@ -253,12 +262,13 @@ namespace Shop.Controllers.Api
                     .FirstOrDefaultAsync(x => x.SubCategory == subCategory && x.PropertyName.Equals(prop, StringComparison.OrdinalIgnoreCase)))
                     .Values
                     .Split(';')
-
                 });
             }
+
             return this.JsonResult(posibleProductProperties);
         }
 
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         [HttpGet("GetProductImage/{productId}/{number:int}")]
         public async Task<IActionResult> GetProductImage(string productId, int number)
         {
@@ -266,8 +276,10 @@ namespace Shop.Controllers.Api
                 .Table
                 .Include(x => x.ProductImages)
                 .FirstOrDefaultAsync(x => x.Id == productId);
+
             if (product == null)
                 return BadRequest("Product don't exist. Or Incorrect product id");
+
             var prodImages = product
                 .ProductImages;
 
@@ -284,8 +296,10 @@ namespace Shop.Controllers.Api
                 .Table
                 .Include(x => x.ProductImages)
                 .FirstOrDefaultAsync(x => x.Id == productId);
+
             if (product == null)
                 return BadRequest("Product don't exist. Or Incorrect product id");
+
             return Ok(product
                 .ProductImages
                 .Count);
@@ -300,8 +314,9 @@ namespace Shop.Controllers.Api
         public async Task<IActionResult> AddProduct([FromForm] AddProductDto model)
         {
             var product = _mapper.Map<Product>(model);
-
             var productImages = new List<ProductImage>();
+
+            product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
 
             if (model.Images != null)
             {
@@ -362,24 +377,20 @@ namespace Shop.Controllers.Api
             if (product == null)
                 return BadRequest("Product don't exist");
 
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = await this.GetUserByIdentityAsync(_userManager);
 
             if (user == null)
                 return BadRequest("User with this id don't exist");
 
-            var feedback = new Feedback
-            {
-                Product = product,
-                ProductId = product.Id,
-                Body = model.Body,
-                Date = DateTime.Now,
-                UserId = model.UserId
-            };
+            var feedback = _mapper.Map<Feedback>(model);
+            feedback.Product = product;
+
             if (product.Feedbacks == null)
                 product.Feedbacks = new List<Feedback>
                 {
                     feedback
                 };
+
             product
                 .Feedbacks
                 .Add(feedback);
@@ -388,15 +399,51 @@ namespace Shop.Controllers.Api
 
             if (updateResult <= 0)
                 throw new Exception("Can't update product");
-            //  todo need mapping
-            return this.JsonResult(new FeedbackDto
+
+            var feedbackDto = _mapper.Map<FeedbackDto>(feedback);
+            feedbackDto.UserName = user.Name;
+            feedbackDto.UserLastName = user.LastName;
+
+            return this.JsonResult(feedbackDto);
+        }
+
+        [HttpPost("SendSubFeedback")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> SendSubFeedback([FromBody] SendProductSubFeedbackDto model)
+        {
+            var feedback = await _feedbackRepository.GetByIdAsync(model.FeedbackId);
+
+            if (feedback == null)
+                return BadRequest("Incorrect feedback id or feedback don't found");
+
+            var user = await this.GetUserByIdentityAsync(_userManager);
+
+            if (user == null)
+                return Unauthorized();
+
+            var subFeedback = new SubFeedback
             {
-                UserName = user.Name,
-                UserLastName = user.LastName,
-                UserId = user.Id,
-                Date = ((DateTimeOffset)feedback.Date).ToUnixTimeSeconds(),
-                Body = feedback.Body
-            });
+                Feedback = feedback,
+                Body = model.Body,
+                FeedbackId = feedback.Id,
+                UserId = user.Id
+            };
+
+            if (feedback.SubFeedbacks.Count > 0)
+                feedback.SubFeedbacks.Add(subFeedback);
+            else
+                feedback.SubFeedbacks = new List<SubFeedback> { subFeedback };
+
+            var updateResult = await _feedbackRepository.UpdateAsync(feedback);
+
+            if (updateResult <= 0)
+                throw new Exception("Can't update product");
+
+            var subFeedbackDto = _mapper.Map<SubFeedbackDto>(feedback);
+            subFeedbackDto.UserName = user.Name;
+            subFeedbackDto.UserLastName = user.LastName;
+
+            return this.JsonResult(subFeedbackDto);
         }
 
         [HttpPost("AddProperty")]
@@ -428,7 +475,7 @@ namespace Shop.Controllers.Api
                     new List<string> { model.PossibleProperty });
 
             if (!addPossiblePropRes)
-                return BadRequest("Cant add possible property");
+                return BadRequest("Can't add possible property");
 
             return Ok("Success");
         }
@@ -449,6 +496,10 @@ namespace Shop.Controllers.Api
 
             product.Price = model.Price;
             product.Name = model.Name;
+            product.Discount = model.Discount;
+            product.Description = model.Description;
+            product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
+            product.IsAvailable = model.IsAvailable;
 
             return this.JsonResult(new
             {

@@ -5,11 +5,14 @@ import {
 	GET_USER_INFO_URL,
 	SEND_CHANGE_EMAIL_TOKEN_URL,
 	CHANGE_USER_EMAIL_URL,
+	SEND_CONFIRM_EMAIL_CODE,
 	getIsExistUserUrl
 } from "../../../../services/urls/userUrls";
 import {isValidEmail} from "../../../../utils/validationUtils";
 import {Spinner} from "../../../Spinner/Spinner";
 import {SuccessChangedEmailModal} from "./SuccessChangedEmailModal";
+import {SuccessSendedEmailConfirmCodeModal} from "./SuccessSendedEmailConfirmCodeModal";
+import DocumentTitle from 'react-document-title';
 
 const getChangeUserEmailBody = ({token, newEmail}) => ({
 	emailToken: token,
@@ -22,6 +25,7 @@ class ChangeEmail extends React.Component {
 		this.state = {
 			oldEmail: '',
 			newEmail: '',
+			emailConfirmed: false,
 			isValidEmail: true,
 			emailError: '',
 			token: '',
@@ -29,7 +33,8 @@ class ChangeEmail extends React.Component {
 			isValidToken: true,
 			tokenError: '',
 			isLoading: false,
-			canShowSuccessChangedEmailModal: false
+			canShowSuccessChangedEmailModal: false,
+			isSendConfirmEmailToken: false
 		}
 	}
 
@@ -42,7 +47,14 @@ class ChangeEmail extends React.Component {
 		this.trySetLoading();
 
 		apiGet(GET_USER_INFO_URL)
-			.then(resp => this.setState({oldEmail: resp.data.email, isLoading: false}))
+			.then(resp => {
+				this.setState({
+					oldEmail: resp.data.email,
+					isLoading: false,
+					emailConfirmed: resp.data.emailConfirmed
+				});
+				console.log(resp);
+			})
 			.catch(err => alert(`Error:${err}`));
 	}
 
@@ -141,6 +153,23 @@ class ChangeEmail extends React.Component {
 
 	onCloseSuccessChangedEmailModal = () => this.setState({canShowSuccessChangedEmailModal: false});
 
+	onSendConfirmToke = () => {
+		this.trySetLoading();
+
+		apiPost(SEND_CONFIRM_EMAIL_CODE)
+			.then(resp => {
+				if (resp.status === 200 && resp.data.isSuccess)
+					this.setState({
+						isLoading: false,
+						isSendConfirmEmailToken: true
+					});
+			})
+			.catch(err => {
+				alert(`Error: ${err}`);
+				this.setState({isLoading: false});
+			});
+	};
+
 	renderError = text => <small className="invalid-small">{text}</small>;
 
 	renderSuccessChangedEmailModal = () => <SuccessChangedEmailModal
@@ -167,12 +196,22 @@ class ChangeEmail extends React.Component {
 		);
 	};
 
-	render() {
-		return (
-			<div className="ce-container">
-				{this.renderSuccessChangedEmailModal()}
-				<div className="ce-container__header">Зміна Email</div>
-				{!this.state.isLoading ? <div className="ce-container__form">
+	renderNotConfirmedEmail = () => (
+		<div className="not-confirmed-email">
+			<h5>Для того щоб змінити email будь ласка підтвердіть старий</h5>
+			<h6>Ви можете відправити код підтвердження повторно</h6>
+			<button className="btn btn-info"
+					onClick={this.onSendConfirmToke}>Відправити
+			</button>
+		</div>
+	);
+
+	renderMainForm = () => {
+		if (this.state.isLoading)
+			return <Spinner/>;
+		if (!this.state.isLoading && this.state.emailConfirmed)
+			return (
+				<div className="ce-container__form">
 					<div className="form-group">
 						<label htmlFor="inputOldEmail">Ваш Email</label>
 						<input className="form-control"
@@ -192,8 +231,23 @@ class ChangeEmail extends React.Component {
 						<button className="btn btn-info" onClick={this.onClickChangeEmail}>Відправити</button>
 					</div>}
 					{this.state.isRenderConfirmTokenView && this.renderConfirmToken()}
-				</div> : <Spinner/>}
-			</div>
+				</div>
+			);
+		if (!this.state.isLoading && !this.state.emailConfirmed)
+			return this.renderNotConfirmedEmail();
+	};
+
+	render() {
+		return (
+			<DocumentTitle title="Зміна email">
+				<div className="ce-container">
+					{this.renderSuccessChangedEmailModal()}
+					<SuccessSendedEmailConfirmCodeModal isOpen={this.state.isSendConfirmEmailToken}
+														onClose={() => this.setState({isSendConfirmEmailToken: false})}/>
+					<div className="ce-container__header">Зміна Email</div>
+					{this.renderMainForm()}
+				</div>
+			</DocumentTitle>
 		);
 	}
 }

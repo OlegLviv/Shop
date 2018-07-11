@@ -12,7 +12,7 @@ export const Navigation = (props) => {
 			<div className="nav-container__items">
 				{
 					props.items.map(item => <Link className="nav-container__items__item"
-												  to={item.link}>
+											   to={item.link}>
 						<Icon className="nav-container__items__item__icon" name={item.icon}/>
 						<div className="nav-container__items__item__text">{item.text}</div>
 					</Link>)

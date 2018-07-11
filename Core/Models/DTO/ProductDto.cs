@@ -22,7 +22,11 @@ namespace Core.Models.DTO
 
         public int Discount { get; set; }
 
+        public double PriceWithDiscount { get; set; }
+
         //  todo maybe need delete
         public int ProductCount { get; set; }
+
+        public bool IsAvailable { get; set; }
     }
 }

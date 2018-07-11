@@ -14,6 +14,7 @@ import {Link} from 'react-router-dom';
 import {SuccessAddedNewCharacteristicModal} from "./SuccessAddedNewCharacteristicModal";
 import {SuccessDeletedCharacteristicModal} from "./SuccessDeletedCharacteristicModal";
 import {Spinner} from "../../../../Spinner/Spinner";
+import DocumentTitle from 'react-document-title';
 
 class EditCharacteristic extends React.Component {
 	constructor(props) {
@@ -57,7 +58,7 @@ class EditCharacteristic extends React.Component {
 			const isValidNewPossibleProps = [...this.state.isValidNewPossibleProps];
 			const possiblePropsErrors = [...this.state.possiblePropsErrors];
 			isValidNewPossibleProps[i] = false;
-			possiblePropsErrors[i] = 'Поле може містити тільки букви і цифри. Мінімальна довжина 2, максимальна 20';
+			possiblePropsErrors[i] = 'Поле не може містити символ ";". Мінімальна довжина 2, максимальна 20';
 			this.setState({
 				isValidNewPossibleProps: isValidNewPossibleProps,
 				possiblePropsErrors: possiblePropsErrors
@@ -82,7 +83,11 @@ class EditCharacteristic extends React.Component {
 	updateSubCategoryState = () => {
 		this.trySetLoading();
 
-		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)))
+		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), err => {
+			if (err.response.data === 'Icorrect sub category or properties not found')
+				this.setState({subCategoryProps: []});
+			else alert(`Error: ${JSON.stringify(err.response)}`);
+		})
 			.then(resp => {
 				const product = {...this.state.product};
 				clearObjectProps(product);
@@ -96,10 +101,7 @@ class EditCharacteristic extends React.Component {
 					isLoading: false
 				});
 			})
-			.catch(err => {
-				this.setState({subCategoryProps: [], isLoading: false});
-				alert(`Error: ${err}`);
-			});
+			.catch(() => this.setState({isLoading: false}));
 	};
 
 	onChangeOptionCategory = e => this.setState({category: e.target.value});
@@ -291,18 +293,20 @@ class EditCharacteristic extends React.Component {
 
 	render() {
 		return (
-			<div className="ec-container">
-				{this.renderSuccessAddedNewCharacteristic()}
-				{this.renderSuccessDeletedCharacteristic()}
-				<div className="ec-container__header">
-					Редактор харктеристик товару
+			<DocumentTitle title="Редактор характеристик товару">
+				<div className="ec-container">
+					{this.renderSuccessAddedNewCharacteristic()}
+					{this.renderSuccessDeletedCharacteristic()}
+					<div className="ec-container__header">
+						Редактор харктеристик товару
+					</div>
+					{this.renderChooseCatSubCat()}
+					{!this.state.isLoading ? this.renderEditCharacteristicTable() : <Spinner/>}
+					{!this.state.subCategoryProps.length &&
+					<div className="text-center my-3">Властивостей для даного товару не знайдено. Ви може створити їх
+						<Link to="/adminPanel/action-on-products/add-new-characteristic">{' тут'}</Link></div>}
 				</div>
-				{this.renderChooseCatSubCat()}
-				{!this.state.isLoading ? this.renderEditCharacteristicTable() : <Spinner/>}
-				{!this.state.subCategoryProps.length &&
-				<div className="text-center my-3">Властивостей для даного товару не знайдено. Ви може створити їх
-					<Link to="/adminPanel/action-on-products/add-new-characteristic">{' тут'}</Link></div>}
-			</div>
+			</DocumentTitle>
 		)
 	}
 }

@@ -7,6 +7,7 @@ import {SUBSCRIBE_EMAIL_TO_MAILING_URL} from "../../../../services/urls/mailingU
 import {UNSUBSCRIBE_USER} from "../../../../services/urls/mailingUrls";
 import {SuccessSubscribeModal} from "./SuccessSubscribeModal";
 import {SuccessUnsubscribeModal} from "./SuccessUnsubscribeModal";
+import DocumentTitle from 'react-document-title';
 
 const getUserToSubscribe = ({user}) => ({
 	email: user.email
@@ -137,13 +138,15 @@ class Mailing extends Component {
 
 	render() {
 		return (
-			<div className="mailing-cont">
-				{this.renderSuccessSubscribeModal()}
-				{this.renderSuccessUnsubscribeModal()}
-				<div className="mailing-cont__header">Розсилки</div>
-				{this.renderForm()}
-			</div>
-		)
+			<DocumentTitle title="Розсилки">
+				<div className="mailing-cont">
+					{this.renderSuccessSubscribeModal()}
+					{this.renderSuccessUnsubscribeModal()}
+					<div className="mailing-cont__header">Розсилки</div>
+					{this.renderForm()}
+				</div>
+			</DocumentTitle>
+		);
 	}
 }
 

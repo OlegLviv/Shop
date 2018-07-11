@@ -7,6 +7,7 @@ import {apiGet, apiPost} from "../../../../../services/api";
 import {toUpperFirstCharInArray} from "../../../../../utils/utils";
 import {SuccessSavedModal} from "./SuccessSavedModal";
 import {Spinner} from "../../../../Spinner/Spinner";
+import DocumentTitle from 'react-document-title';
 
 const getNewCharacteristicBody = ({subCategory, newPossibleProps, newPropValue}) => ({
 	propName: `${newPropValue[0].toUpperCase()}${newPropValue.slice(1)}`,
@@ -56,7 +57,7 @@ class AddNewCharacteristic extends React.Component {
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), (err) => {
 			if (err.response.data === 'Icorrect sub category or properties not found')
 				this.setState({subCategoryProps: []});
-			else alert(`Error: ${JSON.stringify(err.response)}`)
+			else alert(`Error: ${JSON.stringify(err.response)}`);
 		})
 			.then(resp => {
 				console.log(resp.data);
@@ -235,13 +236,15 @@ class AddNewCharacteristic extends React.Component {
 
 	render() {
 		return (
-			<div className="ec-container">
-				{this.renderSuccessSavedModal()}
-				<div className="ec-container__header">
-					Додати нові характеристики
+			<DocumentTitle title="Додавання нових характеристик">
+				<div className="ec-container">
+					{this.renderSuccessSavedModal()}
+					<div className="ec-container__header">
+						Додати нові характеристики
+					</div>
+					{!this.state.isLoading ? this.renderMainContent() : <Spinner/>}
 				</div>
-				{!this.state.isLoading ? this.renderMainContent() : <Spinner/>}
-			</div>
+			</DocumentTitle>
 		);
 	}
 }

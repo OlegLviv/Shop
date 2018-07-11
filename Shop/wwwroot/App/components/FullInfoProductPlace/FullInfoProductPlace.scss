@@ -43,23 +43,45 @@
 	}
 	&__info-container {
 	  border: 1px $dark-grey-color solid;
-	  padding-top: 2rem;
-	  padding-left: 3rem;
+	  padding: 2rem;
 	  background: $light-background;
 	  border-radius: 5px;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: flex-start;
+
 	  &__main-info {
 		&__price {
 		  display: flex;
 		  align-items: baseline;
 		}
+		&__priceDiscount {
+		  background: $yellow-transparent-color;
+		  border: 1px $dark-yellow-transparent-color solid;
+		  border-radius: 5px;
+		  text-align: center;
+		}
 		&__price h3 {
 		  color: $dark-blue-color;
+		}
+		&__hr {
+		  width: 100%;
 		}
 	  }
 	  &__to-card {
 		&__btn-to-card button {
 		  margin: 2rem 2rem 2rem 0;
+		  padding: 1rem 4rem;
+		  transition-property: all;
+		  transition-duration: .7s;
+		  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 		}
+		&__btn-to-card button:hover {
+		  transform: scale(1.1);
+		}
+	  }
+	  &__to-card input[type="number"] {
+		border: none;
 	  }
 	}
   }
@@ -73,8 +95,9 @@
 	&__comment {
 	  transition-property: all;
 	  transition-duration: .7s;
-	  padding: 2rem 3rem 2rem 3rem;
-	  background: $light-background;
+	  padding: 1rem 2rem;
+	  margin-bottom: .7rem;
+	  background: $most-light-background;
 	  max-width: 30rem;
 	  min-width: 25rem;
 	  min-height: 10rem;
@@ -83,13 +106,20 @@
 	  border: 1px $dark-grey-color solid;
 	  &__date {
 		font-size: 10px;
+		padding-top: .5rem;
 	  }
 	  &__userName {
 		font-weight: 500;
 		font-size: 20px;
 	  }
 	  &__commentBody {
+		max-height: 20rem;
 		font-size: 16px;
+		padding: 1rem 0;
+	  }
+	  &__hr {
+		margin-top: 0;
+		margin-bottom: 0;
 	  }
 	}
   }
@@ -121,10 +151,32 @@
 
 .card-about-prod {
   margin-top: 3rem;
+  margin-bottom: 2rem;
 }
 
 .card-header {
   background: $light-background;
+}
+
+.with-discount {
+  text-decoration: line-through;
+}
+
+.description {
+  padding: 2rem 0;
+  background: $light-background;
+  border: 1px $dark-grey-transparent-color solid;
+  border-radius: 5px;
+}
+
+.available {
+  background: $dark-grey-color;
+  border-radius: 5px;
+  padding: .5rem;
+  display: flex;
+  justify-content: center;
+  border: 1px $dark solid;
+  color: $dark;
 }
 
 @media screen and (max-width: 760px) {

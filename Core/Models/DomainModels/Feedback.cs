@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Core.Models.DomainModels.Base;
 
@@ -13,6 +14,8 @@ namespace Core.Models.DomainModels
         public string ProductId { get; set; }
 
         public Product Product { get; set; }
+
+        public List<SubFeedback> SubFeedbacks { get; set; }
 
         [Required]
         [MaxLength(255)]

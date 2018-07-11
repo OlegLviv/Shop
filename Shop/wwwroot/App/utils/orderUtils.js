@@ -27,3 +27,12 @@ export const convertOrderStatus = orderStatus => {
 			return 'Закрито';
 	}
 };
+
+export const convertCallMeStatus = status => {
+	switch (status) {
+		case 0:
+			return 'Новий';
+		case 1:
+			return 'Виконаний';
+	}
+};

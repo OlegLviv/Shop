@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using AutoMapper;
 using BLL.Services;
 using BLL.Services.Interfaces;
@@ -11,9 +12,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -32,7 +35,9 @@ namespace Shop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(option =>
-             option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"]) ? "DevConnection" : "ProdConnection")));
+                option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"])
+                    ? "DevConnection"
+                    : "ProdConnection")));
 
             AddIdentity(services);
 
@@ -59,6 +64,8 @@ namespace Shop
             //{
             //    app.UseDeveloperExceptionPage();
             //}
+
+            UseFonts(app);
 
             app.UseStaticFiles();
 
@@ -151,6 +158,30 @@ namespace Shop
                 impl.GetService<IRepositoryAsync<PossibleProductProperty>>()));
 
             services.AddTransient<IOrderService, OrderService>();
+        }
+
+        private static void UseFonts(IApplicationBuilder app)
+        {
+            var typeProvider = new FileExtensionContentTypeProvider();
+
+            if (!typeProvider.Mappings.ContainsKey(".woff2"))
+            {
+                typeProvider.Mappings.Add(".woff2", "application/font-woff2");
+            }
+            if (!typeProvider.Mappings.ContainsKey(".woff"))
+            {
+                typeProvider.Mappings.Add(".woff", "application/font-woff");
+            }
+            if (!typeProvider.Mappings.ContainsKey(".ttf"))
+            {
+                typeProvider.Mappings.Add(".woff", "application/font-ttf");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ContentTypeProvider = typeProvider,
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Fonts"))
+            });
         }
     }
 }

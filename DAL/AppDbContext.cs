@@ -1,16 +1,18 @@
 ﻿using Core.Models.DomainModels;
-using Core.Models.DomainModels.Base;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DAL
 {
-    public class AppDbContext : IdentityDbContext
-    {
+    public sealed class AppDbContext : IdentityDbContext
+    {   
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
+            Database.MigrateAsync().Wait();
         }
+
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -18,6 +20,7 @@ namespace DAL
         public DbSet<PossibleProductProperty> PossibleProductProperties { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Mailing> Mailings { get; set; }
+        public DbSet<CallMe> CallMe { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
