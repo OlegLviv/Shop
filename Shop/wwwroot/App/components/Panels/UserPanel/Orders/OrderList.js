@@ -24,7 +24,10 @@ class OrderList extends Component {
 				<ul className="list-group order-list">
 					{this.props.orders.map(container => <li key={container.id}
 															className="list-group-item order-list__item">
-						<div>{`${container.productsContainers[0].product.name}...`}</div>
+						{
+							container.productsContainers.map(productsContainer =>
+								<div>{`${productsContainer.product.name} X ${productsContainer.count}`}</div>)
+						}
 						<div className="order-list__item__text-items">
 							<div className="order-list__item__text-items__label">Дата:</div>
 							<div>{convertDateToDateString(container.createDate)}</div>
@@ -32,6 +35,14 @@ class OrderList extends Component {
 						<div className="order-list__item__text-items">
 							<div className="order-list__item__text-items__label">Час:</div>
 							<div>{convertDateToTimeString(container.createDate)}</div>
+						</div>
+						<div className="order-list__item__text-items">
+							<div className="order-list__item__text-items__label">Загальна вартість:</div>
+							<div>{`${container.totalPrice}грн`}</div>
+						</div>
+						<div className="order-list__item__text-items">
+							<div className="order-list__item__text-items__label">Номер замовлення:</div>
+							<div>{container.id}</div>
 						</div>
 						<div className="order-list__item__text-items__label">Статус:</div>
 						<OrderStatus orderStatus={container.orderStatus}/>
