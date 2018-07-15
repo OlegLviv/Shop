@@ -9,8 +9,7 @@ namespace Core.Models.DomainModels
 
         public Product Product { get; set; }
 
-        [Required]
-        public byte[] Image { get; set; }
+        public string Path { get; set; }
 
         [Required]
         public string ContentType { get; set; }

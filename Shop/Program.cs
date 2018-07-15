@@ -22,6 +22,7 @@ namespace Shop
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
                 try
                 {
                     var context = services.GetRequiredService<AppDbContext>();
@@ -34,11 +35,10 @@ namespace Shop
                     UsersDbInitializer.InitializeAsync(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
                     ProductDbInitializaer.Initialize(context).Wait();
                     PropsInitializator.InitializeAsync(context).Wait();
-                    Migrate(context, appEnvironment).Wait();
+                    //Migrate(context, appEnvironment,logger).Wait();
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while seeding the database.");
                 }
             }
@@ -50,28 +50,29 @@ namespace Shop
                 .UseStartup<Startup>()
                 .Build();
 
-        private static async Task Migrate(AppDbContext context, IHostingEnvironment environment)
-        {
-            var products = context.Products.Include(i => i.ProductImages);
-            var path = $"{environment.WebRootPath}/Product Images";
+        //private static async Task Migrate(AppDbContext context, IHostingEnvironment environment,ILogger logger)
+        //{
+        //    var products = context.Products.Include(i => i.ProductImages);
+        //    var path = $"{environment.WebRootPath}/Product Images";
 
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+        //    if (!Directory.Exists(path))
+        //        Directory.CreateDirectory(path);
 
-            foreach (var product in products)
-            {
-                var productPath = $"{path}/${product.Id}";
-                if (!Directory.Exists(productPath))
-                    Directory.CreateDirectory(productPath);
+        //    foreach (var product in products)
+        //    {
+        //        var productPath = $"{path}/{product.Id}";
+        //        if (!Directory.Exists(productPath))
+        //            Directory.CreateDirectory(productPath);
 
-                foreach (var image in product.ProductImages)
-                {
-                    using (var fileStream = new FileStream(productPath, FileMode.Create))
-                    {
-                        await fileStream.WriteAsync(image.Image, 0, image.Image.Length);
-                    }
-                }
-            }
-        }
+        //        foreach (var image in product.ProductImages)
+        //        {
+        //            using (var fileStream = new FileStream($"{productPath}/{image.Id}", FileMode.Create))
+        //            {
+        //                await fileStream.WriteAsync(image.Image, 0, image.Image.Length);
+        //                logger.LogInformation($"Saving image of product ${product.Id}");
+        //            }
+        //        }
+        //    }
+        //}
     }
 }
