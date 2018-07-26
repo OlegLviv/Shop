@@ -1,4 +1,6 @@
-﻿using Core.Models.DomainModels.Base;
+﻿using System.Collections.Generic;
+using Core.Models.DomainModels;
+using Core.Models.DomainModels.Base;
 
 namespace Core.Models.DTO
 {
@@ -23,6 +25,8 @@ namespace Core.Models.DTO
         public int Discount { get; set; }
 
         public double PriceWithDiscount { get; set; }
+
+        public List<ProductImage> ProductImages { get; set; }
 
         //  todo maybe need delete
         public int ProductCount { get; set; }

@@ -11,6 +11,8 @@ namespace Core.Models.DomainModels
 
         public string Path { get; set; }
 
+        public bool IsMain { get; set; }
+
         [Required]
         public string ContentType { get; set; }
     }

@@ -82,6 +82,7 @@ namespace Shop.Controllers.Api
         {
             var products = _productsRepository
                 .Table
+                .Include(x=>x.ProductImages)
                 .OrderBy(x => x.Review)
                 .Skip(_productsRepository.Table.Count() - count)
                 .AsEnumerable()
