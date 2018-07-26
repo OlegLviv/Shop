@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
@@ -17,6 +18,8 @@ using Core.Models.DTO.Product;
 using Core.Models.DTO.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -215,7 +218,7 @@ namespace Shop.Controllers.Api
                 var user = await _userManager.FindByIdAsync(productFeedback.UserId);
                 var subFeedbacksDto = new List<SubFeedbackDto>(productFeedback.SubFeedbacks.Count);
 
-                foreach(var sf in productFeedback.SubFeedbacks)
+                foreach (var sf in productFeedback.SubFeedbacks)
                 {
                     var userSf = await _userManager.FindByIdAsync(sf.UserId);
 
@@ -227,7 +230,7 @@ namespace Shop.Controllers.Api
                         UserId = userSf.Id,
                         UserName = userSf.Name,
                         UserLastName = userSf.LastName
-                    });    
+                    });
                 }
 
                 if (user == null)
@@ -288,19 +291,22 @@ namespace Shop.Controllers.Api
         {
             var product = await _productsRepository
                 .Table
-                .Include(x => x.ProductImages)
+                .Include(i => i.ProductImages)
                 .FirstOrDefaultAsync(x => x.Id == productId);
 
             if (product == null)
                 return BadRequest("Product don't exist. Or Incorrect product id");
 
-            var prodImages = product
-                .ProductImages;
+            var hostingEnvironment = Request
+                .HttpContext
+                .RequestServices
+                .GetService<IHostingEnvironment>();
+            var filesPath = Directory.GetFiles($"{hostingEnvironment.WebRootPath}/Product Images/{productId}");
 
-            if (number > prodImages.Count - 1)
-                return BadRequest("Image don't exist. Or incorrect number");
+            if (filesPath.Length == 0)
+                return NotFound();
 
-            return File(prodImages[number].Image, prodImages[number].ContentType);
+            return File(await System.IO.File.ReadAllBytesAsync(filesPath[number]), product.ProductImages[number].ContentType);
         }
 
         [HttpGet("GetProductImageCount/{productId}")]
@@ -329,6 +335,10 @@ namespace Shop.Controllers.Api
         {
             var product = _mapper.Map<Product>(model);
             var productImages = new List<ProductImage>();
+            var hostingEnvironment = Request
+                .HttpContext
+                .RequestServices
+                .GetService<IHostingEnvironment>();
 
             product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
 
@@ -337,19 +347,25 @@ namespace Shop.Controllers.Api
                 foreach (var im in model.Images)
                 {
                     if (im.Length > 3000000)
-                        return BadRequest("Еhe image can't be larger than 3MB");
+                        return BadRequest("The image can't be larger than 3MB");
 
-                    using (var stream = im.OpenReadStream())
+                    var mainPath = $"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}";
+                    var productImage = new ProductImage
                     {
-                        var imgBuff = new byte[(int)stream.Length];
-                        await stream.ReadAsync(imgBuff, 0, (int)stream.Length);
-                        productImages.Add(new ProductImage
-                        {
-                            Product = product,
-                            ProductId = product.Id,
-                            Image = imgBuff,
-                            ContentType = im.ContentType
-                        });
+                        Product = product,
+                        ProductId = product.Id,
+                        ContentType = im.ContentType
+                    };
+                    var fullPath = $"{mainPath}/{productImage.Id}";
+
+                    if (!Directory.Exists(mainPath))
+                        Directory.CreateDirectory(mainPath);
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await im.CopyToAsync(stream);
+                        productImage.Path = fullPath;
+                        productImages.Add(productImage);
                     }
                 }
             }
@@ -536,14 +552,22 @@ namespace Shop.Controllers.Api
                 .Table
                 .Include(x => x.ProductImages)
                 .FirstOrDefaultAsync(x => x.Id == productId);
+            var hostingEnvironment = Request
+                .HttpContext
+                .RequestServices
+                .GetService<IHostingEnvironment>();
 
             if (product == null)
                 return BadRequest("Product not found or incorrent product id");
+
             if (product.ProductImages.Any())
                 await _imageRepository.DeleteAsync(product.ProductImages);
+
+            Directory.Delete($"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}", true);
+
             return Ok(await _productsRepository.DeleteAsync(product));
         }
-
+        //  TODO Need delete from folder
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpDelete("DeleteProductImage/{productId}/{number:int}")]
         public async Task<IActionResult> DeleteProductImage(string productId, int number)
