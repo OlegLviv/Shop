@@ -26,7 +26,9 @@ import DocumentTitle from 'react-document-title';
 
 const MAX_IMAGE_SIZE = 3000000;
 
-const addImageToForm = (form, {files}) => {
+const addImageToForm = (form, {files, mainFile}) => {
+	form.append('images', mainFile);
+
 	for (let i in files) {
 		form.append('images', files[i]);
 	}
@@ -45,14 +47,15 @@ class AddNew extends React.Component {
 			description: '',
 			product: {},
 			files: [],
+			mainFile: null,
 			isLoading: false,
-			isShowSuccessSavedProductModal: false,
 			isValidName: true,
 			isValidPrice: true,
 			isValidDiscount: true,
 			isValidDescription: true,
 			isShowMaxImageAlertModal: false,
-			isShowMaxSizeFileAlertModal: false
+			isShowMaxSizeFileAlertModal: false,
+			isShowSuccessSavedProductModal: false
 		}
 	}
 
@@ -80,7 +83,6 @@ class AddNew extends React.Component {
 
 	setSubCategoryState = () => {
 		this.trySetLoading();
-		console.log('set');
 
 		apiGet(getProductPropsUrl(normalizeSubCategoryToRoute(this.state.subCategory)), err => {
 			if (err.response.data === 'Icorrect sub category or properties not found')
@@ -157,7 +159,7 @@ class AddNew extends React.Component {
 	};
 
 	validateAllFields = successAction => {
-		const {name, price, description, discount} = this.state;
+		const {name, price, description, discount, mainFile} = this.state;
 		if (!isValidProductName(name)) {
 			this.setState({isValidName: false});
 		}
@@ -167,11 +169,16 @@ class AddNew extends React.Component {
 		if (!isValidProductDescription(description)) {
 			this.setState({isValidDescription: false});
 		}
+		if (!mainFile) {
+			alert('Будь ласка оберіть головне фото');
+		}
 		if (isValidProductName(name) &&
 			isValidProductPrice(price) &&
 			isValidProductDescription(description) &&
 			isValidProductDiscount(discount) &&
-			successAction)
+			mainFile &&
+			successAction
+		)
 			successAction();
 	};
 
@@ -202,13 +209,13 @@ class AddNew extends React.Component {
 	onChangeFile = e => {
 		const {files} = e.target;
 
-		if (files.length > 3) {
+		if (files.length > 2) {
 			e.target.value = null;
 			this.setState({isShowMaxImageAlertModal: true});
 			return;
 		}
 
-		const newFiles = [];
+		console.log('chosee files', files);
 
 		for (const i in files) {
 			if (files[i].size > MAX_IMAGE_SIZE) {
@@ -216,10 +223,20 @@ class AddNew extends React.Component {
 				this.setState({isShowMaxSizeFileAlertModal: true});
 				return;
 			}
-			newFiles.push(files[i]);
 		}
 
 		this.setState({files: files});
+	};
+
+	onChangeMainFile = e => {
+		const file = e.target.files[0];
+		console.log('choose', file);
+		if (file.size > MAX_IMAGE_SIZE) {
+			e.target.value = null;
+			this.setState({isShowMaxSizeFileAlertModal: true});
+			return;
+		}
+		this.setState({mainFile: file});
 	};
 
 	onChangePropsValue = (propName, e) => {
@@ -247,7 +264,8 @@ class AddNew extends React.Component {
 							price: '',
 							name: '',
 							description: '',
-							files: []
+							files: [],
+							mainFile: null
 						});
 					}
 				})
@@ -261,6 +279,7 @@ class AddNew extends React.Component {
 	onClear = () => {
 		this.setState({
 			files: [],
+			mainFile: null
 		})
 	};
 
@@ -275,13 +294,28 @@ class AddNew extends React.Component {
 
 	renderSelectedImages = () => {
 		return (
-			this.state.files.length > 0 && <div>
-				<h3 className="text-center my-3">Обрані фотографії</h3>
-				<div className="selected-images-box">
-					{
-						Array.prototype.map.call(this.state.files, file => <img src={URL.createObjectURL(file)}/>)
-					}
-				</div>
+			<div>
+				{
+					this.state.mainFile && <div>
+						<h3 className="text-center my-3">Обранa головна фотографія</h3>
+						<div className="selected-images-box">
+							{
+								<img src={URL.createObjectURL(this.state.mainFile)}/>
+							}
+						</div>
+					</div>
+				}
+				{
+					this.state.files.length > 0 && <div>
+						<h3 className="text-center my-3">Обрані фотографії</h3>
+						<div className="selected-images-box">
+							{
+								Array.prototype.map.call(this.state.files, file => <img
+									src={URL.createObjectURL(file)}/>)
+							}
+						</div>
+					</div>
+				}
 			</div>
 		)
 	};
@@ -427,6 +461,11 @@ class AddNew extends React.Component {
 								характеристики</Link></small>
 					</div>
 					<div className="container-add-new__row__file-box">
+						<h3 className="text-center">Оберіть головну фотографію</h3>
+						<input type="file" onChange={this.onChangeMainFile} accept="image/*"/>
+					</div>
+					<div className="container-add-new__row__file-box">
+						<h3 className="text-center">Оберіть фотографії</h3>
 						<input type="file" onChange={this.onChangeFile} multiple accept="image/*"/>
 					</div>
 					{this.renderSelectedImages()}

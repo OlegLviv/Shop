@@ -37,6 +37,7 @@ namespace Shop
                     ProductDbInitializaer.Initialize(context).Wait();
                     PropsInitializator.InitializeAsync(context).Wait();
                     FixedImageSize(context, appEnvironment, configuration);
+                    MigrateMainImage(context);
                 }
                 catch (Exception ex)
                 {
@@ -104,6 +105,20 @@ namespace Shop
 
                 }
             }
+        }
+
+        private static void MigrateMainImage(AppDbContext context)
+        {
+            var products = context.Products.Include(p => p.ProductImages);
+
+            foreach (var product in products)
+            {
+                var image = product.ProductImages.FirstOrDefault();
+                if (image != null)
+                    image.IsMain = true;
+            }
+
+            context.SaveChanges();
         }
     }
 }
