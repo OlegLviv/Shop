@@ -36,8 +36,7 @@ namespace Shop
                     UsersDbInitializer.InitializeAsync(context, userManager, roleManager, dbInitializerLogger, configuration).Wait();
                     ProductDbInitializaer.Initialize(context).Wait();
                     PropsInitializator.InitializeAsync(context).Wait();
-                    //Migrate(context, appEnvironment,logger).Wait();
-                    FixedImageSize(context, appEnvironment);
+                    FixedImageSize(context, appEnvironment, configuration);
                 }
                 catch (Exception ex)
                 {
@@ -52,51 +51,12 @@ namespace Shop
                 .UseStartup<Startup>()
                 .Build();
 
-        //private static async Task Migrate(AppDbContext context, IHostingEnvironment environment,ILogger logger)
-        //{
-        //    var products = context.Products.Include(i => i.ProductImages);
-        //    var path = $"{environment.WebRootPath}/Product Images";
 
-        //    if (!Directory.Exists(path))
-        //        Directory.CreateDirectory(path);
-
-        //    foreach (var product in products)
-        //    {
-        //        var productPath = $"{path}/{product.Id}";
-        //        if (!Directory.Exists(productPath))
-        //            Directory.CreateDirectory(productPath);
-
-        //        foreach (var image in product.ProductImages)
-        //        {
-        //            using (var fileStream = new FileStream($"{productPath}/{image.Id}", FileMode.Create))
-        //            {
-        //                await fileStream.WriteAsync(image.Image, 0, image.Image.Length);
-        //                logger.LogInformation($"Saving image of product ${product.Id}");
-        //            }
-        //        }
-        //    }
-        //}
-        //private static void MigratePath(AppDbContext context, IHostingEnvironment environment)
-        //{
-        //    var products = context.Products.Include(x => x.ProductImages);
-
-        //    foreach (var product in products)
-        //    {
-        //        var productPath = $"{environment.WebRootPath}/Product Images/{product.Id}";
-        //        var productImages = product.ProductImages;
-
-        //        foreach (var productImage in productImages)
-        //        {
-        //            productImage.Path = $"{productPath}/{productImage.Id}";
-        //            Console.WriteLine($"Saving path: {productPath}/{productImage.Id}");
-        //        }
-        //    }
-
-        //    context.SaveChanges();
-        //}
-
-        private static void FixedImageSize(AppDbContext context, IHostingEnvironment environment)
+        private static void FixedImageSize(AppDbContext context, IHostingEnvironment environment, IConfiguration configuration)
         {
+            if (!bool.Parse(configuration["CompressImages"]))
+                return;
+
             var products = context.Products.Include(p => p.ProductImages);
 
             foreach (var product in products)
@@ -137,7 +97,7 @@ namespace Shop
 
                         imageStream.Close();
                     }
-                    catch 
+                    catch
                     {
                         continue;
                     }
