@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Models.DomainModels;
 using DAL;
@@ -36,6 +37,7 @@ namespace Shop
                     ProductDbInitializaer.Initialize(context).Wait();
                     PropsInitializator.InitializeAsync(context).Wait();
                     //Migrate(context, appEnvironment,logger).Wait();
+                    FixedImageSize(context, appEnvironment);
                 }
                 catch (Exception ex)
                 {
@@ -74,5 +76,74 @@ namespace Shop
         //        }
         //    }
         //}
+        //private static void MigratePath(AppDbContext context, IHostingEnvironment environment)
+        //{
+        //    var products = context.Products.Include(x => x.ProductImages);
+
+        //    foreach (var product in products)
+        //    {
+        //        var productPath = $"{environment.WebRootPath}/Product Images/{product.Id}";
+        //        var productImages = product.ProductImages;
+
+        //        foreach (var productImage in productImages)
+        //        {
+        //            productImage.Path = $"{productPath}/{productImage.Id}";
+        //            Console.WriteLine($"Saving path: {productPath}/{productImage.Id}");
+        //        }
+        //    }
+
+        //    context.SaveChanges();
+        //}
+
+        private static void FixedImageSize(AppDbContext context, IHostingEnvironment environment)
+        {
+            var products = context.Products.Include(p => p.ProductImages);
+
+            foreach (var product in products)
+            {
+                var filesPath = Directory.GetFiles($"{environment.WebRootPath}/Product Images/{product.Id}");
+
+                foreach (var path in filesPath)
+                {
+                    try
+                    {
+                        var imageStream = new FileStream(path, FileMode.Open);
+                        var magickCollection = new ImageMagick.MagickImageCollection(imageStream);
+                        var fImage = magickCollection.First();
+
+                        //if (fImage == null)
+                        //    continue;
+
+                        if (imageStream.Length > 1000000L && imageStream.Length < 1500000L)
+                        {
+                            fImage.Quality = 80;
+                            imageStream.Close();
+                            fImage.Write(path);
+                        }
+
+                        if (imageStream.Length > 1500000L && imageStream.Length < 2000000L)
+                        {
+                            fImage.Quality = 70;
+                            imageStream.Close();
+                            fImage.Write(path);
+                        }
+
+                        if (imageStream.Length > 2000000L)
+                        {
+                            fImage.Quality = 60;
+                            imageStream.Close();
+                            fImage.Write(path);
+                        }
+
+                        imageStream.Close();
+                    }
+                    catch 
+                    {
+                        continue;
+                    }
+
+                }
+            }
+        }
     }
 }
