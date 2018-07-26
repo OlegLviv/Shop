@@ -100,7 +100,7 @@ export const addProductIdOfferCookie = (productId, days) => {
 
 		let cookie = `${getCookie(PRODUCT_OFFERS)},${productId}`;
 
-		if (cookie.split(',').length > 10)
+		if (cookie.split(',').length > 7)
 			cookie = productId;
 
 		setCookie(PRODUCT_OFFERS, cookie, days);
