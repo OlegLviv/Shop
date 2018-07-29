@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Core.Models.DTO.Product
 {
@@ -21,5 +22,7 @@ namespace Core.Models.DTO.Product
         public string Description { get; set; }
 
         public bool IsAvailable { get; set; }
+
+        public IFormFile[] Images { get; set; }
     }
 }

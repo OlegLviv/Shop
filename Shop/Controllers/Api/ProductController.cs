@@ -519,10 +519,13 @@ namespace Shop.Controllers.Api
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpPut("EditProduct")]
-        public async Task<IActionResult> EditProduct([FromBody] EditProductDto model)
+        public async Task<IActionResult> EditProduct([FromForm] EditProductDto model)
         {
-            var product = await _productsRepository
-                .GetByIdAsync(model.ProductId);
+            var product = await _productsRepository.GetByIdAsync(model.ProductId);
+            var hostingEnvironment = Request
+                .HttpContext
+                .RequestServices
+                .GetService<IHostingEnvironment>();
 
             if (product == null)
                 return BadRequest("Product not found or incorrent product id");
@@ -533,6 +536,23 @@ namespace Shop.Controllers.Api
             product.Description = model.Description;
             product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
             product.IsAvailable = model.IsAvailable;
+
+            if (model.Images.Any())
+            {
+                var filesPath = Directory.GetFiles($"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}");
+
+                for (var i = 0; i < model.Images.Length; i++)
+                {
+                    if(model.Images[i].Length == 0 || model.Images[i].FileName == "not file")
+                        continue;
+
+                    using (var stream = new FileStream(filesPath[i],FileMode.OpenOrCreate))
+                    {
+                        await model.Images[i].CopyToAsync(stream);
+                    }
+                }
+            }
+
 
             return this.JsonResult(new
             {
