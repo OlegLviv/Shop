@@ -2,6 +2,7 @@
 using System.Text;
 using AutoMapper;
 using BLL.Services;
+using BLL.Services.DevServices;
 using BLL.Services.Interfaces;
 using Core.Interfaces;
 using Core.Mapper;
@@ -17,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -34,6 +36,8 @@ namespace Shop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            AddLogging(services);
+
             services.AddDbContext<AppDbContext>(option =>
                 option.UseSqlServer(Configuration.GetConnectionString(bool.Parse(Configuration["IsDevelop"])
                     ? "DevConnection"
@@ -44,6 +48,8 @@ namespace Shop
             AddBearerAuthendification(services);
 
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
+
+            services.AddScoped<IDevServicesExecutor, DevServicesExecutor>();
 
             AddIEmailSender(services);
 
@@ -59,11 +65,10 @@ namespace Shop
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // TODO need remov this
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             UseFonts(app);
 
@@ -181,6 +186,14 @@ namespace Shop
             {
                 ContentTypeProvider = typeProvider,
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Fonts"))
+            });
+        }
+
+        private static void AddLogging(IServiceCollection services)
+        {
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
             });
         }
     }
