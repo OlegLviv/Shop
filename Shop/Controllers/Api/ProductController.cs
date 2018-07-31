@@ -82,7 +82,7 @@ namespace Shop.Controllers.Api
         {
             var products = _productsRepository
                 .Table
-                .Include(x=>x.ProductImages)
+                .Include(x => x.ProductImages)
                 .OrderBy(x => x.Review)
                 .Skip(_productsRepository.Table.Count() - count)
                 .AsEnumerable()
@@ -133,6 +133,12 @@ namespace Shop.Controllers.Api
                 .Where(x => x.Category.Equals(category, StringComparison.InvariantCultureIgnoreCase) &&
                             x.SubCategory.Equals(subCategory, StringComparison.InvariantCultureIgnoreCase) &&
                             x.Price >= priceFrom && x.Price <= priceTo);
+            var paginator = new Paginator<Product>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
             switch (sortingType)
             {
                 //  todo need remove this cast in future. Now throw exception becouse IQueryble.Reverse() is not implemented
@@ -149,23 +155,21 @@ namespace Shop.Controllers.Api
                     break;
             }
 
-            var paginator = new Paginator<Product>
-            {
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                Data = products.Page(pageNumber, pageSize),
-                TotalCount = products.Count()
-            };
 
             if (string.IsNullOrEmpty(query))
-                return this.JsonResult(paginator);
+            {
+                paginator.Data = products.Page(pageNumber, pageSize);
+                paginator.TotalCount = products.Count();
 
-            var result = _productService
+                return this.JsonResult(paginator);
+            }
+
+            var selectProducts = _productService
                 .SelectProducts(query, products)
-                .Page(pageNumber, pageSize);
-            var paginatorData = result as Product[] ?? result.ToArray();
-            paginator.Data = paginatorData;
-            paginator.TotalCount = paginatorData.Count();
+                .ToList();
+
+            paginator.Data = selectProducts.Page(pageNumber, pageSize);
+            paginator.TotalCount = selectProducts.Count();
             //var mapProduct = _mapper.Map<IEnumerable<ProductDto>>(result);
 
             return this.JsonResult(paginator);
@@ -537,16 +541,16 @@ namespace Shop.Controllers.Api
             product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
             product.IsAvailable = model.IsAvailable;
 
-            if (model.Images.Any())
+            if (!model.Images?.Any() ?? model.Images != null)
             {
                 var filesPath = Directory.GetFiles($"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}");
 
                 for (var i = 0; i < model.Images.Length; i++)
                 {
-                    if(model.Images[i].Length == 0 || model.Images[i].FileName == "not file")
+                    if (model.Images[i].Length == 0 || model.Images[i].FileName == "not file")
                         continue;
 
-                    using (var stream = new FileStream(filesPath[i],FileMode.OpenOrCreate))
+                    using (var stream = new FileStream(filesPath[i], FileMode.OpenOrCreate))
                     {
                         await model.Images[i].CopyToAsync(stream);
                     }

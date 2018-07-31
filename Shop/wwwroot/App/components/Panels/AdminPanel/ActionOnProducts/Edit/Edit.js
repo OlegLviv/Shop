@@ -23,21 +23,17 @@ const createForm = state => {
     form.append('name', state.newProductName);
     form.append('price', state.newProductPrice);
     form.append('discount', state.newProductDiscount);
-    form.append('description', state.selectedProduct.isAvailable);
-    form.append('isAvailable', true);
+    form.append('isAvailable', state.selectedProduct.isAvailable);
+    form.append('description', state.newProductDescription);
 
     for (let i = 0; i < state.images.length; i++) {
         if (state.images[i])
             form.append('images', state.images[i]);
         else form.append('images', new File([], 'not file'))
     }
-
-    console.log('form imgs', form.getAll('images'));
     return form;
 };
 
-//	todo need fix spinner and deleting images
-//	todo need fix loading state
 class Edit extends React.Component {
     constructor(props) {
         super(props);
@@ -131,15 +127,6 @@ class Edit extends React.Component {
         }
 
         this.setState({isLoading: true});
-
-        // const newProduct = {
-        //     productId: this.state.selectedProduct.id,
-        //     name: this.state.newProductName,
-        //     price: this.state.newProductPrice,
-        //     discount: this.state.newProductDiscount,
-        //     description: this.state.newProductDescription,
-        //     isAvailable: this.state.selectedProduct.isAvailable
-        // };
 
         apiPut(EDIT_PRODUCT_URL, createForm(this.state))
             .then(resp => {
@@ -289,7 +276,6 @@ class Edit extends React.Component {
                         <td>Опис</td>
                         <td>
                             <input className="form-control" placeholder="Введіть опис"
-                                   defaultValue={selectedProduct.description}
                                    value={this.state.newProductDescription}
                                    onChange={e => this.setState({newProductDescription: e.target.value})}/>
                         </td>

@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\App\components\NewFolder\**" />
+    <Compile Remove="wwwroot\Product Images\**" />
     <Content Remove="wwwroot\App\components\NewFolder\**" />
+    <Content Remove="wwwroot\Product Images\**" />
     <EmbeddedResource Remove="wwwroot\App\components\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\Product Images\**" />
     <None Remove="wwwroot\App\components\NewFolder\**" />
+    <None Remove="wwwroot\Product Images\**" />
   </ItemGroup>
 
   <ItemGroup>

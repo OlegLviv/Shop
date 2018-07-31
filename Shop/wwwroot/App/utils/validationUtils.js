@@ -19,7 +19,7 @@ export const isValidNameLastName = s => new RegExp('^(([A-zА-яёЁіІ]+(\\\'|
 //	Products
 export const isValidProductName = s => new RegExp('^[^;]{2,64}$').test(s);
 
-export const isValidProductPrice = s => new RegExp('^[0-9]{1,5}[.,]?[0-9]{1,2}$').test(s);
+export const isValidProductPrice = s => new RegExp('^[0-9]{0,5}[.,]?[0-9]{1,2}$').test(s);
 
 export const isValidProductDiscount = s => new RegExp('^[0-9]{1,3}$').test(s) && Number(s) <= 100;
 
