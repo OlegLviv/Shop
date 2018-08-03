@@ -21,6 +21,7 @@ namespace Shop
             {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
+
                 try
                 {
                     var context = services.GetRequiredService<AppDbContext>();
