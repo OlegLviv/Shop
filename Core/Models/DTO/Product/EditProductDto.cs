@@ -24,5 +24,7 @@ namespace Core.Models.DTO.Product
         public bool IsAvailable { get; set; }
 
         public IFormFile[] Images { get; set; }
+
+        public bool IsHidden { get; set; }
     }
 }

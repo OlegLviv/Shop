@@ -540,10 +540,16 @@ namespace Shop.Controllers.Api
             product.Description = model.Description;
             product.PriceWithDiscount = _productService.CalculatePriceDiscount(product.Price, product.Discount);
             product.IsAvailable = model.IsAvailable;
+            product.IsHiden = model.IsHidden;
 
-            if (!model.Images?.Any() ?? model.Images != null)
+            if (model.Images?.Any() ?? model.Images != null)
             {
-                var filesPath = Directory.GetFiles($"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}");
+                var path = $"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}";
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                var filesPath = Directory.GetFiles(path);
 
                 for (var i = 0; i < model.Images.Length; i++)
                 {
@@ -588,7 +594,14 @@ namespace Shop.Controllers.Api
             if (product.ProductImages.Any())
                 await _imageRepository.DeleteAsync(product.ProductImages);
 
-            Directory.Delete($"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}", true);
+            try
+            {
+                Directory.Delete($"{hostingEnvironment.WebRootPath}/Product Images/{product.Id}", true);
+            }
+            catch
+            {
+                // ignored
+            }
 
             return Ok(await _productsRepository.DeleteAsync(product));
         }

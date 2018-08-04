@@ -97,11 +97,10 @@ namespace Shop
                 .AddCookie()
                 .AddJwtBearer(jwtBearerOptions =>
                 {
-                    jwtBearerOptions.RequireHttpsMetadata = false;
+                    jwtBearerOptions.RequireHttpsMetadata = true;
                     jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
                     {
-                        ValidateActor = false,
-                        ValidateAudience = false,
+                        ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = Configuration["Token:Issuer"],

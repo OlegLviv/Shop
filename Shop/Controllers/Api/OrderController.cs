@@ -12,12 +12,10 @@ using Core.Models.DTO;
 using Core.Models.DTO.Order;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Shop.Controllers.Api
 {
@@ -312,6 +310,9 @@ namespace Shop.Controllers.Api
         [HttpDelete("DeleteCallMe/{id}")]
         public async Task<IActionResult> DeleteCallMe(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Incorrect id");
+
             var callMe = await _callMeRepository.GetByIdAsync(id);
 
             if (callMe == null)
@@ -325,5 +326,26 @@ namespace Shop.Controllers.Api
             return BadRequest("Can't delete call me");
         }
         #endregion
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpDelete("DeleteOrder/{id}")]
+        public async Task<IActionResult> DeleteOrder(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Incorrect Id");
+
+            var order = await _orderRepository.Table.Include(pc => pc.ProductsContainers)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (order == null)
+                return NotFound("Order not found");
+
+            var deleteResult = await _orderRepository.DeleteAsync(order);
+
+            if (deleteResult >= 1)
+                return NoContent();
+
+            throw new ApplicationException("Can't delete order");
+        }
     }
 }

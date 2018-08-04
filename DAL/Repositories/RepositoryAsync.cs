@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using Core.Models.DomainModels.Base;
 
 namespace DAL.Repositories
@@ -31,11 +32,11 @@ namespace DAL.Repositories
             }
         }
 
-        public IQueryable<TEntity> Table => this.Entities;
+        public IQueryable<TEntity> Table => Entities.Where(e => !e.IsHiden);
 
         public virtual async Task<TEntity> GetByIdAsync(string id)
         {
-            return await this.Entities.FindAsync(id);
+            return await Table.FirstOrDefaultAsync(e => !e.IsHiden && e.Id == id);
         }
 
         public virtual async Task<int> InsertAsync(IEnumerable<TEntity> entities)

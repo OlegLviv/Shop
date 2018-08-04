@@ -12,5 +12,7 @@ namespace Core.Models.DomainModels
         public ShopingCard ShopingCard { get; set; }
 
         public bool IsSubscribedToMailing { get; set; }
+
+        public bool IsHiden { get; set; }
     }
 }
