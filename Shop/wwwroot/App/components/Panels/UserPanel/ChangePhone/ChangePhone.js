@@ -30,7 +30,6 @@ class ChangePhone extends React.Component {
 		this.trySetLoading();
 		apiGet(GET_USER_INFO_URL)
 			.then(resp => {
-				console.log(resp);
 				this.setState({oldPhone: resp.data.phoneNumber, isLoading: false});
 			})
 			.catch(err => {

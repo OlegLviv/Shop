@@ -75,7 +75,6 @@ class UsersEdit extends React.Component {
 	};
 
 	onClickUser = user => {
-		console.log('sel user', user);
 		this.setState({
 			selectedUser: user,
 			name: user.name,

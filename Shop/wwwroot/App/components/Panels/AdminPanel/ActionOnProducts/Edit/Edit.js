@@ -74,7 +74,6 @@ class Edit extends React.Component {
 
 		apiGet(getProductsByNameUrl(e.target.value, 1, howProductsPerPage))
 			.then(resp => {
-				console.log(resp.data);
 				this.setState({
 					products: resp.data.data,
 					activePage: resp.data.pageNumber,
@@ -103,7 +102,6 @@ class Edit extends React.Component {
 
 		apiGet(getProductsByNameUrl(this.state.searchValue, pageNumber, howProductsPerPage))
 			.then(resp => {
-				console.log(resp.data);
 				this.setState({
 					products: resp.data.data,
 					activePage: resp.data.pageNumber,
@@ -124,7 +122,6 @@ class Edit extends React.Component {
 
 		apiPut(EDIT_PRODUCT_URL, createForm(this.state))
 			.then(resp => {
-				console.log(resp.data);
 				this.setState({
 					isLoading: false,
 					isShowSuccessUpdated: true
@@ -181,7 +178,6 @@ class Edit extends React.Component {
 		const file = target.files[0];
 		const images = [...this.state.images];
 		images[i] = file;
-		console.log('selected imgs', images);
 		this.setState({images});
 	};
 

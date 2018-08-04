@@ -22,7 +22,6 @@ class FullOrder extends React.Component {
 
 	componentDidMount() {
 		this.trySetLoading();
-		console.log('props', this.props);
 		apiGet(getOrderUrl(this.props.match.params.orderId))
 			.then(resp => this.setState({order: resp.data, isLoading: false}))
 			.catch(err => {
@@ -41,7 +40,6 @@ class FullOrder extends React.Component {
 
 	onSaveOrderStatus = () => {
 		this.trySetLoading();
-		console.log('saved', this.state.orderStatus);
 
 		if (this.state.order && this.state.order.orderStatus === this.state.orderStatus)
 			return;
@@ -98,7 +96,6 @@ class FullOrder extends React.Component {
 	};
 
 	renderProductsInfo = () => {
-		console.log('order', this.state.order);
 		if (!this.state.isLoading && this.state.order)
 			return (
 				<div className="info-products-container">

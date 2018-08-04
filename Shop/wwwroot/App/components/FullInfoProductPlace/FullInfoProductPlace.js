@@ -62,7 +62,6 @@ class FullInfoProductPlace extends React.Component {
 						for (let i = 0; i < imgCResp.data; i++) {
 							product.imgSources.push(getProductImageUrl(product.id, i));
 						}
-						console.log('prod', product);
 						this.setState({product: product});
 					});
 			});
@@ -243,7 +242,6 @@ class FullInfoProductPlace extends React.Component {
 			<div className="container-c-b">
 				{
 					this.state.productFeedbacks.map((item, i) => {
-						console.log('item', item);
 						return (
 							<div className="container-c-b__card-body-content">
 								<div className="container-c-b__card-body-content__comment"

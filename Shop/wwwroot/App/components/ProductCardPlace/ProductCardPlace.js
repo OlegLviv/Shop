@@ -138,7 +138,6 @@ class ProductCardPlace extends React.Component {
 	onSubmitOrder = orderObj => {
 		const productsContainers = createProductsContainerForOrders(this.state.products.map(item => item.id), this.state.productsCounts);
 		orderObj.productsContainers = productsContainers;
-		console.log(orderObj);
 
 		this.trySetLoading();
 

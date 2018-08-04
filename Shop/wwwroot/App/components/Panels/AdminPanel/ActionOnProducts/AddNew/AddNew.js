@@ -90,9 +90,6 @@ class AddNew extends React.Component {
 			else alert(`Error: ${JSON.stringify(err.response)}`);
 		})
 			.then(resp => {
-				console.log('resp', resp.data);
-				console.log('sub cat', this.state.subCategory);
-				console.log('sub cat normalize', normalizeSubCategoryToRoute(this.state.subCategory));
 				const product = {...this.state.product};
 				clearObjectProps(product);
 				for (let i in resp.data) {
@@ -215,8 +212,6 @@ class AddNew extends React.Component {
 			return;
 		}
 
-		console.log('chosee files', files);
-
 		for (const i in files) {
 			if (files[i].size > MAX_IMAGE_SIZE) {
 				e.target.value = null;
@@ -230,7 +225,7 @@ class AddNew extends React.Component {
 
 	onChangeMainFile = e => {
 		const file = e.target.files[0];
-		console.log('choose', file);
+
 		if (file.size > MAX_IMAGE_SIZE) {
 			e.target.value = null;
 			this.setState({isShowMaxSizeFileAlertModal: true});
@@ -242,7 +237,7 @@ class AddNew extends React.Component {
 	onChangePropsValue = (propName, e) => {
 		const product = {...this.state.product};
 		product[propName] = e.target.value;
-		console.log('product', product);
+
 		this.setState({product: product});
 	};
 
@@ -254,7 +249,6 @@ class AddNew extends React.Component {
 
 			addImageToForm(form, this.state);
 
-			console.log('form', form.get('images'));
 			apiPost(ADD_PRODUCT_URL, form)
 				.then(resp => {
 					if (resp.data >= 1) {

@@ -72,7 +72,6 @@ class AdminPanel extends React.Component {
 	componentDidMount() {
 		apiGet(GET_USER_ROLE_URL)
 			.then(resp => {
-				console.log(resp);
 				if (resp.data.role === 'Admin')
 					this.setState({
 						isLoading: false,

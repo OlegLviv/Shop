@@ -94,7 +94,7 @@ class EditCharacteristic extends React.Component {
 				for (let i in resp.data) {
 					product[resp.data[i].propValue] = resp.data[i].possiblePropsValues[0];
 				}
-				console.log('prod', product);
+
 				this.setState({
 					subCategoryProps: resp.data,
 					product: product,
@@ -111,7 +111,6 @@ class EditCharacteristic extends React.Component {
 	onChangePropsValue = (propName, {target}) => {
 		const product = {...this.state.product};
 		product[propName] = target.value;
-		console.log(product);
 		this.setState({product: product});
 	};
 
@@ -139,9 +138,8 @@ class EditCharacteristic extends React.Component {
 			subCategory: normalizeSubCategoryToRoute(this.state.subCategory),
 			possibleProperty: toUpperFirstChar(possibleProp)
 		};
-		console.log('body', body);
+
 		this.validateNewPossiblePropsChange(i, this.state.newPossibleProps[i], () => {
-			console.log('work');
 			apiPost(ADD_POSSIBLE_PROPERTY_URL, body)
 				.then(resp => {
 					if (resp.status === 200 && resp.data === 'Success') {

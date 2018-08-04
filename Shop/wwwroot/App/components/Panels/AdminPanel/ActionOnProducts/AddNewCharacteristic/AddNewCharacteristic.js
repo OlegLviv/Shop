@@ -32,7 +32,6 @@ class AddNewCharacteristic extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(this.state.subCategory);
 		this.updateSubCategoryState();
 	}
 
@@ -60,7 +59,6 @@ class AddNewCharacteristic extends React.Component {
 			else alert(`Error: ${JSON.stringify(err.response)}`);
 		})
 			.then(resp => {
-				console.log(resp.data);
 				const product = {...this.state.product};
 				clearObjectProps(product);
 				for (let i in resp.data) {
@@ -82,7 +80,6 @@ class AddNewCharacteristic extends React.Component {
 	onChangePropsValue = (propName, {target}) => {
 		const product = {...this.state.product};
 		product[propName] = target.value;
-		console.log(product);
 		this.setState({product: product});
 	};
 
@@ -119,7 +116,6 @@ class AddNewCharacteristic extends React.Component {
 
 		this.trySetLoading();
 
-		console.log('body', getNewCharacteristicBody(this.state));
 		apiPost(ADD_PROPERTY_URL, getNewCharacteristicBody(this.state))
 			.then(resp => {
 				if (resp ? resp.status === 200 : false) {

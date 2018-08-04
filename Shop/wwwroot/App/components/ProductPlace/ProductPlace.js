@@ -64,7 +64,6 @@ class ProductPlace extends React.Component {
 			.get(prodUrl)
 			.then(resp => {
 				// todo hz is this need
-				console.log(resp.data);
 				addObjectQueryToProducts(resp.data.data);
 				this.setState({
 					products: resp.data.data,
@@ -74,9 +73,6 @@ class ProductPlace extends React.Component {
 					isProductsLoaded: true,
 					isExpandedNavProd: true
 				});
-			})
-			.catch(err => {
-				console.log(err.response);
 			});
 	}
 
@@ -92,7 +88,6 @@ class ProductPlace extends React.Component {
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
-				console.log(resp.data);
 				addObjectQueryToProducts(resp.data.data);
 				this.setState({
 					products: resp.data.data,
@@ -102,18 +97,12 @@ class ProductPlace extends React.Component {
 					isProductsLoaded: true,
 					isExpandedNavProd: true
 				});
-			})
-			.catch(err => {
-				console.log(err.response);
 			});
 	}
 
 	onAddProductToShoppingCardButClick = (e, id) => {
-		// if (this.state.) {
-		console.log('click');
 		addProductCookies('productsCard', id, 1);
 		this.props.onAddProductToShoppingCard(id, 1);
-		// }
 	};
 
 	onLikeButClick = (e, id) => {
@@ -133,13 +122,14 @@ class ProductPlace extends React.Component {
 
 	onPaginationChange = pageNumber => {
 		this.renderLoadingSpinner();
-		console.log(this.state.priceRangeForPagination);
+
 		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
 			getSubCategory(this.props),
 			this.state.priceRangeForPagination.minPrice,
 			this.state.priceRangeForPagination.maxPrice, ' ', pageNumber,
 			this.state.howManyToShow,
 			this.state.sortingType);
+
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
@@ -151,16 +141,13 @@ class ProductPlace extends React.Component {
 					isProductsLoading: false,
 					isProductsLoaded: true
 				});
-			})
-			.catch(err => {
-				console.log(err.response);
 			});
 	};
 
 	onSearchByFilter = (priceFrom, priceTo, queryDictionary) => {
-		console.log('qd', queryDictionary);
 		if (!queryDictionary)
 			return;
+
 		this.renderLoadingSpinner();
 		const prodUrl = getProductsByQueryUrl(getCategory(this.props),
 			getSubCategory(this.props),
@@ -171,7 +158,7 @@ class ProductPlace extends React.Component {
 			this.state.howManyToShow,
 			this.state.sortingType
 		);
-		console.log('url', prodUrl);
+
 		apiWithoutRedirect()
 			.get(prodUrl)
 			.then(resp => {
@@ -186,10 +173,7 @@ class ProductPlace extends React.Component {
 					isProductsLoaded: true,
 					priceRangeForPagination: priceRange
 				});
-			})
-			.catch(err => {
-				console.log(err);
-			})
+			});
 	};
 
 	onChangeSortingType = e => this.setState({sortingType: e.target.value});
