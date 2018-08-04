@@ -3,6 +3,8 @@
 .user-info-container {
   padding: 2rem;
   &__header {
+	display: flex;
+	justify-content: space-between;
 	padding: 1rem;
 	background: $dark;
 	color: $dark-grey-color;
@@ -35,4 +37,32 @@
 
 .order-status-nav-box button {
   margin: .3rem;
+}
+
+@media print {
+  .container-adm-panel__navigation {
+	display: none;
+  }
+  .info_container {
+	display: none;
+  }
+  .footer-cont {
+	display: none;
+  }
+  .user-info-container {
+	&__header {
+	  &__print-btn {
+		display: none;
+	  }
+	}
+  }
+  .order-info-container {
+	&__header {
+	  background: $dark;
+	}
+
+	&__status {
+	  display: none;
+	}
+  }
 }

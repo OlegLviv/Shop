@@ -6,6 +6,7 @@ import {Spinner} from "../../../../Spinner/Spinner";
 import {OrderStatus} from "../../../../common/OrderStatus/OrderStatus";
 import {SuccessOrderStatusChangedModal} from "./SuccessOrderStatusChangedModal";
 import DocumentTitle from 'react-document-title';
+import {Icon} from 'react-fa';
 
 class FullOrder extends React.Component {
 	constructor(props) {
@@ -68,7 +69,14 @@ class FullOrder extends React.Component {
 		if (!this.state.isLoading && order)
 			return (
 				<div className="user-info-container">
-					<div className="user-info-container__header">Інформація про користувача</div>
+					<div className="user-info-container__header">
+						<div>Інформація про користувача</div>
+						<button className="btn btn-dark user-info-container__header__print-btn"
+								onClick={window.print}>
+							Друкувати
+							<Icon name="print" className="ml-1"/>
+						</button>
+					</div>
 					<table>
 						<tbody>
 						<tr>
@@ -104,17 +112,20 @@ class FullOrder extends React.Component {
 						<thead>
 						<th>Назва товару</th>
 						<th>Кількість</th>
+						<th>Ціна</th>
 						</thead>
 						<tbody>
 						{this.state.order.productsContainers.map(prodCont => (
 								<tr>
 									<td>{prodCont.product.name}</td>
 									<td>{prodCont.count}</td>
+									<td>{prodCont.product.priceWithDiscount || prodCont.product.price}</td>
 								</tr>
 							)
 						)}
 						<tr>
 							<td>Сума замовлення</td>
+							<td>{''}</td>
 							<td>
 								<b>{this.state.order.totalPrice}грн</b>
 							</td>
@@ -142,7 +153,7 @@ class FullOrder extends React.Component {
 							<td>Номер замовлення</td>
 							<td>{this.state.order.id}</td>
 						</tr>
-						<tr>
+						<tr className="order-info-container__status">
 							<td>Статус замовлення</td>
 							<td>
 								{!this.state.isOrderStatusExpanded &&
