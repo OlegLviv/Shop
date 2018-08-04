@@ -53,7 +53,6 @@ class ChangeEmail extends React.Component {
 					isLoading: false,
 					emailConfirmed: resp.data.emailConfirmed
 				});
-				console.log(resp);
 			})
 			.catch(err => alert(`Error:${err}`));
 	}

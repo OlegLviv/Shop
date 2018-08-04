@@ -23,7 +23,6 @@ class OfferProducts extends Component {
 		apiWithoutRedirect()
 			.get(getProductsByIdsUrl(getProductIdOffers()))
 			.then(resp => {
-				console.log('resp', resp);
 				this.setState({
 					products: resp.data,
 					loading: false

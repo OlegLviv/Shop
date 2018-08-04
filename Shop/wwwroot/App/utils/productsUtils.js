@@ -365,7 +365,7 @@ export const formateQueryDictionary = (key, value, dictionary) => {
 		dictionary[key] = [];
 		dictionary[key].push(value);
 	}
-	console.log(dictionary);
+
 	return dictionary;
 };
 
@@ -379,6 +379,6 @@ export const formateQueryDictionaryWithRemove = (key, value, dictionary) => {
 	if (dictionary[key].length === 0) {
 		delete dictionary[key];
 	}
-	console.log('rem', dictionary);
+
 	return dictionary;
 };

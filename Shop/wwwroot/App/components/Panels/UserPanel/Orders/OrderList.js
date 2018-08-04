@@ -15,7 +15,6 @@ class OrderList extends Component {
 	);
 
 	render() {
-		console.log(this.props.orders);
 		if (!this.props.isLoading && !this.props.orders.length)
 			return this.renderNotFound();
 

@@ -41,7 +41,6 @@ class ExpandedNavigationProducts extends React.Component {
 		apiWithoutRedirect()
 			.get(getProductPropsUrl(this.props.products[0].subCategory))
 			.then(resp => {
-				console.log(resp.data);
 				this.setState({
 					filters: resp.data,
 					loading: false

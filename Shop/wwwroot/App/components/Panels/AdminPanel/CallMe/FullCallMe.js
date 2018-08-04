@@ -32,7 +32,6 @@ class FullCallMe extends React.Component {
 
 		apiGet(getCallMeByIdUrl(getId(this.props)))
 			.then(resp => {
-				console.log(resp);
 				this.setState({
 					loading: false,
 					callMe: resp.data
