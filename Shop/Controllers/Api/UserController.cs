@@ -69,7 +69,7 @@ namespace Shop.Controllers.Api
 
             if (user == null)
                 return BadRequest("Incorrent user id or user don't found");
-            
+
             return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 
@@ -169,7 +169,7 @@ namespace Shop.Controllers.Api
             await _userManager.AddToRoleAsync(user, _configuration["Roles:Client"]);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(nameof(UserController.ConfirmEmail), "User", user.Id, token, Request.Scheme);
-            var sendRes = await _sender.SendEmailAsync(_configuration["EmailCredential:Email"], model.Email, "Your register confirm link", callbackUrl);
+            var sendRes = await _sender.SendEmailAsync(model.Email, "Your register confirm link", callbackUrl);
 
             if (!sendRes)
                 return BadRequest("Ups, we can't to send message to your email");
@@ -187,7 +187,7 @@ namespace Shop.Controllers.Api
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.EmailConfirmationLink(nameof(UserController.ConfirmEmail), "User", user.Id, token, Request.Scheme);
-            var sendRes = await _sender.SendEmailAsync(_configuration["EmailCredential:Email"], user.Email, "Your register confirm link", callbackUrl);
+            var sendRes = await _sender.SendEmailAsync(user.Email, "Your register confirm link", callbackUrl);
 
             if (!sendRes)
                 return BadRequest("Ups, we can't to send message to your email");
@@ -227,7 +227,7 @@ namespace Shop.Controllers.Api
 
             var token = await _userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
 
-            if (!await _sender.SendEmailAsync(_configuration["EmailCredential:UserName"],
+            if (!await _sender.SendEmailAsync(
                 user.Email,
                 "Зміна пошти", $"Ваш ключ для зміни пошти {token}"))
                 return BadRequest("Can't send email");
@@ -291,7 +291,7 @@ namespace Shop.Controllers.Api
 
             var changePhoneRes = await _userManager.UpdateAsync(user);
 
-            if(!changePhoneRes.Succeeded)
+            if (!changePhoneRes.Succeeded)
                 return BadRequest(new
                 {
                     Message = "Can't change phone",

@@ -111,16 +111,9 @@ namespace Shop
                 });
         }
 
-        private void AddIEmailSender(IServiceCollection services)
+        private static void AddIEmailSender(IServiceCollection services)
         {
-            services.AddTransient<IEmailSender, EmailSender>(service => new EmailSender(new System.Net.NetworkCredential
-            {
-                UserName = Configuration["EmailCredential:UserName"],
-                Password = Configuration["EmailCredential:Password"]
-            },
-                host: Configuration["SmtpData:Host"],
-                port: int.Parse(Configuration["SmtpData:Port"])
-            ));
+            services.AddTransient<IEmailSender, EmailSender>();
         }
 
         private static void AddIdentity(IServiceCollection services)

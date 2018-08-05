@@ -4,31 +4,39 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using BLL.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace BLL.Services
 {
     public class EmailSender : IEmailSender
     {
-        private readonly SmtpClient _smtpClient;
-        public NetworkCredential Credential { get; set; }
+        private readonly IConfiguration _configuration;
 
-        public EmailSender(NetworkCredential credential, string host, int port)
+        public SmtpClient SmtpClient { get; set; }
+
+        public EmailSender(IConfiguration configuration)
         {
-            _smtpClient = new SmtpClient(host, port)
+            SmtpClient = new SmtpClient(configuration["SmtpData:Host"], int.Parse(configuration["SmtpData:Port"]))
             {
-                EnableSsl = true
+                EnableSsl = true,
+                Credentials = new NetworkCredential
+                {
+                    UserName = configuration["EmailCredential:UserName"],
+                    Password = configuration["EmailCredential:Password"]
+                }
             };
-            Credential = credential;
-            _smtpClient.Credentials = Credential;
+            _configuration = configuration;
         }
-        public async Task<bool> SendEmailAsync(string from, string email, string subject, string message)
+
+        public async Task<bool> SendEmailAsync(string email, string subject, string message)
         {
             try
             {
-                await _smtpClient.SendMailAsync(new MailMessage(from, email, subject, message));
+                await SmtpClient.SendMailAsync(new MailMessage(_configuration["EmailCredential:Email"], email, subject, message));
+
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine(e);
                 return false;

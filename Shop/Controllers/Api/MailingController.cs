@@ -76,7 +76,7 @@ namespace Shop.Controllers.Api
 
                 foreach (var email in usersSubscribedEmails)
                 {
-                    await _emailSender.SendEmailAsync(_configuration["EmailCredential:Email"], email, model.Subject, model.Body);
+                    await _emailSender.SendEmailAsync(email, model.Subject, model.Body);
                 }
 
                 return Ok("Success");
@@ -84,7 +84,7 @@ namespace Shop.Controllers.Api
 
             foreach (var email in emailes)
             {
-                await _emailSender.SendEmailAsync(_configuration["EmailCredential:Email"], email, model.Subject, model.Body);
+                await _emailSender.SendEmailAsync(email, model.Subject, model.Body);
             }
 
             return Ok("Success");

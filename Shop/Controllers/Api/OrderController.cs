@@ -197,7 +197,6 @@ namespace Shop.Controllers.Api
             var insertResult = await _orderRepository.InsertAsync(order);
 
             await _emailSender.SendEmailAsync(
-                (HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration)?["EmailCredential:Email"],
                 order.Email,
                 "Info",
                 MailsContainer.GetMailForCreateOrder(order));
@@ -225,7 +224,6 @@ namespace Shop.Controllers.Api
             var insertResult = await _orderRepository.InsertAsync(order);
 
             await _emailSender.SendEmailAsync(
-                (HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration)?["EmailCredential:Email"],
                 order.Email,
                 "Info",
                 MailsContainer.GetMailForCreateOrder(order));
