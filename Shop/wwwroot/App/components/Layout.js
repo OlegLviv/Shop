@@ -13,6 +13,7 @@ import ProductCardPlace from './ProductCardPlace/ProductCardPlace';
 import FullInfoProductPlace from './FullInfoProductPlace/FullInfoProductPlace';
 import {NotFound} from "./common/NotFound/NotFound";
 import Footer from './Footer/Footer';
+import LikedProducts from '../components/LikedProducts/LikedProducts';
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -32,6 +33,7 @@ class Layout extends React.Component {
 
 	render() {
 		const {user, isLogIn} = this.state;
+
 		return (
 			<Router>
 				<div className="layout-container">
@@ -48,7 +50,7 @@ class Layout extends React.Component {
 						<Route path='/product/:productId'
 							   render={props => <FullInfoProductPlace user={user} isLogin={isLogIn} {...props}/>}/>
 						<Route path='/productsCard' render={() => <ProductCardPlace user={user} isLogIn={isLogIn}/>}/>
-						<Route path='/likedProducts' render={() => <div>{'prod'}</div>}/>
+						<Route path='/likedProducts' component={LikedProducts}/>
 						<Route component={NotFound}/>
 					</Switch>
 					<Footer user={user} isLogIn={isLogIn}/>

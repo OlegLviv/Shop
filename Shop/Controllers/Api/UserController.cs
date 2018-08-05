@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -68,7 +69,7 @@ namespace Shop.Controllers.Api
 
             if (user == null)
                 return BadRequest("Incorrent user id or user don't found");
-
+            
             return this.JsonResult(_mapper.Map<UserDto>(user));
         }
 

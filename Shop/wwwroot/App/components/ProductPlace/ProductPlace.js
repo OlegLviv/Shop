@@ -106,9 +106,7 @@ class ProductPlace extends React.Component {
 	};
 
 	onLikeButClick = (e, id) => {
-		if (!this.props.isLogIn) {
-			addProductCookies('likeProducts', id, 1);
-		}
+		addProductCookies('likedProducts', id, 1, 60);
 	};
 
 	onPriceRangeChangeValue = (val) => {
@@ -218,7 +216,7 @@ class ProductPlace extends React.Component {
 										defaultImgSrc="https://stanfy.com/wp-content/uploads/2015/09/1-V3h-VWthi5lL0QySF6qZPw.gif"
 										product={item}
 										key={item.id}
-										onLikeButClick={this.onLikeButClick}
+										onLikeProduct={this.onLikeButClick}
 										onAddProduct={this.onAddProductToShoppingCardButClick}/>
 								</div>
 							)

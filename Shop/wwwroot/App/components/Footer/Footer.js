@@ -114,7 +114,7 @@ class Footer extends React.Component {
 					</div>
 					<div className="footer-cont__sub-footer__text">© 2018 Всі права захищені</div>
 					<div className="footer-cont__sub-footer__text">Створення сайту:
-						<a href="https://vk.com/id105586528">{' Oleh Kokhan'}</a>
+						<a href="https://www.facebook.com/profile.php?id=100008373631253">{' Oleh Kokhan'}</a>
 					</div>
 				</div>
 			</div>

@@ -57,12 +57,12 @@
 	}
   }
   .order-info-container {
-	&__header {
-	  background: $dark;
-	}
-
 	&__status {
 	  display: none;
 	}
+  }
+  .info-products-container a {
+	text-decoration: none;
+	color: black;
   }
 }

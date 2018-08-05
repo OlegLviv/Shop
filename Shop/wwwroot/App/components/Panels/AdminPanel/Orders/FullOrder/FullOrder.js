@@ -7,6 +7,7 @@ import {OrderStatus} from "../../../../common/OrderStatus/OrderStatus";
 import {SuccessOrderStatusChangedModal} from "./SuccessOrderStatusChangedModal";
 import DocumentTitle from 'react-document-title';
 import {Icon} from 'react-fa';
+import {Link} from 'react-router-dom';
 
 class FullOrder extends React.Component {
 	constructor(props) {
@@ -117,7 +118,11 @@ class FullOrder extends React.Component {
 						<tbody>
 						{this.state.order.productsContainers.map(prodCont => (
 								<tr>
-									<td>{prodCont.product.name}</td>
+									<td>
+										<Link to={`/product/${prodCont.product.id}`}>
+											{prodCont.product.name}
+										</Link>
+									</td>
 									<td>{prodCont.count}</td>
 									<td>{prodCont.product.priceWithDiscount || prodCont.product.price}</td>
 								</tr>
