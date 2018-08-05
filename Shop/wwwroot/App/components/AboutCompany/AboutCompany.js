@@ -1,15 +1,30 @@
 import React, {Component} from 'react';
 import DocumentTitle from 'react-document-title';
+import './AboutCompany.scss';
+import {Icon} from 'react-fa';
+import {SITE_NAME} from "../../constants/siteConstants";
+
+const TITLE = 'Про компанію';
 
 class AboutCompany extends Component {
 	render() {
 		return (
-			<DocumentTitle title="Про компанію">
-				<div>Apparently we had reached a great height in the atmosphere, for the sky was a dead black, and the
-					stars had ceased to twinkle. By the same illusion which lifts the horizon of the sea to the level of
-					the spectator on a hillside, the sable cloud beneath was dished out, and the car seemed to float in
-					the middle of an immense dark sphere, whose upper half was strewn with silver. Looking down into the
-					dark gulf below, I could see a ruddy light streaming through a rift in the clouds.
+			<DocumentTitle title={TITLE}>
+				<div className="about-company">
+					<div className="about-company__box">
+						<h2 className="about-company__box__title">
+							<div>{TITLE}</div>
+							<Icon name="building"/>
+						</h2>
+						<div className="about-company__box__text">
+							{`Інтернет магазин ${SITE_NAME} пропонує Вашій увазі широкий асортимент товарі.
+							В нас ви можете знайти свою улюблену книгу чи все необхідне для школи за доступними цінами.`}
+							<h3>
+								* Вибачаємось за тимчасові незручності, оскільки ми тільки відкрились, тому ще не увесь
+								асортимент товару виставлений. Найближчим часом вже буде представлений весь товар.
+							</h3>
+						</div>
+					</div>
 				</div>
 			</DocumentTitle>
 		);
