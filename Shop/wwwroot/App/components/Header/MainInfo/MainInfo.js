@@ -9,6 +9,7 @@ import {singOutToken} from "../../../services/authService";
 import CallMeModal from '../../Modal/CallMeModal/CallMeModal';
 import {CREATE_CALL_ME} from "../../../services/urls/orderUrls";
 import {SuccessDispatchedCallMeModal} from '../../Modal/CallMeModal/SuccessDispatchedCallMeModal';
+import {Spinner} from "../../Spinner/Spinner";
 
 class MainInfo extends React.Component {
 	constructor(props) {
@@ -19,28 +20,32 @@ class MainInfo extends React.Component {
 			userName: '',
 			isCallMeModalOpen: false,
 			loading: false,
+			userLoading: false,
 			isOpenSuccessDispatchedCallMeModal: false
 		}
 	}
 
 	componentDidMount() {
+		this.trySetUserLoading();
+
 		apiWithoutRedirect()
 			.get(GET_USER_INFO_URL)
 			.then(resp => {
 				if (resp.data.userName) {
 					this.props.onLogIn(resp.data);
-					this.setState({userName: resp.data.userName});
+					this.setState({
+						userName: resp.data.userName,
+						userLoading: false
+					});
 				}
+				else this.setState({userLoading: false});
 			})
-			.catch(err => {
-				// TODO	add in future
-				// if (err.response.status === 401) {
-				//     this.setState({isLogIn: false})
-				// }
-			});
+			.catch(() => this.setState({userLoading: false}));
 	}
 
 	trySetLoading = () => !this.state.loading && this.setState({loading: true});
+
+	trySetUserLoading = () => !this.state.userLoading && this.setState({userLoading: true});
 
 	singOut = () => {
 		singOutToken(() => {
@@ -48,21 +53,14 @@ class MainInfo extends React.Component {
 		});
 	};
 
-	openLoginModal = () => {
-		this.setState({isLoginModalOpen: true});
-	};
+	openLoginModal = () => this.setState({isLoginModalOpen: true});
 
-	openRegisterModal = () => {
-		this.setState({isRegisterModalOpen: true});
-	};
+	openRegisterModal = () => this.setState({isRegisterModalOpen: true});
 
-	closeLoginModal = () => {
-		this.setState({isLoginModalOpen: false});
-	};
+	closeLoginModal = () => this.setState({isLoginModalOpen: false});
 
-	closeRegisterModal = () => {
-		this.setState({isRegisterModalOpen: false});
-	};
+	closeRegisterModal = () => this.setState({isRegisterModalOpen: false});
+
 
 	onCallMeClick = () => this.setState({isCallMeModalOpen: true});
 
@@ -98,9 +96,33 @@ class MainInfo extends React.Component {
 		isOpen={this.state.isOpenSuccessDispatchedCallMeModal}
 		onClose={() => this.setState({isOpenSuccessDispatchedCallMeModal: false})}/>;
 
-	render() {
-		const {userName} = this.state;
+	renderRightNav = () => {
+		const {userName, userLoading} = this.state;
 
+		if (!userLoading)
+			return (
+				<div>
+					{
+						!userName ? <div>
+							<button className="btn btn-outline-light" onClick={this.openLoginModal}>Вхід</button>
+							<button className="btn btn-outline-light" onClick={this.openRegisterModal}>
+								Реєстрація
+							</button>
+						</div> : <div className="info_container__right__menu-item__sub">
+							<Link className="btn btn-outline-light"
+								  to={`/${userName === 'Admin' ? 'adminPanel/action-on-products' : 'userPanel/change-password'}`}>{userName}</Link>
+							<button className="btn btn-danger info_container__right__menu-item__sub__exit"
+									onClick={this.singOut}>
+								Вийти
+							</button>
+						</div>
+					}
+				</div>
+			);
+		else return (<Spinner withoutHeight/>);
+	};
+
+	render() {
 		return (
 			<div className="info_container row">
 				{this.renderCallMeModal()}
@@ -122,19 +144,9 @@ class MainInfo extends React.Component {
 						</div>
 					</div>
 					<div className="info_container__right__menu-item">
-						{!userName ? <div>
-							<button className="btn btn-outline-light" onClick={this.openLoginModal}>Вхід</button>
-							<button className="btn btn-outline-light" onClick={this.openRegisterModal}>
-								Реєстрація
-							</button>
-						</div> : <div className="info_container__right__menu-item__sub">
-							<Link className="btn btn-outline-light"
-								  to={`/${userName === 'Admin' ? 'adminPanel/action-on-products' : 'userPanel/change-password'}`}>{userName}</Link>
-							<button className="btn btn-danger info_container__right__menu-item__sub__exit"
-									onClick={this.singOut}>
-								Вийти
-							</button>
-						</div>}
+						{
+							this.renderRightNav()
+						}
 						<LogInModal
 							isModalOpen={this.state.isLoginModalOpen}
 							onCloseModal={this.closeLoginModal}/>

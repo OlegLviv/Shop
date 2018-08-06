@@ -46,7 +46,7 @@ class LogInModal extends React.Component {
 		if (isValidWhiteSpace(this.state.userName) && isValidWhiteSpace(this.state.password)) {
 			this.trySetLoading();
 
-			logInToken(this.state.userName, this.state.password, () => this.setState({loading: false}))
+			logInToken(this.state.userName, this.state.password)
 				.catch(error => {
 					this.setState({loading: false});
 

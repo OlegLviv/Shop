@@ -30,7 +30,7 @@ class LogIn extends React.Component {
 
 		this.trySetLoading();
 
-		logInToken(this.state.userName, this.state.password, () => this.setState({loading: false}))
+		logInToken(this.state.userName, this.state.password)
 			.catch(err => {
 				this.setState({loading: false});
 
