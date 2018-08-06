@@ -46,7 +46,7 @@ class Footer extends React.Component {
 						if (resp.data === 'Success' && resp.status === 200)
 							this.setState({isShowSuccessSubscribedModal: true});
 					})
-					.catch(err => alert(`Error: ${JSON.stringify(err.response.data)}`));
+					.catch(() => alert(`Error`));
 			});
 	};
 

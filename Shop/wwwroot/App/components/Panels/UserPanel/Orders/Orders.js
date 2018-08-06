@@ -39,8 +39,8 @@ class Orders extends Component {
 				activePage: resp.data.pageNumber,
 				isLoading: false
 			}))
-			.catch(err => {
-				alert(`Error: ${err}`);
+			.catch(() => {
+				alert(`Error`);
 				this.setState({isLoading: false});
 			});
 	};

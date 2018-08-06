@@ -26,9 +26,9 @@ class FullOrder extends React.Component {
 		this.trySetLoading();
 		apiGet(getOrderUrl(this.props.match.params.orderId))
 			.then(resp => this.setState({order: resp.data, isLoading: false}))
-			.catch(err => {
+			.catch(() => {
 				this.setState({isLoading: false});
-				alert(`Error: ${err}`);
+				alert(`Error`);
 			});
 	}
 
@@ -57,8 +57,8 @@ class FullOrder extends React.Component {
 					});
 				}
 			})
-			.catch(err => {
-				alert(`Error: ${err}`);
+			.catch(() => {
+				alert(`Error`);
 				this.setState({isLoading: false});
 			});
 	};

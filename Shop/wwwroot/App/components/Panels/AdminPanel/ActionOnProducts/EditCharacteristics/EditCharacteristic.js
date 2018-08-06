@@ -147,7 +147,7 @@ class EditCharacteristic extends React.Component {
 						this.updateSubCategoryState();
 					}
 				})
-				.catch(err => alert(`Error: ${JSON.stringify(err.response.data)}`))
+				.catch(() => alert(`Error`))
 		});
 	};
 
@@ -162,8 +162,8 @@ class EditCharacteristic extends React.Component {
 					this.updateSubCategoryState();
 				}
 			})
-			.catch(err => {
-				alert(`Error: ${err}`);
+			.catch(() => {
+				alert(`Error`);
 				this.setState({isLoading: false});
 			});
 	};

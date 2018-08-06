@@ -45,9 +45,9 @@ class Discount extends Component {
 					loading: false
 				});
 			})
-			.catch(err => {
+			.catch(() => {
 				this.setState({loading: false});
-				alert(`Error: ${JSON.stringify(err)}`);
+				alert(`Error`);
 			});
 	};
 

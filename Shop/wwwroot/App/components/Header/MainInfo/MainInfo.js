@@ -79,11 +79,11 @@ class MainInfo extends React.Component {
 					this.onCloseCallMe();
 				}
 			})
-			.catch(err => {
+			.catch(() => {
 				this.setState({
 					loading: false
 				});
-				alert(`Error: ${err}`);
+				alert(`Error`);
 			});
 	};
 

@@ -90,6 +90,7 @@ class AdminPanel extends React.Component {
 	//	todo need implement main admin panel route
 	render() {
 		const {isLoading, isLoaded, canShow} = this.state;
+
 		if (isLoaded && !isLoading && canShow) {
 			return (
 				<div className="row container-adm-panel">

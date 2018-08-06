@@ -105,7 +105,7 @@ class ChangePassword extends React.Component {
 					isLoading: false,
 					isLoaded: true
 				});
-			else alert(`Error: ${response.data}`);
+			else alert(`Error`);
 		})
 			.then(resp => {
 				if (resp.status === 200 && resp.data === 'Success')

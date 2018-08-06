@@ -32,9 +32,9 @@ class ChangePhone extends React.Component {
 			.then(resp => {
 				this.setState({oldPhone: resp.data.phoneNumber, isLoading: false});
 			})
-			.catch(err => {
+			.catch(() => {
 				this.setState({isLoading: false});
-				alert(`Error: ${err}`);
+				alert(`Error`);
 			});
 	}
 
@@ -81,9 +81,9 @@ class ChangePhone extends React.Component {
 					isLoading: false,
 					isShowSuccessChangedPhoneModal: true
 				}))
-				.catch(err => {
+				.catch(() => {
 					this.setState({isLoading: false});
-					alert(`Error: ${err}`);
+					alert(`Error`);
 				});
 		});
 	};

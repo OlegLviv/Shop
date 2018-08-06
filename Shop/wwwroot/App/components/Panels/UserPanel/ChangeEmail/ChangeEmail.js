@@ -54,7 +54,7 @@ class ChangeEmail extends React.Component {
 					emailConfirmed: resp.data.emailConfirmed
 				});
 			})
-			.catch(err => alert(`Error:${err}`));
+			.catch(() => alert(`Error`));
 	}
 
 	isUserExist = (value) => apiGet(getIsExistUserUrl(value));
@@ -118,9 +118,9 @@ class ChangeEmail extends React.Component {
 								this.setState({isRenderConfirmTokenView: true, isLoading: false});
 							}
 						})
-						.catch(err => alert(`Error:${err}`));
+						.catch(() => alert(`Error`));
 				})
-				.catch(err => alert(`Error:${err}`));
+				.catch(() => alert(`Error`));
 		});
 	};
 

@@ -46,9 +46,9 @@ class ExpandedNavigationProducts extends React.Component {
 					loading: false
 				});
 			})
-			.catch(err => {
+			.catch(() => {
 				this.setState({loading: false});
-				alert(`Error: ${JSON.stringify(err.response.data)}`);
+				alert(`Error`);
 			});
 	};
 

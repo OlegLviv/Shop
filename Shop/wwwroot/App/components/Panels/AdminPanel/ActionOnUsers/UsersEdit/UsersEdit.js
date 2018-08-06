@@ -96,8 +96,8 @@ class UsersEdit extends React.Component {
 					this.setState({isLoaded: true, isLoading: false, isShowSuccessUpdatedUserModal: true});
 				}
 			})
-			.catch(err => {
-				alert(`Error: ${err}`);
+			.catch(() => {
+				alert(`Error`);
 				this.setState({isLoaded: true, isLoading: false});
 			});
 	};

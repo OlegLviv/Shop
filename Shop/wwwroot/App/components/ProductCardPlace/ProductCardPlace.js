@@ -151,8 +151,8 @@ class ProductCardPlace extends React.Component {
 					this.props.onCleanProducts();
 				}
 			})
-			.catch(err => {
-				alert(`Error: ${JSON.stringify(err.response.data)}`);
+			.catch(() => {
+				alert(`Error`);
 				this.setState({loading: false});
 			});
 	};
