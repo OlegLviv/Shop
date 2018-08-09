@@ -1,12 +1,13 @@
-@import "../../main";
+@import "../../../../main";
 
-.delivery-cont {
+.contacts-cont {
   padding: 2rem;
   min-height: 100vh;
 
-  &__delivery-pay-box {
+  &__contacts-box {
 	background-color: $light-background;
 	border: 1px solid $dark-grey-color;
 	border-radius: 5px;
+	padding: 2rem;
   }
 }

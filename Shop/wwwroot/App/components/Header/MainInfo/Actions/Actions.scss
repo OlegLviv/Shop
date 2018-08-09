@@ -1,0 +1,23 @@
+@import "../../../../main";
+
+.actions-cont {
+  min-height: 100vh;
+  padding: 2rem;
+
+  &__box {
+	background-color: $light-background;
+	border: 1px solid $dark-grey-color;
+	border-radius: 5px;
+	padding: 2rem;
+
+	&__title {
+	  display: flex;
+	  justify-content: center;
+	}
+
+	&__action-text {
+	  color: $red;
+	  padding-top: 1rem;
+	}
+  }
+}

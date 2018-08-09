@@ -81,7 +81,7 @@ class Footer extends React.Component {
 					<div className="footer-cont__main__contacts">
 						<div className="footer-cont__main__contacts__contact">
 							<Icon name="envelope"/>
-							<div>site@gmail.com</div>
+							<div>klasno-lviv.com@gmail.com</div>
 						</div>
 						<div className="footer-cont__main__contacts__contact">
 							<Icon name="home"/>

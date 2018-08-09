@@ -1,9 +1,9 @@
 ﻿import React from 'react';
 import Header from './Header/Header';
 import Home from './Home/Home';
-import Contacts from './Contacts/Contacts';
-import DeliveryAndPay from './DeliveryAndPay/DeliveryAndPay';
-import AboutCompany from './AboutCompany/AboutCompany';
+import Contacts from './Header/MainInfo/Contacts/Contacts';
+import DeliveryAndPay from './Header/MainInfo/DeliveryAndPay/DeliveryAndPay';
+import AboutCompany from './Header/MainInfo/AboutCompany/AboutCompany';
 import AdminPanel from "./Panels/AdminPanel/AdminPanel";
 import LogIn from './LogIn/LogIn';
 import './Layout.scss';
@@ -14,6 +14,7 @@ import FullInfoProductPlace from './FullInfoProductPlace/FullInfoProductPlace';
 import {NotFound} from "./common/NotFound/NotFound";
 import Footer from './Footer/Footer';
 import LikedProducts from '../components/LikedProducts/LikedProducts';
+import Actions from '../components/Header/MainInfo/Actions/Actions';
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -44,6 +45,7 @@ class Layout extends React.Component {
 						<Route path='/contacts' component={Contacts}/>
 						<Route path='/deliveryAndPay' component={DeliveryAndPay}/>
 						<Route path='/aboutCompany' component={AboutCompany}/>
+						<Route path='/actions' component={Actions}/>
 						<Route path='/userPanel' component={UserPanel}/>
 						<Route path='/adminPanel' component={AdminPanel}/>
 						<Route path='/logIn' component={LogIn}/>

@@ -131,6 +131,7 @@ class MainInfo extends React.Component {
 					<Link to="/aboutCompany">Про компанію</Link>
 					<Link to="/deliveryAndPay">Доставка та оплата</Link>
 					<Link to="/contacts">Контакти</Link>
+					<Link to="/actions">Акції</Link>
 				</div>
 				<div className="col-xl-3 col-lg-1"/>
 				<div className="info_container__right col-xl-5 col-lg-12">
