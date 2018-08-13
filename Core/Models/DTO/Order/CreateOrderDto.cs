@@ -26,5 +26,14 @@ namespace Core.Models.DTO.Order
         public string WayOfDelivery { get; set; }
 
         public OrderStatus OrderStatus { get; set; } = OrderStatus.New;
+
+        [Required]
+        public string CityName { get; set; }
+
+        [Required]
+        public string DepartAddress { get; set; }
+
+        [Required]
+        public int DepartNumber { get; set; }
     }
 }

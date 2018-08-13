@@ -24,5 +24,11 @@ namespace Core.Models.DTO.Order
         public double TotalPrice { get; set; }
 
         public long CreateDate { get; set; }
+
+        public string CityName { get; set; }
+
+        public string DepartAddress { get; set; }
+
+        public int DepartNumber { get; set; }
     }
 }

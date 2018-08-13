@@ -35,5 +35,11 @@ namespace Core.Models.DomainModels
         public double TotalPrice { get; set; }
 
         public long CreateDate { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        public string CityName { get; set; }
+
+        public string DepartAddress { get; set; }
+
+        public int DepartNumber { get; set; }
     }
 }

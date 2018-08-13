@@ -23,5 +23,7 @@ export const isValidProductPrice = s => new RegExp('^[0-9]{0,5}[.,]?[0-9]{1,2}$'
 
 export const isValidProductDiscount = s => new RegExp('^[0-9]{1,3}$').test(s) && Number(s) <= 100;
 
+export const isValidOnlyDigits = s => new RegExp('^[0-9]+$').test(s);
+
 //	todo need fix white space
 export const isValidProductDescription = s => new RegExp('^[A-zА-яіІёЁ0-9\\S\\n ]{0,512}$').test(s);

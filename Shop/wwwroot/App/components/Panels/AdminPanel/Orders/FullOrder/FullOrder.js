@@ -155,6 +155,18 @@ class FullOrder extends React.Component {
 							<td>{this.state.order.wayOfDelivery}</td>
 						</tr>
 						<tr>
+							<td>Місто доставки</td>
+							<td>{this.state.order.cityName}</td>
+						</tr>
+						<tr>
+							<td>Адрес відділення</td>
+							<td>{this.state.order.departAddress}</td>
+						</tr>
+						<tr>
+							<td>Номер відділення</td>
+							<td>{this.state.order.departNumber}</td>
+						</tr>
+						<tr>
 							<td>Номер замовлення</td>
 							<td>{this.state.order.id}</td>
 						</tr>

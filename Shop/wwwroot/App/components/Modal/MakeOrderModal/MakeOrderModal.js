@@ -1,7 +1,12 @@
 import React from 'react';
 import {customModalStyle} from "../modalStyles";
 import Modal from 'react-modal';
-import {isValidEmail, isValidNameAndLastName, isValidPhoneNumber} from "../../../utils/validationUtils";
+import {
+	isValidEmail,
+	isValidNameAndLastName, isValidOnlyDigits,
+	isValidPhoneNumber,
+	isValidWhiteSpace
+} from "../../../utils/validationUtils";
 import {Spinner} from "../../Spinner/Spinner";
 
 class MakeOrderModal extends React.Component {
@@ -12,11 +17,17 @@ class MakeOrderModal extends React.Component {
 			isValidPhone: true,
 			isValidName: true,
 			isValidLastName: true,
+			isValidCityName: true,
+			isValidDepartAddress: true,
+			isValidDepartNumber: true,
 			email: '',
 			name: '',
 			lastName: '',
 			phone: '',
-			wayOfDelivery: 'Нова пошта'
+			wayOfDelivery: 'Нова пошта',
+			cityName: '',
+			departAddress: '',
+			departNumber: ''
 		}
 	}
 
@@ -103,13 +114,55 @@ class MakeOrderModal extends React.Component {
 			return true;
 	};
 
+	validateCityName = value => {
+		if (!isValidWhiteSpace(value)) {
+			this.setState({isValidCityName: false});
+			return false;
+		}
+		if (isValidWhiteSpace(value) && !this.state.isValidCityName) {
+			this.setState({isValidCityName: true});
+			return false;
+		}
+		if (isValidWhiteSpace(value) && this.state.isValidCityName)
+			return true;
+	};
+
+	validateDepartAddress = value => {
+		if (value.length < 5) {
+			this.setState({isValidDepartAddress: false});
+			return false;
+		}
+		if (value.length >= 5) {
+			this.setState({isValidDepartAddress: true});
+			return false;
+		}
+		if (value.length <= 5 && this.state.isValidDepartAddress)
+			return true;
+	};
+
+	validateDepartNumber = value => {
+		if (!isValidOnlyDigits(value)) {
+			this.setState({isValidDepartNumber: false});
+			return false;
+		}
+		if (isValidOnlyDigits(value)) {
+			this.setState({isValidDepartNumber: true});
+			return false;
+		}
+		if (isValidOnlyDigits(value) && this.state.isValidDepartNumber)
+			return true;
+	};
+
 	isValidAllFields = () => {
 		const isValidName = this.validateName(this.state.name);
 		const isValidLastName = this.validateLastName(this.state.lastName);
 		const isValidEmail = this.validateEmail(this.state.email);
 		const isValidPhone = this.validatePhone(this.state.phone);
+		const isValidCityName = this.validateCityName(this.state.cityName);
+		const isValidDepartAddress = this.validateDepartAddress(this.state.departAddress);
+		const isValidDepartNumber = this.validateDepartNumber(this.state.departNumber);
 
-		return isValidName && isValidLastName && isValidEmail && isValidPhone;
+		return isValidName && isValidLastName && isValidEmail && isValidPhone && isValidCityName && isValidDepartAddress && isValidDepartNumber;
 	};
 
 	onChangeName = ({target}) => {
@@ -132,17 +185,36 @@ class MakeOrderModal extends React.Component {
 		this.setState({phone: e.target.value});
 	};
 
+	onChangeCityName = ({target}) => {
+		this.validateCityName(target.value);
+		this.setState({cityName: target.value});
+	};
+
+	onChangeDepartAddress = ({target}) => {
+		this.validateDepartAddress(target.value);
+		this.setState({departAddress: target.value});
+	};
+
+	onChangeDepartNumber = ({target}) => {
+		this.validateDepartNumber(target.value);
+		this.setState({departNumber: target.value});
+	};
+
 	onWayOfDeliveryChange = ({target}) => this.setState({wayOfDelivery: target.value});
 
 	onSubmitOrder = () => {
 		if (this.isValidAllFields())
-			this.props.onSubmitOrder({
-				name: this.state.name,
-				lastName: this.state.lastName,
-				email: this.state.email,
-				phoneNumber: this.state.phone,
-				wayOfDelivery: this.state.wayOfDelivery
-			});
+			console.log('submit', this.isValidAllFields());
+		this.props.onSubmitOrder({
+			name: this.state.name,
+			lastName: this.state.lastName,
+			email: this.state.email,
+			phoneNumber: this.state.phone,
+			wayOfDelivery: this.state.wayOfDelivery,
+			cityName: this.state.cityName,
+			departAddress: this.state.departAddress,
+			departNumber: this.state.departNumber
+		});
 	};
 
 	onCloseModal = () => this.props.onCloseModal();
@@ -150,7 +222,7 @@ class MakeOrderModal extends React.Component {
 	renderError = text => <small className="invalid-small">{text}</small>;
 
 	render() {
-		const {email, name, lastName, phone} = this.state;
+		const {email, name, lastName, phone, cityName, departAddress, departNumber} = this.state;
 		return (
 			<Modal isOpen={this.props.isModalOpen}
 				   onRequestClose={this.onCloseModal}
@@ -207,6 +279,36 @@ class MakeOrderModal extends React.Component {
 							<option>Укрпошта</option>
 							<option>Делівері</option>
 						</select>
+					</div>
+					<div className="form-group">
+						<label htmlFor="inputPhone">Місто</label>
+						<input type="text"
+							   className={`form-control ${!this.state.isValidCityName && 'invalid-input'}`}
+							   id="inputPhone"
+							   placeholder="Введіть місто доставки"
+							   value={cityName}
+							   onChange={this.onChangeCityName}/>
+						{!this.state.isValidCityName && this.renderError('Некоректно введено назва міста')}
+					</div>
+					<div className="form-group">
+						<label htmlFor="inputPhone">Адрес відділення</label>
+						<input type="text"
+							   className={`form-control ${!this.state.isValidDepartAddress && 'invalid-input'}`}
+							   id="inputPhone"
+							   placeholder="Введіть місто доставки"
+							   value={departAddress}
+							   onChange={this.onChangeDepartAddress}/>
+						{!this.state.isValidDepartAddress && this.renderError('Некоректно введено адрес відділення, поле повинно містити більше 5-ти символів')}
+					</div>
+					<div className="form-group">
+						<label htmlFor="inputPhone">Номер відділення</label>
+						<input type="text"
+							   className={`form-control ${!this.state.isValidDepartNumber && 'invalid-input'}`}
+							   id="inputPhone"
+							   placeholder="Введіть місто доставки"
+							   value={departNumber}
+							   onChange={this.onChangeDepartNumber}/>
+						{!this.state.isValidDepartNumber && this.renderError('Некоректно введено номер відділення')}
 					</div>
 					<div className="form-container__footer">
 						<button
