@@ -114,6 +114,7 @@ class FullOrder extends React.Component {
 						<th>Назва товару</th>
 						<th>Кількість</th>
 						<th>Ціна</th>
+						<th>Ціна зі знижкою</th>
 						</thead>
 						<tbody>
 						{this.state.order.productsContainers.map(prodCont => (
@@ -124,15 +125,17 @@ class FullOrder extends React.Component {
 										</Link>
 									</td>
 									<td>{prodCont.count}</td>
-									<td>{prodCont.product.priceWithDiscount || prodCont.product.price}</td>
+									<td>{prodCont.product.price}</td>
+									<td>{prodCont.product.priceWithDiscount || '-'}</td>
 								</tr>
 							)
 						)}
 						<tr>
-							<td>Сума замовлення</td>
+							<td>Загальна сума замовлення</td>
+							<td>{''}</td>
 							<td>{''}</td>
 							<td>
-								<b>{this.state.order.totalPrice}грн</b>
+								<b>{(Math.round(this.state.order.totalPrice * 100) / 100)}грн</b>
 							</td>
 						</tr>
 						</tbody>

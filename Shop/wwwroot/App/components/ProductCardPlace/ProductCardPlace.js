@@ -190,6 +190,7 @@ class ProductCardPlace extends React.Component {
 							<th>#</th>
 							<th>{''}</th>
 							<th>Ціна</th>
+							<th>Ціна зі знижкою</th>
 							<th>Кількість</th>
 							<th>Вартість</th>
 						</tr>
@@ -224,7 +225,10 @@ class ProductCardPlace extends React.Component {
 											</div>
 										</td>
 										<td data-label="Ціна">
-											<h5>{item.priceWithDiscount > 0 ? item.priceWithDiscount : item.price}</h5>
+											<h5>{item.price}</h5>
+										</td>
+										<td data-label="Ціна зі знижкою">
+											<h5>{item.priceWithDiscount || '-'}</h5>
 										</td>
 										<td data-label="Кількість">
 											<div className="btn-group">
