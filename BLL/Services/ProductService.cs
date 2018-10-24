@@ -32,9 +32,7 @@ namespace BLL.Services
         {
             foreach (var product in products)
             {
-                bool isReturn;
-
-                isReturn = IsEqualsKeys(query, product.Query, out var parsedQ, out var parsedProductQ, out var intersectKeys) && CanReturn(parsedQ, parsedProductQ, intersectKeys);
+                var isReturn = IsEqualsKeys(query, product.Query, out var parsedQ, out var parsedProductQ, out var intersectKeys) && CanReturn(parsedQ, parsedProductQ, intersectKeys);
 
                 if (isReturn)
                     yield return product;
@@ -56,6 +54,7 @@ namespace BLL.Services
                     Properties = newProp,
                     SubCategory = subCategory
                 };
+                
                 return await _repositoryProdProp.InsertAsync(prodProperty) >= 1 && await _repositoryPosibleProductProp
                     .InsertAsync(PossibleProductProperty.Empty(subCategory, newProp)) >= 1;
             }
@@ -74,13 +73,11 @@ namespace BLL.Services
 
         public async Task<bool> AddNewPossiblePropertiesAsync(string subCategory, string propName, IEnumerable<string> possibleProdProps)
         {
-            var posiibleProdPropsList = possibleProdProps?.ToList();
-
             if (string.IsNullOrWhiteSpace(subCategory) ||
                string.IsNullOrWhiteSpace(propName))
                 throw new ArgumentException();
 
-            if (posiibleProdPropsList == null || !posiibleProdPropsList.Any())
+            if (possibleProdProps == null || !possibleProdProps.Any())
                 throw new ArgumentException();
 
             var possibleProps = await SelectPossibleProductPropertyAsync(subCategory, propName);
@@ -88,10 +85,10 @@ namespace BLL.Services
             if (possibleProps == null)
                 return false;
 
-            if (possibleProps.Values.Split(';').Intersect(posiibleProdPropsList).Any())
+            if (possibleProps.Values.Split(';').Intersect(possibleProdProps).Any())
                 return false;
 
-            possibleProps.Values = possibleProps.Values == string.Empty ? string.Join(";", posiibleProdPropsList) : string.Join(";", possibleProps.Values.Split(';').Concat(posiibleProdPropsList));
+            possibleProps.Values = possibleProps.Values == string.Empty ? string.Join(";", possibleProdProps) : string.Join(";", possibleProps.Values.Split(';').Concat(posiibleProdPropsList));
 
             return await _repositoryPosibleProductProp.UpdateAsync(possibleProps) >= 1;
         }
@@ -133,8 +130,7 @@ namespace BLL.Services
         // todo need catch splic exception
         private static IDictionary<string, string> ParseQuery(string s)
         {
-            var length = s.Split(';').Length;
-            var dictionary = new Dictionary<string, string>(length);
+            var dictionary = new Dictionary<string, string>();
 
             foreach (var item in s.Split(';'))
             {
